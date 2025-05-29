@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: nursing_care
+  profiles:
+    active: aws, local
+
+logging:
+  level:
+    root: INFO

@@ -5,6 +5,10 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+docker-compose.yml
+postgresql_data
+redis_data
+
 ### STS ###
 .apt_generated
 .classpath
