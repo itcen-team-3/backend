@@ -1,0 +1,15 @@
+package com.team_3.nursing_care.schedule.constant;
+
+public enum ScheduleStatus {
+    PLANNED("예정"), ONGOING("진행중"), COMPLETED("완료");
+
+    private final String Status;
+
+    ScheduleStatus(String Status) {
+        this.Status = Status;
+    }
+
+
+
+
+}
