@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgresql_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    show-sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      #password:
+      #ssl: true      #ssl/tls 연결 사용시 true ( default: false )
+      #timeout: 5000  #연결 타임아웃 시간 (ms)
+      #lettuce: Lettuce Client 설정
+        #pool: 연결 풀 설정 ( 필요시 )
+          #max-active: 8  #풀에서 얻을 수 있는 최대 연결 수
+          #max-idle: 8    #풀에 유지할 수 있는 유휴 연결의 최대 수
+          #min-idle: 0    #풀에서 유지할 수 있는 유휴 연결의 최소 수
+          #max-wait: -1ms #풀에서 커넥션을 얻기 위해 대기하는 최대 시간 ( ms, -1은 무한대기 )
+
+coolSMS:
+  send_number: ${COOLSMS_PHONE_NUMBER}
+  api_key: ${COOLSMS_API_KEY}
+  api_secret: ${COOLSMS_API_SECRET}
