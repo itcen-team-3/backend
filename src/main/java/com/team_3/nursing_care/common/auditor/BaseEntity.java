@@ -35,7 +35,7 @@ public class BaseEntity {
     protected Boolean isDeleted;
     protected LocalDateTime deletedDate;
 
-    protected void softDelete(Long id) {
+    public void softDelete(Long id) {
         isDeleted = true;
         deletedDate = LocalDateTime.now();
         deletedBy = id;
