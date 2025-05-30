@@ -1,5 +1,6 @@
 package com.team_3.nursing_care.domain.member.service;
 
+import com.team_3.nursing_care.domain.member.dto.response.CaregiversNameResponseDto;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 @Slf4j
 public class MemberServiceImpl implements MemberService {
 
@@ -20,6 +21,12 @@ public class MemberServiceImpl implements MemberService {
 
     public List<Member> getMembers(Long companyId, Role role) {
         return memberRepository.findByCompany_CompanyIdAndRole(companyId, role);
+    }
+
+    @Override
+    public List<CaregiversNameResponseDto> getCaregiversName(Long companyId, Role role) {
+         memberRepository.findByCompanyIdAndRole(companyId, role);
+        return null;
     }
 
 }

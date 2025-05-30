@@ -11,4 +11,8 @@ public enum PaymentType {
     PaymentType(String paymentType) {
         this.paymentType = paymentType;
     }
+
+    public String getPaymentType() {
+        return paymentType;
+    }
 }

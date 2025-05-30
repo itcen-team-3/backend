@@ -1,10 +1,12 @@
 package com.team_3.nursing_care.schedule.entity;
 
 import com.team_3.nursing_care.common.auditor.BaseEntity;
+import com.team_3.nursing_care.domain.member.entity.Member;
 import com.team_3.nursing_care.schedule.constant.PaymentType;
 import com.team_3.nursing_care.schedule.constant.ScheduleStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,13 +15,17 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
+@Table(name = "schedule")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Schedule extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
     private Long scheduleId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Column(nullable = false)
     private LocalDate startDate;
@@ -52,7 +58,30 @@ public class Schedule extends BaseEntity {
     @Column(nullable = false)
     private PaymentType paymentType;
 
-
-
-
+    @Builder
+    public Schedule(Long scheduleId,
+                    Member member,
+                    LocalDate startDate,
+                    LocalDate endDate,
+                    Time startTime,
+                    Time endTime,
+                    int workDay,
+                    ScheduleStatus status,
+                    int paymentForHour,
+                    boolean isFamily,
+                    String patient,
+                    PaymentType paymentType) {
+        this.scheduleId = scheduleId;
+        this.member = member;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.workDay = workDay;
+        this.status = status;
+        this.paymentForHour = paymentForHour;
+        this.isFamily = isFamily;
+        this.patient = patient;
+        this.paymentType = paymentType;
+    }
 }
