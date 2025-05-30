@@ -1,4 +1,4 @@
-package com.team_3.nursing_care.domain.member.entity;
+package com.team_3.nursing_care.domain.member.constant;
 
 public enum Role {
 

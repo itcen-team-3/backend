@@ -1,5 +1,6 @@
 package com.team_3.nursing_care.domain.member.entity;
 
+import com.team_3.nursing_care.domain.member.constant.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,7 +1,7 @@
 package com.team_3.nursing_care.domain.member.service;
 
 import com.team_3.nursing_care.domain.member.entity.Member;
-import com.team_3.nursing_care.domain.member.entity.Role;
+import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
