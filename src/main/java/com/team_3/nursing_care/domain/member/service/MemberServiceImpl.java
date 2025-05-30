@@ -25,7 +25,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<CaregiversNameResponseDto> getCaregiversName(Long companyId, Role role) {
-         memberRepository.findByCompanyIdAndRole(companyId, role);
+         CaregiversNameResponseDto.from(memberRepository.findByCompanyIdAndRole(companyId, role));
         return null;
     }
 
