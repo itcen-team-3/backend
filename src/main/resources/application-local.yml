@@ -29,3 +29,8 @@ coolSMS:
   send_number: ${COOLSMS_PHONE_NUMBER}
   api_key: ${COOLSMS_API_KEY}
   api_secret: ${COOLSMS_API_SECRET}
+
+business_authenticity:
+  url: ${BUSINESS_AUTHENTICITY_URL}
+  path: ${BUSINESS_AUTHENTICITY_PATH}
+  service_key: ${BUSINESS_AUTHENTICITY_SERVICE_KEY}
