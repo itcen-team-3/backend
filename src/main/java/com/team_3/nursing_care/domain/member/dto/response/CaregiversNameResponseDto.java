@@ -12,18 +12,18 @@ import java.util.List;
 public class CaregiversNameResponseDto {
 
     private Long caregiverId;
-    private String name;
+    private String caregiverName;
 
     @Builder
-    public CaregiversNameResponseDto(Long caregiverId, String name) {
+    public CaregiversNameResponseDto(Long caregiverId, String caregiverName) {
         this.caregiverId = caregiverId;
-        this.name = name;
+        this.caregiverName = caregiverName;
     }
 
     public static CaregiversNameResponseDto from(Member member) {
         return CaregiversNameResponseDto.builder()
                 .caregiverId(member.getMemberId())
-                .name(member.getMemberName())
+                .caregiverName(member.getMemberName())
                 .build();
     }
 }
