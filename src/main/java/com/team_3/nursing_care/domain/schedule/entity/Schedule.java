@@ -1,9 +1,9 @@
-package com.team_3.nursing_care.schedule.entity;
+package com.team_3.nursing_care.domain.schedule.entity;
 
 import com.team_3.nursing_care.common.auditor.BaseEntity;
 import com.team_3.nursing_care.domain.member.entity.Member;
-import com.team_3.nursing_care.schedule.constant.PaymentType;
-import com.team_3.nursing_care.schedule.constant.ScheduleStatus;
+import com.team_3.nursing_care.domain.schedule.constant.PaymentType;
+import com.team_3.nursing_care.domain.schedule.constant.ScheduleStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
