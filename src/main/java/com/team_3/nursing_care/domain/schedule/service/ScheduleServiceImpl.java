@@ -20,8 +20,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Transactional
     @Override
     public void addWorkSchedule(CreateScheduleRequestDto createScheduleRequestDto) {
-        Member patient = memberRepository.findById(createScheduleRequestDto.getPatientId())
+        Member caregiver = memberRepository.findById(createScheduleRequestDto.getCaregiverId())
                 .orElseThrow(() -> new IllegalArgumentException("환자(Member)를 찾을 수 없습니다."));
-        scheduleRepository.save(createScheduleRequestDto.toEntity(patient));
+        scheduleRepository.save(createScheduleRequestDto.toEntity(caregiver));
     }
 }

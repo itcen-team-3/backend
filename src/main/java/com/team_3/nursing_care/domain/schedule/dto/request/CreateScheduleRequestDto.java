@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class CreateScheduleRequestDto {
 
     private String patientName;
-    private Long patientId;
+    private Long caregiverId;
     private LocalDate startDate;
     private LocalDate endDate;
     private Time startTime;
@@ -27,7 +27,7 @@ public class CreateScheduleRequestDto {
 
     @Builder
     public CreateScheduleRequestDto(String patientName,
-                                    Long patientId,
+                                    Long caregiverId,
                                     LocalDate startDate,
                                     LocalDate endDate,
                                     Time startTime,
@@ -38,7 +38,7 @@ public class CreateScheduleRequestDto {
                                     Boolean isFamily,
                                     String scheduleStatus) {
         this.patientName = patientName;
-        this.patientId = patientId;
+        this.caregiverId = caregiverId;
         this.startDate = startDate;
         this.endDate = endDate;
         this.startTime = startTime;

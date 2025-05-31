@@ -56,6 +56,7 @@ public class Schedule extends BaseEntity {
     private String patient;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
 
     @Builder

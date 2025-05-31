@@ -6,7 +6,7 @@ public enum PaymentType {
     WASHING("목욕 급여"),
     VISITING("방문 급여"),
     NURSING("간호 급여"),
-    DAYNIGHT("주야간 급여");
+    DAY_NIGHT("주야간 급여");
 
     private final String paymentType;
 
