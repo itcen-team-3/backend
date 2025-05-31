@@ -2,6 +2,8 @@ package com.team_3.nursing_care.domain.member.service;
 
 import com.team_3.nursing_care.domain.member.dto.response.CaregiversNameListResponseDto;
 import com.team_3.nursing_care.domain.member.dto.response.CaregiversNameResponseDto;
+import com.team_3.nursing_care.domain.member.dto.response.PatientsNameListResponseDto;
+import com.team_3.nursing_care.domain.member.dto.response.PatientsNameResponseDto;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
@@ -32,7 +34,18 @@ public class MemberServiceImpl implements MemberService {
                 .map(CaregiversNameResponseDto::from)
                 .toList();
 
-        return new CaregiversNameListResponseDto(caregiverList);
+        return CaregiversNameListResponseDto.from(caregiverList);
+    }
+
+    @Override
+    public PatientsNameListResponseDto getPatientsName(Long companyId, Role role) {
+
+        List<PatientsNameResponseDto> patientsList = memberRepository.findByCompany_CompanyIdAndRole(companyId, role)
+                .stream()
+                .map(PatientsNameResponseDto::from)
+                .toList();
+
+        return PatientsNameListResponseDto.from(patientsList);
     }
 
 }
