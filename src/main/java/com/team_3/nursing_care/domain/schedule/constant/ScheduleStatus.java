@@ -17,11 +17,4 @@ public enum ScheduleStatus {
         return Status;
     }
 
-    public static ScheduleStatus from(String scheduleStatus) {
-        return Arrays.stream(ScheduleStatus.values())
-                .filter(type -> type.getStatus().equals(scheduleStatus))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Unknown scheduleStatus: " + scheduleStatus));
-    }
-
 }

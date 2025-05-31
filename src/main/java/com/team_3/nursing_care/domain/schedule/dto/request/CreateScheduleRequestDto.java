@@ -23,8 +23,6 @@ public class CreateScheduleRequestDto {
     private int workDay;
     private String paymentType;
     private Boolean isFamily;
-    private String scheduleStatus;
-
     @Builder
     public CreateScheduleRequestDto(String patientName,
                                     Long caregiverId,
@@ -35,8 +33,7 @@ public class CreateScheduleRequestDto {
                                     int paymentForHour,
                                     int workDay,
                                     String paymentType,
-                                    Boolean isFamily,
-                                    String scheduleStatus) {
+                                    Boolean isFamily) {
         this.patientName = patientName;
         this.caregiverId = caregiverId;
         this.startDate = startDate;
@@ -47,7 +44,6 @@ public class CreateScheduleRequestDto {
         this.workDay = workDay;
         this.paymentType = paymentType;
         this.isFamily = isFamily;
-        this.scheduleStatus=scheduleStatus;
     }
 
     public Schedule toEntity(Member member) {
@@ -61,7 +57,7 @@ public class CreateScheduleRequestDto {
                 .paymentForHour(paymentForHour)
                 .workDay(workDay)
                 .paymentType(PaymentType.from(paymentType))
-                .status(ScheduleStatus.from(scheduleStatus))
+                .status(ScheduleStatus.PLANNED)
                 .isFamily(isFamily)
                 .build();
     }
