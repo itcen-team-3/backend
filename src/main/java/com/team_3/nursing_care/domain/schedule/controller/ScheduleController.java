@@ -4,10 +4,7 @@ import com.team_3.nursing_care.domain.schedule.dto.request.CreateScheduleRequest
 import com.team_3.nursing_care.domain.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/work-schedule")
@@ -21,4 +18,10 @@ public class ScheduleController {
         scheduleService.addWorkSchedule(createScheduleRequestDto);
         return ResponseEntity.ok("근무 일정표가 정상적으로 생성 되었습니다.");
     }
+
+    @DeleteMapping("/{scheduleId}")
+    public ResponseEntity<?> deleteWorkSchedule(@PathVariable Long scheduleId){
+        scheduleService.deleteSchedule(scheduleId);
+        return ResponseEntity.ok("근무 일정표를 정상적으로 삭제 하였습니다.");
+    };
 }

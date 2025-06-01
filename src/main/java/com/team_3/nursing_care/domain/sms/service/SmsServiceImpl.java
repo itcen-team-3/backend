@@ -1,4 +1,4 @@
-package com.team_3.nursing_care.domain.sms.service;
+/*package com.team_3.nursing_care.domain.sms.service;
 
 import com.team_3.nursing_care.common.exception.SmsException;
 import com.team_3.nursing_care.common.util.RedisUtil;
@@ -86,3 +86,4 @@ public class SmsServiceImpl implements SmsService {
         return numStr.toString();
     }
 }
+ */
