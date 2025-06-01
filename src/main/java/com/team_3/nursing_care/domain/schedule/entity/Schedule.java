@@ -85,4 +85,8 @@ public class Schedule extends BaseEntity {
         this.patient = patient;
         this.paymentType = paymentType;
     }
+
+    public void updateIsDelete(Boolean isDelete){
+        this.isDeleted=isDelete;
+    }
 }
