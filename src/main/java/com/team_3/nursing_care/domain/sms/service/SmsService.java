@@ -1,4 +1,4 @@
-/*package com.team_3.nursing_care.domain.sms.service;
+package com.team_3.nursing_care.domain.sms.service;
 
 import com.team_3.nursing_care.domain.sms.dto.ReqSmsDto;
 import net.nurigo.sdk.message.model.Balance;
@@ -11,4 +11,3 @@ public interface SmsService {
     Object existCache(String toPhoneNumber);
 
 }
- */

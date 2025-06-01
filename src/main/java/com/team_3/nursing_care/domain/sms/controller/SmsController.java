@@ -1,4 +1,4 @@
-/*package com.team_3.nursing_care.domain.sms.controller;
+package com.team_3.nursing_care.domain.sms.controller;
 
 import com.team_3.nursing_care.common.response.ResponseDto;
 import com.team_3.nursing_care.domain.sms.dto.ReqSmsDto;
@@ -33,4 +33,3 @@ public class SmsController {
     }
 
 }
- */
