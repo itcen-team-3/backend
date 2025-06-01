@@ -1,12 +1,12 @@
 package com.team_3.nursing_care.domain.member.service;
 
-import com.team_3.nursing_care.domain.member.dto.request.MemberInfoRequestDto;
+import com.team_3.nursing_care.domain.member.dto.request.CaregiverInfoRequestDto;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import com.team_3.nursing_care.domain.member.constant.Role;
 
 import java.util.List;
 
-public interface MemberService {
+public interface CaregiverService {
     List<Member> getMembers(Long companyId, Role role);
-    Member addMember(MemberInfoRequestDto memberInfoRequestDto, Role role);
+    Member addCaregiver(CaregiverInfoRequestDto caregiverInfoRequestDto, Role role);
 }

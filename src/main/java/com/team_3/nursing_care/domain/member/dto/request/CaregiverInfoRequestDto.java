@@ -1,6 +1,7 @@
 package com.team_3.nursing_care.domain.member.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.entity.Company;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import jakarta.validation.constraints.NotBlank;
@@ -9,12 +10,16 @@ import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
+@NoArgsConstructor
 @Getter
-public class MemberInfoRequestDto {
+@Setter
+public class CaregiverInfoRequestDto {
 
     private Long companyId;
 
@@ -35,14 +40,20 @@ public class MemberInfoRequestDto {
     private String description;
     private MultipartFile profileImage;
 
+    @NotBlank(message = "자격증 번호는 필수값입니다.")
+    private String certificateNumber;
+    private short career;
+
     @Builder
-    public MemberInfoRequestDto(Long companyId,
-                                String name,
-                                LocalDate birthDate,
-                                String phoneNumber,
-                                String address,
-                                String description,
-                                MultipartFile profileImage){
+    public CaregiverInfoRequestDto(Long companyId,
+                                   String name,
+                                   LocalDate birthDate,
+                                   String phoneNumber,
+                                   String address,
+                                   String description,
+                                   MultipartFile profileImage,
+                                   String certificateNumber,
+                                   short career){
         this.companyId = companyId;
         this.name = name;
         this.birthDate = birthDate;
@@ -50,9 +61,11 @@ public class MemberInfoRequestDto {
         this.address = address;
         this.description = description;
         this.profileImage = profileImage;
+        this.certificateNumber = certificateNumber;
+        this.career = career;
     }
 
-    public Member toEntity(String profileImageUrl,Company company){
+    public Member toEntity(String profileImageUrl, Company company, Role role){
 
         return Member.builder()
                 .company(company)
@@ -62,6 +75,9 @@ public class MemberInfoRequestDto {
                 .address(this.address)
                 .description(this.description)
                 .profileImage(profileImageUrl)
+                .certificateNumber(certificateNumber)
+                .career(career)
+                .role(role)
                 .build();
     }
 }

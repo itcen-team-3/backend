@@ -7,7 +7,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 
 @Getter
-public class MemberInfoResponseDto {
+public class CaregiverInfoResponseDto {
     private Long caregiverId;
     private String name;
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -18,13 +18,13 @@ public class MemberInfoResponseDto {
     private String profileImage;
 
     @Builder
-    public MemberInfoResponseDto(Long caregiverId,
-                                 String name,
-                                 LocalDate birthDate,
-                                 String phoneNumber,
-                                 String address,
-                                 String description,
-                                 String profileImage){
+    public CaregiverInfoResponseDto(Long caregiverId,
+                                    String name,
+                                    LocalDate birthDate,
+                                    String phoneNumber,
+                                    String address,
+                                    String description,
+                                    String profileImage){
         this.caregiverId = caregiverId;
         this.name = name;
         this.birthDate = birthDate;
