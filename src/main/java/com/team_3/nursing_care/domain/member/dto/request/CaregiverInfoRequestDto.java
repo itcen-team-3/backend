@@ -42,7 +42,9 @@ public class CaregiverInfoRequestDto {
 
     @NotBlank(message = "자격증 번호는 필수값입니다.")
     private String certificateNumber;
-    private short career;
+
+    @NotNull(message = "경력은 필수값입니다.")
+    private Short career;
 
     @Builder
     public CaregiverInfoRequestDto(Long companyId,
@@ -51,9 +53,8 @@ public class CaregiverInfoRequestDto {
                                    String phoneNumber,
                                    String address,
                                    String description,
-                                   MultipartFile profileImage,
                                    String certificateNumber,
-                                   short career){
+                                   Short career){
         this.companyId = companyId;
         this.name = name;
         this.birthDate = birthDate;
