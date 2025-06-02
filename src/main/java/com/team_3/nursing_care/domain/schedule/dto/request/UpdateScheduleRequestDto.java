@@ -21,7 +21,8 @@ public class UpdateScheduleRequestDto {
     private Boolean isFamily;
 
     @Builder
-    public UpdateScheduleRequestDto(String patientName,
+    public UpdateScheduleRequestDto(
+                                    String patientName,
                                     Long caregiverId,
                                     LocalDate startDate,
                                     LocalDate endDate,
@@ -42,7 +43,5 @@ public class UpdateScheduleRequestDto {
         this.paymentType = paymentType;
         this.isFamily = isFamily;
     }
-
-
 
 }

@@ -48,7 +48,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     }
 
-    private Schedule buildUpdateSchedule(Long scheduleId,
+    private Schedule buildUpdateSchedule(
+                                         Long scheduleId,
                                          UpdateScheduleRequestDto updateScheduleRequestDto,
                                          Member caregiver,
                                          ScheduleStatus status) {

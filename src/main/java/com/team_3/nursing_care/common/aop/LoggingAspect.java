@@ -19,14 +19,14 @@ import java.util.Arrays;
 @Component
 public class LoggingAspect {
 
-   // @Pointcut("execution(* com.team_3.nursing_care.domain.care_log.controller.*.*(..))")
+    @Pointcut("execution(* com.team_3.nursing_care.domain.care_log.controller.*.*(..))")
     private void care_log_proxy_cut() {
     }
-   // @Pointcut("execution(* com.team_3.nursing_care.domain.geofence.controller.*.*(..))")
+    @Pointcut("execution(* com.team_3.nursing_care.domain.geofence.controller.*.*(..))")
     private void geofence_proxy_cut() {
     }
 
-   // @Around("care_log_proxy_cut() || geofence_proxy_cut()")
+    @Around("care_log_proxy_cut() || geofence_proxy_cut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
 
@@ -43,7 +43,7 @@ public class LoggingAspect {
     }
 
 
-//    @AfterThrowing(pointcut = "care_log_proxy_cut() || geofence_proxy_cut()", throwing = "exception")
+    @AfterThrowing(pointcut = "care_log_proxy_cut() || geofence_proxy_cut()", throwing = "exception")
     public void afterThrowing(JoinPoint joinPoint, Throwable exception) {
         Method method = getMethod(joinPoint);
         log.error("AfterThrowing Method: {} || Exception: {}", method.getName(), exception.getMessage());
