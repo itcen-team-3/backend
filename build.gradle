@@ -68,6 +68,10 @@ dependencies {
     // REDIS
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+    // ACTUATOR
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    runtimeOnly "io.micrometer:micrometer-registry-prometheus"
+
     // TEST
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
