@@ -1,13 +1,14 @@
 package com.team_3.nursing_care.domain.schedule.controller;
 
+import com.team_3.nursing_care.common.response.ResponseDto;
 import com.team_3.nursing_care.domain.schedule.dto.request.CreateScheduleRequestDto;
 import com.team_3.nursing_care.domain.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static com.team_3.nursing_care.common.exception.ResultMessage.Success;
+import static software.amazon.awssdk.http.HttpStatusCode.OK;
 
 @RestController
 @RequestMapping("/api/v1/work-schedule")
@@ -19,6 +20,12 @@ public class ScheduleController {
     @PostMapping
     public ResponseEntity<?> createWorkSchedule(@RequestBody CreateScheduleRequestDto createScheduleRequestDto){
         scheduleService.addWorkSchedule(createScheduleRequestDto);
-        return ResponseEntity.ok("근무 일정표가 정상적으로 생성 되었습니다.");
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, "근무 일정표가 정상적으로 생성 되었습니다."));
     }
+
+    @DeleteMapping("/{scheduleId}")
+    public ResponseEntity<?> deleteWorkSchedule(@PathVariable Long scheduleId){
+        scheduleService.deleteSchedule(scheduleId);
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, "근무 일정표가 정상적으로 삭제 되었습니다."));
+    };
 }
