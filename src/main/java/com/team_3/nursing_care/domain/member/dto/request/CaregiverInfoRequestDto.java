@@ -21,8 +21,6 @@ import java.time.LocalDate;
 @Setter
 public class CaregiverInfoRequestDto {
 
-    private Long companyId;
-
     @NotBlank(message = "이름은 필수값입니다.")
     private String name;
 
@@ -47,7 +45,7 @@ public class CaregiverInfoRequestDto {
     private Short career;
 
     @Builder
-    public CaregiverInfoRequestDto(Long companyId,
+    public CaregiverInfoRequestDto(
                                    String name,
                                    LocalDate birthDate,
                                    String phoneNumber,
@@ -55,7 +53,6 @@ public class CaregiverInfoRequestDto {
                                    String description,
                                    String certificateNumber,
                                    Short career){
-        this.companyId = companyId;
         this.name = name;
         this.birthDate = birthDate;
         this.phoneNumber = phoneNumber;
@@ -66,7 +63,7 @@ public class CaregiverInfoRequestDto {
         this.career = career;
     }
 
-    public Member toEntity(String profileImageUrl, Company company, Role role){
+    public Member toEntity(String profileImageUrl, Company company, Role role, Member admin){
 
         return Member.builder()
                 .company(company)
@@ -79,6 +76,7 @@ public class CaregiverInfoRequestDto {
                 .certificateNumber(certificateNumber)
                 .career(career)
                 .role(role)
+                .admin(admin)
                 .build();
     }
 }
