@@ -8,6 +8,7 @@ public interface S3Service {
 
     String uploadVoiceFile(MultipartFile file);
     String uploadSignFile(MultipartFile file);
+    String uploadProfileFile(MultipartFile file);
     InputStream download(String s3Key);
     String getFileUrl(String s3Key);
 }

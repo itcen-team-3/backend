@@ -51,6 +51,17 @@ public class S3ServiceImpl implements S3Service {
     }
 
     @Override
+    public String uploadProfileFile(MultipartFile file) {
+        checkEmptyFile(file);
+        String s3Key = "profile/" + createS3Key(file);
+
+        PutObjectRequest putObjectRequest = createPutObjectRequest(file, bucket, s3Key);
+        upload(putObjectRequest, file);
+
+        return s3Key;
+    }
+
+    @Override
     public InputStream download(String s3Key) {
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(bucket)
