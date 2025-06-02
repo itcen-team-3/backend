@@ -6,12 +6,17 @@ import com.team_3.nursing_care.domain.member.repository.MemberRepository;
 import com.team_3.nursing_care.domain.schedule.constant.PaymentType;
 import com.team_3.nursing_care.domain.schedule.constant.ScheduleStatus;
 import com.team_3.nursing_care.domain.schedule.dto.request.CreateScheduleRequestDto;
+import com.team_3.nursing_care.domain.schedule.dto.request.ReadScheduleDayCaregiverReqDto;
 import com.team_3.nursing_care.domain.schedule.dto.request.UpdateScheduleRequestDto;
+import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleDayCaregiverListResDto;
+import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleDayCaregiverResDto;
 import com.team_3.nursing_care.domain.schedule.entity.Schedule;
 import com.team_3.nursing_care.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +30,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public void addWorkSchedule(CreateScheduleRequestDto createScheduleRequestDto) {
         Member caregiver = memberRepository.findById(createScheduleRequestDto.getCaregiverId())
+                .orElseThrow(() -> new IllegalArgumentException("요양보호사를 찾을 수 없습니다."));
+
+        Member patient = memberRepository.findById(createScheduleRequestDto.getPatientId())
                 .orElseThrow(() -> new IllegalArgumentException("환자(Member)를 찾을 수 없습니다."));
-        scheduleRepository.save(createScheduleRequestDto.toEntity(caregiver));
+
+        scheduleRepository.save(createScheduleRequestDto.toEntity(caregiver, patient.getAddress()));
     }
 
     @Transactional
@@ -41,18 +50,39 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public void editSchedule(Long scheduleId, UpdateScheduleRequestDto updateScheduleRequestDto) {
         Member caregiver = memberRepository.findById(updateScheduleRequestDto.getCaregiverId())
-                .orElseThrow(() -> new IllegalArgumentException("환자(Member)를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("요양보호사를 찾을 수 없습니다."));
+
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new IllegalStateException("존재 하지 않는 스케줄 ID 입니다."));
-        scheduleRepository.save(buildUpdateSchedule(scheduleId, updateScheduleRequestDto, caregiver, schedule.getStatus()));
 
+        Member patient = memberRepository.findById(updateScheduleRequestDto.getPatientId())
+                .orElseThrow(() -> new IllegalArgumentException("환자(Member)를 찾을 수 없습니다."));
+        scheduleRepository.save(buildUpdateSchedule(scheduleId,
+                updateScheduleRequestDto,
+                caregiver,
+                schedule.getStatus(),
+                patient.getAddress()));
+
+    }
+
+    @Override
+    public ScheduleDayCaregiverListResDto getScheduleDayCaregiverList(Long caregiverId,
+                                                                      ReadScheduleDayCaregiverReqDto readScheduleDayCaregiverReqDto) {
+
+        List<ScheduleDayCaregiverResDto> scheduleDayCaregiverResDto = scheduleRepository.findByMemberIdAndScheduleDate(caregiverId, readScheduleDayCaregiverReqDto.getScheduleDate())
+                .stream()
+                .map(ScheduleDayCaregiverResDto::from)
+                .toList();
+
+        return ScheduleDayCaregiverListResDto.from(scheduleDayCaregiverResDto);
     }
 
     private Schedule buildUpdateSchedule(
                                          Long scheduleId,
                                          UpdateScheduleRequestDto updateScheduleRequestDto,
                                          Member caregiver,
-                                         ScheduleStatus status) {
+                                         ScheduleStatus status,
+                                         String patientAddress) {
         return Schedule.builder()
                 .scheduleId(scheduleId)
                 .patient(updateScheduleRequestDto.getPatientName())
@@ -66,6 +96,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .paymentForHour(updateScheduleRequestDto.getPaymentForHour())
                 .isFamily(updateScheduleRequestDto.getIsFamily())
                 .status(status)
+                .patientAddress(patientAddress)
                 .build();
     }
 }

@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @Getter
 public class UpdateScheduleRequestDto {
 
+    private Long patientId;
     private String patientName;
     private Long caregiverId;
     private LocalDate startDate;
@@ -22,6 +23,7 @@ public class UpdateScheduleRequestDto {
 
     @Builder
     public UpdateScheduleRequestDto(
+                                    Long patientId,
                                     String patientName,
                                     Long caregiverId,
                                     LocalDate startDate,
@@ -32,6 +34,7 @@ public class UpdateScheduleRequestDto {
                                     int workDay,
                                     String paymentType,
                                     Boolean isFamily) {
+        this.patientId = patientId;
         this.patientName = patientName;
         this.caregiverId = caregiverId;
         this.startDate = startDate;
