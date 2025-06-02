@@ -3,7 +3,10 @@ package com.team_3.nursing_care.domain.schedule.service;
 
 import com.team_3.nursing_care.domain.member.entity.Member;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
+import com.team_3.nursing_care.domain.schedule.constant.PaymentType;
+import com.team_3.nursing_care.domain.schedule.constant.ScheduleStatus;
 import com.team_3.nursing_care.domain.schedule.dto.request.CreateScheduleRequestDto;
+import com.team_3.nursing_care.domain.schedule.dto.request.UpdateScheduleRequestDto;
 import com.team_3.nursing_care.domain.schedule.entity.Schedule;
 import com.team_3.nursing_care.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +33,39 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public void deleteSchedule(Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(()-> new IllegalStateException("존재 하지 않는 스케줄 ID 입니다."));
+                .orElseThrow(() -> new IllegalStateException("존재 하지 않는 스케줄 ID 입니다."));
         schedule.updateIsDelete(true);
+    }
+
+    @Transactional
+    @Override
+    public void editSchedule(Long scheduleId, UpdateScheduleRequestDto updateScheduleRequestDto) {
+        Member caregiver = memberRepository.findById(updateScheduleRequestDto.getCaregiverId())
+                .orElseThrow(() -> new IllegalArgumentException("환자(Member)를 찾을 수 없습니다."));
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new IllegalStateException("존재 하지 않는 스케줄 ID 입니다."));
+        scheduleRepository.save(buildUpdateSchedule(scheduleId, updateScheduleRequestDto, caregiver, schedule.getStatus()));
+
+    }
+
+    private Schedule buildUpdateSchedule(
+                                         Long scheduleId,
+                                         UpdateScheduleRequestDto updateScheduleRequestDto,
+                                         Member caregiver,
+                                         ScheduleStatus status) {
+        return Schedule.builder()
+                .scheduleId(scheduleId)
+                .patient(updateScheduleRequestDto.getPatientName())
+                .member(caregiver)
+                .startDate(updateScheduleRequestDto.getStartDate())
+                .endDate(updateScheduleRequestDto.getEndDate())
+                .startTime(updateScheduleRequestDto.getStartTime())
+                .endTime(updateScheduleRequestDto.getEndTime())
+                .paymentType(PaymentType.from(updateScheduleRequestDto.getPaymentType()))
+                .workDay(updateScheduleRequestDto.getWorkDay())
+                .paymentForHour(updateScheduleRequestDto.getPaymentForHour())
+                .isFamily(updateScheduleRequestDto.getIsFamily())
+                .status(status)
+                .build();
     }
 }

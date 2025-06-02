@@ -2,6 +2,7 @@ package com.team_3.nursing_care.domain.schedule.controller;
 
 import com.team_3.nursing_care.common.response.ResponseDto;
 import com.team_3.nursing_care.domain.schedule.dto.request.CreateScheduleRequestDto;
+import com.team_3.nursing_care.domain.schedule.dto.request.UpdateScheduleRequestDto;
 import com.team_3.nursing_care.domain.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,5 +28,13 @@ public class ScheduleController {
     public ResponseEntity<?> deleteWorkSchedule(@PathVariable Long scheduleId){
         scheduleService.deleteSchedule(scheduleId);
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, "근무 일정표가 정상적으로 삭제 되었습니다."));
-    };
+    }
+
+    @PutMapping("/{scheduleId}")
+    public ResponseEntity<?> updateWorkSchedule(@PathVariable Long scheduleId,
+                                                @RequestBody UpdateScheduleRequestDto updateScheduleRequestDto){
+        scheduleService.editSchedule(scheduleId, updateScheduleRequestDto);
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, "근무 일정표를 정상적으로 수정 하였습니다."));
+    }
+
 }
