@@ -20,7 +20,7 @@ import java.util.List;
 public class Member extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy =GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
     @Column(nullable = false)
     private String memberName;
@@ -30,8 +30,8 @@ public class Member extends BaseEntity {
     private LocalDate birthDate;
     @Column(nullable = false)
     private String address;
-    @Column(nullable = false)
-    private String profileImage;
+    @Column(nullable = true)
+    private String profileImageUrl;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
@@ -57,7 +57,7 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "admin_id")
     private Member admin;
 
-    @OneToMany(mappedBy = "admin", cascade =CascadeType.ALL)
+    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
     private List<Member> caregivers = new ArrayList<>();
 
     public static Member createAdmin(ReqSignUpDto reqSignUpDto, String encodedPw) {
