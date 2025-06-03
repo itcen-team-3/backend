@@ -1,11 +1,9 @@
 package com.team_3.nursing_care.domain.schedule.service;
 
-import com.team_3.nursing_care.domain.schedule.dto.request.CreateScheduleRequestDto;
-import com.team_3.nursing_care.domain.schedule.dto.request.ReadScheduleDayCaregiverReqDto;
-import com.team_3.nursing_care.domain.schedule.dto.request.ReadScheduleMonthCaregiverReqDto;
-import com.team_3.nursing_care.domain.schedule.dto.request.UpdateScheduleRequestDto;
+import com.team_3.nursing_care.domain.schedule.dto.request.*;
 import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleDayCaregiverListResDto;
 import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleMonthCaregiverListResDto;
+import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleWeekCaregiverListDto;
 
 public interface ScheduleService {
 
@@ -14,4 +12,5 @@ public interface ScheduleService {
     void editSchedule(Long scheduleId, UpdateScheduleRequestDto updateScheduleRequestDto);
     ScheduleDayCaregiverListResDto getScheduleDayCaregiverList(Long caregiverId, ReadScheduleDayCaregiverReqDto readScheduleDayCaregiverReqDto);
     ScheduleMonthCaregiverListResDto getScheduleMonthCaregiverList(Long caregiverId, ReadScheduleMonthCaregiverReqDto readScheduleMonthCaregiverReqDto);
+    ScheduleWeekCaregiverListDto getScheduleWeekCaregiverList(Long caregiverId, ReadScheduleWeekCaregiverReqDto readScheduleWeekCaregiverReqDto);
 }

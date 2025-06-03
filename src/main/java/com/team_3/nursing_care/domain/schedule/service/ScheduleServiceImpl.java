@@ -5,14 +5,8 @@ import com.team_3.nursing_care.domain.member.entity.Member;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
 import com.team_3.nursing_care.domain.schedule.constant.PaymentType;
 import com.team_3.nursing_care.domain.schedule.constant.ScheduleStatus;
-import com.team_3.nursing_care.domain.schedule.dto.request.CreateScheduleRequestDto;
-import com.team_3.nursing_care.domain.schedule.dto.request.ReadScheduleDayCaregiverReqDto;
-import com.team_3.nursing_care.domain.schedule.dto.request.ReadScheduleMonthCaregiverReqDto;
-import com.team_3.nursing_care.domain.schedule.dto.request.UpdateScheduleRequestDto;
-import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleDayCaregiverListResDto;
-import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleDayCaregiverResDto;
-import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleMonthCaregiverListResDto;
-import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleMonthCaregiverResDto;
+import com.team_3.nursing_care.domain.schedule.dto.request.*;
+import com.team_3.nursing_care.domain.schedule.dto.response.*;
 import com.team_3.nursing_care.domain.schedule.entity.Schedule;
 import com.team_3.nursing_care.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -108,6 +103,44 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .toList();
 
         return ScheduleMonthCaregiverListResDto.from(result);
+    }
+
+    @Override
+    public ScheduleWeekCaregiverListDto getScheduleWeekCaregiverList(Long caregiverId, ReadScheduleWeekCaregiverReqDto readScheduleWeekCaregiverReqDto) {
+        LocalDate endDate = readScheduleWeekCaregiverReqDto.getStartDate().plusDays(6); // 7일치
+
+        List<Schedule> schedules = scheduleRepository.findAllByMember_MemberIdAndIsDeletedFalse(caregiverId).stream()
+                .filter(schedule ->
+                        !schedule.getEndDate().isBefore(readScheduleWeekCaregiverReqDto.getStartDate()) &&
+                                !schedule.getStartDate().isAfter(endDate))
+                .toList();
+
+        List<ScheduleWeekCaregiverResDto> result = new ArrayList<>();
+
+        for (Schedule schedule : schedules) {
+            LocalDate effectiveStart = schedule.getStartDate().isBefore(readScheduleWeekCaregiverReqDto.getStartDate())
+                    ? readScheduleWeekCaregiverReqDto.getStartDate()
+                    : schedule.getStartDate();
+            LocalDate effectiveEnd = schedule.getEndDate().isAfter(endDate) ? endDate : schedule.getEndDate();
+
+            int workDayMask = schedule.getWorkDay();
+
+            for (LocalDate date = effectiveStart; !date.isAfter(effectiveEnd); date = date.plusDays(1)) {
+                int bitIndex = date.getDayOfWeek().getValue() % 7;
+
+                if ((workDayMask & (1 << bitIndex)) != 0) {
+                    result.add(ScheduleWeekCaregiverResDto.builder()
+                            .scheduleId(schedule.getScheduleId())
+                            .workDay(workDayMask)
+                            .startTime(schedule.getStartTime())
+                            .endTime(schedule.getEndTime())
+                            .patientAddress(schedule.getPatientAddress())
+                            .build());
+                }
+            }
+        }
+
+        return ScheduleWeekCaregiverListDto.from(result);
     }
 
     private Schedule buildUpdateSchedule(
