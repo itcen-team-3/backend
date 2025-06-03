@@ -38,9 +38,9 @@ public class CaregiverServiceImpl implements CaregiverService {
         Page<Member> caregivers;
 
         if (searchName != null && !searchName.isBlank()) {
-            caregivers = memberRepository.findByCompany_CompanyIdAndRoleAndMemberNameContaining(companyId, Role.CAREGIVER, searchName, pageable);
+            caregivers = memberRepository.findByCompany_CompanyIdAndRoleAndMemberNameContainingAndIsDeletedFalse(companyId, Role.CAREGIVER, searchName, pageable);
         } else {
-            caregivers = memberRepository.findByCompany_CompanyIdAndRole(companyId, Role.CAREGIVER, pageable);
+            caregivers = memberRepository.findByCompany_CompanyIdAndRoleAndIsDeletedFalse(companyId, Role.CAREGIVER, pageable);
         }
 
         return caregivers.map(CaregiverListResponseDto::from);

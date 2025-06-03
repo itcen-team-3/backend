@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    Page<Member> findByCompany_CompanyIdAndRole(Long companyId, Role role, Pageable pageable);
+    Page<Member> findByCompany_CompanyIdAndRoleAndIsDeletedFalse(Long companyId, Role role, Pageable pageable);
 
-    Page<Member> findByCompany_CompanyIdAndRoleAndMemberNameContaining(Long companyId, Role role, String memberName, Pageable pageable);
+    Page<Member> findByCompany_CompanyIdAndRoleAndMemberNameContainingAndIsDeletedFalse(Long companyId, Role role, String memberName, Pageable pageable);
 
     List<Member> findByCompany_CompanyIdAndRole(Long companyId, Role role);
 
