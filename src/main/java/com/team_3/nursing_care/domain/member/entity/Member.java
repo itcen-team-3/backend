@@ -3,6 +3,7 @@ package com.team_3.nursing_care.domain.member.entity;
 import com.team_3.nursing_care.common.auditor.BaseEntity;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.request.ReqSignUpDto;
+import com.team_3.nursing_care.domain.member.dto.request.UpdateCaregiverRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -75,5 +76,16 @@ public class Member extends BaseEntity {
     public void connectCompany(Company company) {
         this.company = company;
         company.getMemberList().add(this);
+    }
+
+    public void updateCaregiver(UpdateCaregiverRequestDto dto, String profileImageUrl){
+        this.memberName = dto.getName();
+        this.birthDate = dto.getBirthDate();
+        this.address = dto.getAddress();
+        this.phoneNumber = dto.getPhoneNumber();
+        this.certificateNumber = dto.getCertificateNumber();
+        this.career = dto.getCareer();
+        this.description = dto.getDescription();
+        this.profileImageUrl = profileImageUrl;
     }
 }
