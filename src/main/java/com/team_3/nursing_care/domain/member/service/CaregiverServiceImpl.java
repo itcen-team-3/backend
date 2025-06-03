@@ -5,7 +5,6 @@ import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.request.CaregiverInfoRequestDto;
 import com.team_3.nursing_care.domain.member.entity.Company;
 import com.team_3.nursing_care.domain.member.entity.Member;
-import com.team_3.nursing_care.domain.member.exception.CompanyNotFoundException;
 import com.team_3.nursing_care.domain.member.repository.CompanyRepository;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,12 +37,11 @@ public class CaregiverServiceImpl implements CaregiverService {
         return memberRepository.findByCompany_CompanyIdAndRole(companyId, role);
     }
 
-    public Member addCaregiver(CaregiverInfoRequestDto caregiverInfoRequestDto, Role role, MultipartFile profileImage) {
+    public Member addCaregiver(CaregiverInfoRequestDto caregiverInfoRequestDto, Role role, MultipartFile profileImage, Member admin) {
 
         String key;
 
-        Company company = companyRepository.findById(caregiverInfoRequestDto.getCompanyId())
-                .orElseThrow(() -> new CompanyNotFoundException("아이디가 " + caregiverInfoRequestDto.getCompanyId() + "인 시설이 존재하지 않습니다."));
+        Company company = admin.getCompany();
 
         if(profileImage != null && !profileImage.isEmpty()){
             key = s3Service.uploadProfileFile(profileImage);
@@ -52,9 +50,9 @@ public class CaregiverServiceImpl implements CaregiverService {
         }
         String profileImageUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + key;
 
-        Member member = caregiverInfoRequestDto.toEntity(profileImageUrl, company, role);
+        Member caregiver = caregiverInfoRequestDto.toEntity(profileImageUrl, company, role, admin);
 
-        return memberRepository.save(member);
+        return memberRepository.save(caregiver);
     }
 
 }

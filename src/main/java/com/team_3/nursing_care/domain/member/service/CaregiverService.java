@@ -10,5 +10,5 @@ import java.util.List;
 public interface CaregiverService {
     List<Member> getMembers(Long companyId, Role role);
 
-    Member addCaregiver(CaregiverInfoRequestDto caregiverInfoRequestDto, Role role, MultipartFile profileImage);
+    Member addCaregiver(CaregiverInfoRequestDto caregiverInfoRequestDto, Role role, MultipartFile profileImage, Member admin);
 }

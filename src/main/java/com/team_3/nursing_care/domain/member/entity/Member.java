@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -57,5 +59,12 @@ public class Member extends BaseEntity {
 
     private String password;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "admin_id")
+    private Member admin;
+
+    @OneToMany(mappedBy = "admin", cascade =CascadeType.ALL)
+    private List<Member> caregivers = new ArrayList<>();
 
 }
