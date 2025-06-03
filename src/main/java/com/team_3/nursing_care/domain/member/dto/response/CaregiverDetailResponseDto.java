@@ -38,7 +38,7 @@ public class CaregiverDetailResponseDto {
                 .age(age)
                 .phoneNumber(member.getPhoneNumber())
                 .address(member.getAddress())
-                .profileImage(member.getProfileImage())
+                .profileImage(member.getProfileImageUrl())
                 .description(member.getDescription())
                 .schedules(schedules.stream()
                         .map(CaregiverScheduleResponseDto::from)

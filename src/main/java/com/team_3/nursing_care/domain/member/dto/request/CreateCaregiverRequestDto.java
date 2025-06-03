@@ -12,7 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -36,7 +35,6 @@ public class CreateCaregiverRequestDto {
     private String address;
 
     private String description;
-    private MultipartFile profileImage;
 
     @NotBlank(message = "자격증 번호는 필수값입니다.")
     private String certificateNumber;
@@ -46,24 +44,23 @@ public class CreateCaregiverRequestDto {
 
     @Builder
     public CreateCaregiverRequestDto(
-                                   String name,
-                                   LocalDate birthDate,
-                                   String phoneNumber,
-                                   String address,
-                                   String description,
-                                   String certificateNumber,
-                                   Short career){
+            String name,
+            LocalDate birthDate,
+            String phoneNumber,
+            String address,
+            String description,
+            String certificateNumber,
+            Short career) {
         this.name = name;
         this.birthDate = birthDate;
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.description = description;
-        this.profileImage = profileImage;
         this.certificateNumber = certificateNumber;
         this.career = career;
     }
 
-    public Member toEntity(String profileImageUrl, Company company, Role role, Member admin){
+    public Member toEntity(String profileImageUrl, Company company, Role role, Member admin) {
 
         return Member.builder()
                 .company(company)
@@ -72,7 +69,7 @@ public class CreateCaregiverRequestDto {
                 .phoneNumber(this.phoneNumber)
                 .address(this.address)
                 .description(this.description)
-                .profileImage(profileImageUrl)
+                .profileImageUrl(profileImageUrl)
                 .certificateNumber(certificateNumber)
                 .career(career)
                 .role(role)
