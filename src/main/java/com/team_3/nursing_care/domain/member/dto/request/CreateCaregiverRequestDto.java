@@ -19,7 +19,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CaregiverInfoRequestDto {
+public class CreateCaregiverRequestDto {
 
     @NotBlank(message = "이름은 필수값입니다.")
     private String name;
@@ -45,7 +45,7 @@ public class CaregiverInfoRequestDto {
     private Short career;
 
     @Builder
-    public CaregiverInfoRequestDto(
+    public CreateCaregiverRequestDto(
                                    String name,
                                    LocalDate birthDate,
                                    String phoneNumber,

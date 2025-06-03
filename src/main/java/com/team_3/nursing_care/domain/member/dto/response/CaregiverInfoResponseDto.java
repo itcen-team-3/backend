@@ -24,7 +24,7 @@ public class CaregiverInfoResponseDto {
                                     String phoneNumber,
                                     String address,
                                     String description,
-                                    String profileImage){
+                                    String profileImage) {
         this.caregiverId = caregiverId;
         this.name = name;
         this.birthDate = birthDate;

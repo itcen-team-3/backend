@@ -22,10 +22,6 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
-    public List<Member> getMembers(Long companyId, Role role) {
-        return memberRepository.findByCompany_CompanyIdAndRole(companyId, role);
-    }
-
     @Override
     public CaregiversNameListResponseDto getCaregiversName(Long companyId, Role role) {
 
