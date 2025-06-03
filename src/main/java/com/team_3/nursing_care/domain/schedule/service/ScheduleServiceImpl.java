@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -86,22 +85,14 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public ScheduleMonthCaregiverListResDto getScheduleMonthCaregiverList(Long caregiverId, ReadScheduleMonthCaregiverReqDto dto) {
-        int year = dto.getYear();
-        int month = dto.getMonth();
 
-        log.info("year:{}, month:{}", year, month);
-
-        LocalDate startOfMonth = LocalDate.of(year, month, 1);
+        LocalDate startOfMonth = LocalDate.of(dto.getYear(), dto.getMonth(), 1);
         LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
-
-        log.info("startofmonth: {}, endofmonth:{}",startOfMonth, endOfMonth);
 
         List<Schedule> schedules = scheduleRepository.findAllByMember_MemberIdAndIsDeletedFalse(caregiverId).stream()
                 .filter(schedule ->
                         !(schedule.getEndDate().isBefore(startOfMonth) || schedule.getStartDate().isAfter(endOfMonth)))
                 .toList();
-
-        log.info("schedules: {}", schedules);
 
         List<ScheduleMonthCaregiverResDto> result = schedules.stream()
                 .map(schedule -> {
@@ -118,8 +109,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         return ScheduleMonthCaregiverListResDto.from(result);
     }
-
-
 
     private Schedule buildUpdateSchedule(
             Long scheduleId,
