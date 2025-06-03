@@ -3,11 +3,12 @@ package com.team_3.nursing_care.domain.member.service;
 import com.team_3.nursing_care.common.proxy.S3Service;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.request.CreateCaregiverRequestDto;
+import com.team_3.nursing_care.domain.member.dto.request.UpdateCaregiverRequestDto;
 import com.team_3.nursing_care.domain.member.dto.response.CaregiverDetailResponseDto;
 import com.team_3.nursing_care.domain.member.dto.response.CaregiverListResponseDto;
+import com.team_3.nursing_care.domain.member.dto.response.UpdateCaregiverResponseDto;
 import com.team_3.nursing_care.domain.member.entity.Company;
 import com.team_3.nursing_care.domain.member.entity.Member;
-import com.team_3.nursing_care.domain.member.repository.CompanyRepository;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
 import com.team_3.nursing_care.domain.schedule.entity.Schedule;
 import com.team_3.nursing_care.domain.schedule.repository.ScheduleRepository;
@@ -63,7 +64,7 @@ public class CaregiverServiceImpl implements CaregiverService {
 
         int age = calculateAge(member.getBirthDate());
 
-        List<Schedule> schedules = scheduleRepository.findByMember_MemberIdAndIsDeletedFalse(caregiverId);
+        List<Schedule> schedules = scheduleRepository.findAllByMember_MemberIdAndIsDeletedFalse(caregiverId);
 
         return CaregiverDetailResponseDto.from(member, schedules, age);
     }
