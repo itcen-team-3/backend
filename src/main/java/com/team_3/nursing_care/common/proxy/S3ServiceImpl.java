@@ -38,6 +38,17 @@ public class S3ServiceImpl implements S3Service {
     }
 
     @Override
+    public String uploadBusinessRegistrationFile(MultipartFile file) {
+        checkEmptyFile(file);
+        String s3Key = "business_registration/" + createS3Key(file);
+
+        PutObjectRequest putObjectRequest = createPutObjectRequest(file, bucket, s3Key);
+        upload(putObjectRequest, file);
+
+        return s3Key;
+    }
+
+    @Override
     public String uploadSignFile(MultipartFile file) {
         checkEmptyFile(file);
         String s3Key = "sign/" + createS3Key(file);
