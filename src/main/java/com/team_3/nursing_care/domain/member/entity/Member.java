@@ -61,6 +61,9 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
     private List<Member> caregivers = new ArrayList<>();
 
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private PatientInfo patientInfo;
+
     public static Member createAdmin(ReqSignUpDto reqSignUpDto, String encodedPw) {
         return Member.builder()
                 .memberName(reqSignUpDto.getRepresentativeName())
@@ -76,6 +79,11 @@ public class Member extends BaseEntity {
     public void connectCompany(Company company) {
         this.company = company;
         company.getMemberList().add(this);
+    }
+
+    public void setPatientInfo(PatientInfo patientInfo) {
+        this.patientInfo = patientInfo;
+        patientInfo.setMember(this);
     }
 
     public void updateCaregiver(UpdateCaregiverRequestDto dto, String profileImageUrl) {
