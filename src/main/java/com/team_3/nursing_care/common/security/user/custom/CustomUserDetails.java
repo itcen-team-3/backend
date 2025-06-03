@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Set;
 
 @Getter
-public class CustomUserDetails implements UserDetails {
+public abstract class CustomUserDetails implements UserDetails {
 
     protected Long memberId;
     protected Long companyId;

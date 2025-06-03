@@ -11,6 +11,7 @@ import com.team_3.nursing_care.domain.member.entity.Company;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import com.team_3.nursing_care.domain.member.proxy.dto.ReqBusinessAuthenticityDto;
 import com.team_3.nursing_care.domain.member.proxy.service.BusinessAuthenticityService;
+import com.team_3.nursing_care.domain.member.repository.CompanyRepository;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final BusinessAuthenticityService businessAuthenticityService;
     private final MemberRepository memberRepository;
+    private final CompanyRepository companyRepository;
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
     private final JwtUtil jwtUtil;
@@ -78,10 +80,11 @@ public class MemberServiceImpl implements MemberService {
                         reqSignUpDto.getRepresentativeName()))
                 .block();
 
+        Company company = companyRepository.save(Company.create(reqSignUpDto, fileUrl));
+
         String encodedPw = passwordEncoder.encode(reqSignUpDto.getLoginPw());
         Member admin = Member.createAdmin(reqSignUpDto, encodedPw);
 
-        Company company = Company.create(reqSignUpDto, fileUrl);
         admin.connectCompany(company);
         memberRepository.save(admin);
     }
