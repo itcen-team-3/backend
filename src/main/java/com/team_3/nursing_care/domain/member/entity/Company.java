@@ -1,6 +1,7 @@
 package com.team_3.nursing_care.domain.member.entity;
 
 import com.team_3.nursing_care.common.auditor.BaseEntity;
+import com.team_3.nursing_care.domain.member.dto.request.ReqSignUpDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,16 +19,12 @@ public class Company extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long companyId;
-
     @Column(nullable = false)
     private String companyName;
-
     @Column(nullable = false)
     private String registrationNumber;
-
     @Column(nullable = false)
     private String ceoName;
-
     @Column(nullable = false)
     private String bizRegUrl;
 
@@ -43,5 +40,12 @@ public class Company extends BaseEntity {
         this.bizRegUrl = bizRegUrl;
     }
 
-
+    public static Company create(ReqSignUpDto reqSignUpDto, String fileUrl) {
+        return Company.builder()
+                .registrationNumber(reqSignUpDto.getBusinessRegistrationNumber())
+                .companyName(reqSignUpDto.getCompanyName())
+                .ceoName(reqSignUpDto.getRepresentativeName())
+                .bizRegUrl(fileUrl)
+                .build();
+    }
 }
