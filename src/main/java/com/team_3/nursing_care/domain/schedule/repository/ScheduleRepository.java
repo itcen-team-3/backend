@@ -13,4 +13,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findByMemberIdAndScheduleDate(Long memberId, LocalDate scheduleDate);
 
     List<Schedule> findAllByMember_MemberIdAndIsDeletedFalse(Long memberId);
+
 }
