@@ -1,6 +1,6 @@
 package com.team_3.nursing_care.common.proxy;
 
-//import com.team_3.nursing_care.common.exception.CareLogException;
+import com.team_3.nursing_care.common.exception.CareLogException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -79,7 +79,7 @@ public class S3ServiceImpl implements S3Service {
     }
 
     private void checkEmptyFile(MultipartFile file) {
-   //     if (file.isEmpty()) throw new CareLogException(HttpStatusCode.BAD_REQUEST, "File is empty");
+        if (file.isEmpty()) throw new CareLogException(HttpStatusCode.BAD_REQUEST, "File is empty");
     }
 
     private String createS3Key(MultipartFile file) {
@@ -103,7 +103,7 @@ public class S3ServiceImpl implements S3Service {
         try (InputStream is = file.getInputStream()) {
             s3Client.putObject(request, RequestBody.fromInputStream(is, file.getSize()));
         } catch (IOException e) {
-   //         throw new CareLogException(HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while uploading file");
+            throw new CareLogException(HttpStatusCode.INTERNAL_SERVER_ERROR, "Error while uploading file");
         }
     }
 }

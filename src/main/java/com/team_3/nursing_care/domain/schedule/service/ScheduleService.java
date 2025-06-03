@@ -3,7 +3,7 @@ package com.team_3.nursing_care.domain.schedule.service;
 import com.team_3.nursing_care.domain.schedule.dto.request.*;
 import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleDayCaregiverListResDto;
 import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleMonthCaregiverListResDto;
-import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleWeekCaregiverListDto;
+import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleWeekCaregiverListResDto;
 
 public interface ScheduleService {
 
@@ -12,5 +12,5 @@ public interface ScheduleService {
     void editSchedule(Long scheduleId, UpdateScheduleRequestDto updateScheduleRequestDto);
     ScheduleDayCaregiverListResDto getScheduleDayCaregiverList(Long caregiverId, ReadScheduleDayCaregiverReqDto readScheduleDayCaregiverReqDto);
     ScheduleMonthCaregiverListResDto getScheduleMonthCaregiverList(Long caregiverId, ReadScheduleMonthCaregiverReqDto readScheduleMonthCaregiverReqDto);
-    ScheduleWeekCaregiverListDto getScheduleWeekCaregiverList(Long caregiverId, ReadScheduleWeekCaregiverReqDto readScheduleWeekCaregiverReqDto);
+    ScheduleWeekCaregiverListResDto getScheduleWeekCaregiverList(Long caregiverId, ReadScheduleWeekCaregiverReqDto readScheduleWeekCaregiverReqDto);
 }

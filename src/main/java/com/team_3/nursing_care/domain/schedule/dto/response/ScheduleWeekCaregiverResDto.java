@@ -12,27 +12,21 @@ import java.time.LocalDate;
 public class ScheduleWeekCaregiverResDto {
 
     private Long scheduleId;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private int workDay;
+    private LocalDate scheduleDate;
     private Time endTime;
     private Time startTime;
     private String patientAddress;
 
     @Builder
     public ScheduleWeekCaregiverResDto(Long scheduleId,
-                                       LocalDate startDate,
-                                       LocalDate endDate,
-                                       int workDay,
                                        Time endTime,
                                        Time startTime,
+                                       LocalDate scheduleDate,
                                        String patientAddress) {
         this.scheduleId = scheduleId;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.workDay = workDay;
         this.endTime = endTime;
         this.startTime = startTime;
+        this.scheduleDate=scheduleDate;
         this.patientAddress = patientAddress;
     }
 }

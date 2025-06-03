@@ -6,17 +6,17 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class ScheduleWeekCaregiverListDto {
+public class ScheduleWeekCaregiverListResDto {
 
     List<ScheduleWeekCaregiverResDto> scheduleWeek;
 
     @Builder
-    public ScheduleWeekCaregiverListDto(List<ScheduleWeekCaregiverResDto> scheduleWeek) {
+    public ScheduleWeekCaregiverListResDto(List<ScheduleWeekCaregiverResDto> scheduleWeek) {
         this.scheduleWeek = scheduleWeek;
     }
 
-    public static ScheduleWeekCaregiverListDto from(List<ScheduleWeekCaregiverResDto> scheduleWeek){
-        return ScheduleWeekCaregiverListDto.builder()
+    public static ScheduleWeekCaregiverListResDto from(List<ScheduleWeekCaregiverResDto> scheduleWeek){
+        return ScheduleWeekCaregiverListResDto.builder()
                 .scheduleWeek(scheduleWeek)
                 .build();
     }

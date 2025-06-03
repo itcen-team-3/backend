@@ -89,7 +89,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                         !(schedule.getEndDate().isBefore(startOfMonth) || schedule.getStartDate().isAfter(endOfMonth)))
                 .toList();
 
-        List<ScheduleMonthCaregiverResDto> result = schedules.stream()
+        List<ScheduleMonthCaregiverResDto> scheduleMonth = schedules.stream()
                 .map(schedule -> {
                     LocalDate effectiveStart = schedule.getStartDate().isBefore(startOfMonth) ? startOfMonth : schedule.getStartDate();
                     LocalDate effectiveEnd = schedule.getEndDate().isAfter(endOfMonth) ? endOfMonth : schedule.getEndDate();
@@ -102,45 +102,38 @@ public class ScheduleServiceImpl implements ScheduleService {
                 })
                 .toList();
 
-        return ScheduleMonthCaregiverListResDto.from(result);
+        return ScheduleMonthCaregiverListResDto.from(scheduleMonth);
     }
 
     @Override
-    public ScheduleWeekCaregiverListDto getScheduleWeekCaregiverList(Long caregiverId, ReadScheduleWeekCaregiverReqDto readScheduleWeekCaregiverReqDto) {
-        LocalDate endDate = readScheduleWeekCaregiverReqDto.getStartDate().plusDays(6); // 7일치
+    public ScheduleWeekCaregiverListResDto getScheduleWeekCaregiverList(
+            Long caregiverId, ReadScheduleWeekCaregiverReqDto readScheduleWeekCaregiverReqDto) {
 
-        List<Schedule> schedules = scheduleRepository.findAllByMember_MemberIdAndIsDeletedFalse(caregiverId).stream()
+        LocalDate startDate = readScheduleWeekCaregiverReqDto.getStartDate();
+        LocalDate endDate = startDate.plusDays(6);
+
+        List<ScheduleWeekCaregiverResDto> scheduleWeek = scheduleRepository
+                .findAllByMember_MemberIdAndIsDeletedFalse(caregiverId).stream()
                 .filter(schedule ->
-                        !schedule.getEndDate().isBefore(readScheduleWeekCaregiverReqDto.getStartDate()) &&
+                        !schedule.getEndDate().isBefore(startDate) &&
                                 !schedule.getStartDate().isAfter(endDate))
+                .flatMap(schedule -> {
+                    LocalDate effectiveStart = schedule.getStartDate().isBefore(startDate) ? startDate : schedule.getStartDate();
+                    LocalDate effectiveEnd = schedule.getEndDate().isAfter(endDate) ? endDate : schedule.getEndDate();
+
+                    return effectiveStart.datesUntil(effectiveEnd.plusDays(1))
+                            .filter(date -> (schedule.getWorkDay() & (1 << (date.getDayOfWeek().getValue() % 7))) != 0)
+                            .map(date -> ScheduleWeekCaregiverResDto.builder()
+                                    .scheduleId(schedule.getScheduleId())
+                                    .scheduleDate(date)
+                                    .startTime(schedule.getStartTime())
+                                    .endTime(schedule.getEndTime())
+                                    .patientAddress(schedule.getPatientAddress())
+                                    .build());
+                })
                 .toList();
 
-        List<ScheduleWeekCaregiverResDto> result = new ArrayList<>();
-
-        for (Schedule schedule : schedules) {
-            LocalDate effectiveStart = schedule.getStartDate().isBefore(readScheduleWeekCaregiverReqDto.getStartDate())
-                    ? readScheduleWeekCaregiverReqDto.getStartDate()
-                    : schedule.getStartDate();
-            LocalDate effectiveEnd = schedule.getEndDate().isAfter(endDate) ? endDate : schedule.getEndDate();
-
-            int workDayMask = schedule.getWorkDay();
-
-            for (LocalDate date = effectiveStart; !date.isAfter(effectiveEnd); date = date.plusDays(1)) {
-                int bitIndex = date.getDayOfWeek().getValue() % 7;
-
-                if ((workDayMask & (1 << bitIndex)) != 0) {
-                    result.add(ScheduleWeekCaregiverResDto.builder()
-                            .scheduleId(schedule.getScheduleId())
-                            .workDay(workDayMask)
-                            .startTime(schedule.getStartTime())
-                            .endTime(schedule.getEndTime())
-                            .patientAddress(schedule.getPatientAddress())
-                            .build());
-                }
-            }
-        }
-
-        return ScheduleWeekCaregiverListDto.from(result);
+        return ScheduleWeekCaregiverListResDto.from(scheduleWeek);
     }
 
     private Schedule buildUpdateSchedule(
