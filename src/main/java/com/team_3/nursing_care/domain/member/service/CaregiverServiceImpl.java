@@ -69,6 +69,7 @@ public class CaregiverServiceImpl implements CaregiverService {
         return CaregiverDetailResponseDto.from(member, schedules, age);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UpdateCaregiverResponseDto getCaregiverInfo(Long caregiverId) {
         Member member = memberRepository.findByMemberIdAndRole(caregiverId, Role.CAREGIVER)
@@ -111,11 +112,20 @@ public class CaregiverServiceImpl implements CaregiverService {
             key = s3Service.uploadProfileFile(profileImage);
             profileImageUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + key;
         } else {
-            profileImageUrl = memberRepository.findByMemberIdAndRole(caregiverId,Role.CAREGIVER).get().getProfileImageUrl();
+            profileImageUrl = memberRepository.findByMemberIdAndRole(caregiverId, Role.CAREGIVER).get().getProfileImageUrl();
         }
 
-        caregiver.updateCaregiver(updateCaregiverRequestDto,profileImageUrl);
+        caregiver.updateCaregiver(updateCaregiverRequestDto, profileImageUrl);
 
+    }
+
+    @Transactional
+    @Override
+    public void deleteCaregiver(Long caregiverId) {
+        Member caregiver = memberRepository.findByMemberIdAndRole(caregiverId, Role.CAREGIVER)
+                .orElseThrow(() -> new IllegalStateException("해당 요양보호사를 찾을 수 없습니다."));
+
+        caregiver.updateIsDeleted(true);
     }
 
     public static int calculateAge(LocalDate birthDate) {

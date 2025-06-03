@@ -78,7 +78,7 @@ public class Member extends BaseEntity {
         company.getMemberList().add(this);
     }
 
-    public void updateCaregiver(UpdateCaregiverRequestDto dto, String profileImageUrl){
+    public void updateCaregiver(UpdateCaregiverRequestDto dto, String profileImageUrl) {
         this.memberName = dto.getName();
         this.birthDate = dto.getBirthDate();
         this.address = dto.getAddress();
@@ -87,5 +87,9 @@ public class Member extends BaseEntity {
         this.career = dto.getCareer();
         this.description = dto.getDescription();
         this.profileImageUrl = profileImageUrl;
+    }
+
+    public void updateIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }

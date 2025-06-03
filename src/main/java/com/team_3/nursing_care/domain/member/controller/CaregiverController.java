@@ -71,4 +71,10 @@ public class CaregiverController {
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, "요양보호사 정보가 정상적으로 수정되었습니다."));
     }
 
+    @DeleteMapping("/{caregiverId}")
+    public ResponseEntity<?> deleteCaregiver(@PathVariable("caregiverId") Long caregiverId) {
+        caregiverService.deleteCaregiver(caregiverId);
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, "요양보호사 정보가 정상적으로 삭제되었습니다."));
+    }
+
 }

@@ -22,4 +22,6 @@ public interface CaregiverService {
     Member addCaregiver(CreateCaregiverRequestDto createCaregiverRequestDto, Role role, MultipartFile profileImage, Member admin);
 
     void updateCaregiver(Long caregiverId, UpdateCaregiverRequestDto updateCaregiverRequestDto, MultipartFile profileImage);
+
+    void deleteCaregiver(Long caregiverId);
 }

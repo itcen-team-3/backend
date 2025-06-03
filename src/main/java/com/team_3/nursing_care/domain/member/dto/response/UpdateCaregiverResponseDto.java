@@ -29,7 +29,7 @@ public class UpdateCaregiverResponseDto {
                                       String certificateNumber,
                                       short career,
                                       String description,
-                                      String profileImage){
+                                      String profileImage) {
         this.caregiverId = caregiverId;
         this.name = name;
         this.birthDate = birthDate;
@@ -41,7 +41,7 @@ public class UpdateCaregiverResponseDto {
         this.profileImage = profileImage;
     }
 
-    public static UpdateCaregiverResponseDto from(Member member){
+    public static UpdateCaregiverResponseDto from(Member member) {
         return UpdateCaregiverResponseDto.builder()
                 .caregiverId(member.getMemberId())
                 .name(member.getMemberName())
