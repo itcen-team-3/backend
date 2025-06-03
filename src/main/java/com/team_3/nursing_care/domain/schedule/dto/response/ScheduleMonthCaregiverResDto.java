@@ -11,11 +11,18 @@ import java.time.LocalDate;
 public class ScheduleMonthCaregiverResDto {
 
     private Long scheduleId;
-    private LocalDate date;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private int workDay;
 
     @Builder
-    public ScheduleMonthCaregiverResDto(Long scheduleId, LocalDate date) {
+    public ScheduleMonthCaregiverResDto(Long scheduleId,
+                                        LocalDate startDate,
+                                        LocalDate endDate,
+                                        int workDay) {
         this.scheduleId = scheduleId;
-        this.date=date;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.workDay = workDay;
     }
 }
