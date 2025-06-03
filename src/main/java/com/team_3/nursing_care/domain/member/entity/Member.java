@@ -59,6 +59,8 @@ public class Member extends BaseEntity {
 
     private String password;
 
+    private String refreshToken;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")

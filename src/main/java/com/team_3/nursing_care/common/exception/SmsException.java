@@ -1,5 +1,6 @@
 package com.team_3.nursing_care.common.exception;
 
+import com.team_3.nursing_care.common.response.ResponseDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,10 @@ public class SmsException extends RuntimeException {
         this.code = code;
         this.result = ResultMessage.Error;
         this.message = message;
+    }
+
+    public ResponseDto<?> toResponseDto() {
+        return new ResponseDto<>(code, result, message);
     }
 
 }
