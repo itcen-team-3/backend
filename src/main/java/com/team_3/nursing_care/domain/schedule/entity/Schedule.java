@@ -59,6 +59,9 @@ public class Schedule extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
 
+    @Column(nullable = false)
+    private String patientAddress;
+
     @Builder
     public Schedule(Long scheduleId,
                     Member member,
@@ -71,7 +74,8 @@ public class Schedule extends BaseEntity {
                     int paymentForHour,
                     boolean isFamily,
                     String patient,
-                    PaymentType paymentType) {
+                    PaymentType paymentType,
+                    String patientAddress) {
         this.scheduleId = scheduleId;
         this.member = member;
         this.startDate = startDate;
@@ -84,6 +88,7 @@ public class Schedule extends BaseEntity {
         this.isFamily = isFamily;
         this.patient = patient;
         this.paymentType = paymentType;
+        this.patientAddress = patientAddress;
     }
 
     public void updateIsDelete(Boolean isDelete){

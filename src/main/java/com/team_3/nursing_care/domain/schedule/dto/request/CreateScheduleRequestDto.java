@@ -14,6 +14,7 @@ import java.time.LocalDate;
 public class CreateScheduleRequestDto {
 
     private String patientName;
+    private Long patientId;
     private Long caregiverId;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -23,8 +24,10 @@ public class CreateScheduleRequestDto {
     private int workDay;
     private String paymentType;
     private Boolean isFamily;
+
     @Builder
     public CreateScheduleRequestDto(String patientName,
+                                    Long patientId,
                                     Long caregiverId,
                                     LocalDate startDate,
                                     LocalDate endDate,
@@ -35,6 +38,7 @@ public class CreateScheduleRequestDto {
                                     String paymentType,
                                     Boolean isFamily) {
         this.patientName = patientName;
+        this.patientId = patientId;
         this.caregiverId = caregiverId;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -46,7 +50,7 @@ public class CreateScheduleRequestDto {
         this.isFamily = isFamily;
     }
 
-    public Schedule toEntity(Member member) {
+    public Schedule toEntity(Member member, String patientAddress) {
         return Schedule.builder()
                 .member(member)
                 .patient(patientName)
@@ -59,6 +63,7 @@ public class CreateScheduleRequestDto {
                 .paymentType(PaymentType.from(paymentType))
                 .status(ScheduleStatus.PLANNED)
                 .isFamily(isFamily)
+                .patientAddress(patientAddress)
                 .build();
     }
 }
