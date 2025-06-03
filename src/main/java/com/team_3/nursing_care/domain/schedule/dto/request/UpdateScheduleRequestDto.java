@@ -23,17 +23,17 @@ public class UpdateScheduleRequestDto {
 
     @Builder
     public UpdateScheduleRequestDto(
-                                    Long patientId,
-                                    String patientName,
-                                    Long caregiverId,
-                                    LocalDate startDate,
-                                    LocalDate endDate,
-                                    Time startTime,
-                                    Time endTime,
-                                    int paymentForHour,
-                                    int workDay,
-                                    String paymentType,
-                                    Boolean isFamily) {
+            Long patientId,
+            String patientName,
+            Long caregiverId,
+            LocalDate startDate,
+            LocalDate endDate,
+            Time startTime,
+            Time endTime,
+            int paymentForHour,
+            int workDay,
+            String paymentType,
+            Boolean isFamily) {
         this.patientId = patientId;
         this.patientName = patientName;
         this.caregiverId = caregiverId;

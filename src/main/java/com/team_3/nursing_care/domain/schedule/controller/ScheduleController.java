@@ -3,8 +3,10 @@ package com.team_3.nursing_care.domain.schedule.controller;
 import com.team_3.nursing_care.common.response.ResponseDto;
 import com.team_3.nursing_care.domain.schedule.dto.request.CreateScheduleRequestDto;
 import com.team_3.nursing_care.domain.schedule.dto.request.ReadScheduleDayCaregiverReqDto;
+import com.team_3.nursing_care.domain.schedule.dto.request.ReadScheduleMonthCaregiverReqDto;
 import com.team_3.nursing_care.domain.schedule.dto.request.UpdateScheduleRequestDto;
 import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleDayCaregiverListResDto;
+import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleMonthCaregiverListResDto;
 import com.team_3.nursing_care.domain.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +45,12 @@ public class ScheduleController {
     public ResponseEntity<ResponseDto<ScheduleDayCaregiverListResDto>> getScheduleDayList(@PathVariable Long caregiverId,
                                                                              @RequestBody ReadScheduleDayCaregiverReqDto readScheduleDayCaregiverReqDto){
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleDayCaregiverList(caregiverId, readScheduleDayCaregiverReqDto)));
+    }
+
+    @GetMapping("/care-giver/month/{caregiverId}")
+    public ResponseEntity<ResponseDto<ScheduleMonthCaregiverListResDto>> getScheduleMonthList(@PathVariable Long caregiverId,
+                                                                                              @RequestBody ReadScheduleMonthCaregiverReqDto readScheduleMonthCaregiverReqDto){
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleMonthCaregiverList(caregiverId, readScheduleMonthCaregiverReqDto)));
     }
 
 }

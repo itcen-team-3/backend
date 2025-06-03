@@ -7,15 +7,20 @@ import com.team_3.nursing_care.domain.schedule.constant.PaymentType;
 import com.team_3.nursing_care.domain.schedule.constant.ScheduleStatus;
 import com.team_3.nursing_care.domain.schedule.dto.request.CreateScheduleRequestDto;
 import com.team_3.nursing_care.domain.schedule.dto.request.ReadScheduleDayCaregiverReqDto;
+import com.team_3.nursing_care.domain.schedule.dto.request.ReadScheduleMonthCaregiverReqDto;
 import com.team_3.nursing_care.domain.schedule.dto.request.UpdateScheduleRequestDto;
 import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleDayCaregiverListResDto;
 import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleDayCaregiverResDto;
+import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleMonthCaregiverListResDto;
+import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleMonthCaregiverResDto;
 import com.team_3.nursing_care.domain.schedule.entity.Schedule;
 import com.team_3.nursing_care.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -77,12 +82,50 @@ public class ScheduleServiceImpl implements ScheduleService {
         return ScheduleDayCaregiverListResDto.from(scheduleDayCaregiverResDto);
     }
 
+    @Override
+    public ScheduleMonthCaregiverListResDto getScheduleMonthCaregiverList(Long caregiverId, ReadScheduleMonthCaregiverReqDto readScheduleMonthCaregiverReqDto) {
+        int year = readScheduleMonthCaregiverReqDto.getYear();
+        int month = readScheduleMonthCaregiverReqDto.getMonth();
+
+        LocalDate startOfMonth = LocalDate.of(year, month, 1);
+        LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
+
+        List<Schedule> schedules = scheduleRepository.findAllByMember_MemberIdAndIsDeletedFalse(caregiverId).stream()
+                .filter(schedule ->
+                        !(schedule.getEndDate().isBefore(startOfMonth) || schedule.getStartDate().isAfter(endOfMonth)))
+                .toList();
+
+        List<ScheduleMonthCaregiverResDto> result = new ArrayList<>();
+
+        for (Schedule schedule : schedules) {
+            LocalDate iterDate = schedule.getStartDate().isBefore(startOfMonth) ? startOfMonth : schedule.getStartDate();
+            LocalDate iterEnd = schedule.getEndDate().isAfter(endOfMonth) ? endOfMonth : schedule.getEndDate();
+
+            int workDayMask = schedule.getWorkDay(); // ex: 월수금 -> 1 + 4 + 16 = 21
+
+            while (!iterDate.isAfter(iterEnd)) {
+                int dayOfWeek = iterDate.getDayOfWeek().getValue(); // 월=1 ~ 일=7
+                int bitIndex = dayOfWeek - 1; // 월=1 → 0, 일=7 → 6
+
+                if ((workDayMask & (1 << bitIndex)) != 0) {
+                    result.add(new ScheduleMonthCaregiverResDto(schedule.getScheduleId(), iterDate));
+                }
+
+                iterDate = iterDate.plusDays(1);
+            }
+        }
+
+        return ScheduleMonthCaregiverListResDto.from(result);
+    }
+
+
     private Schedule buildUpdateSchedule(
-                                         Long scheduleId,
-                                         UpdateScheduleRequestDto updateScheduleRequestDto,
-                                         Member caregiver,
-                                         ScheduleStatus status,
-                                         String patientAddress) {
+            Long scheduleId,
+            UpdateScheduleRequestDto updateScheduleRequestDto,
+            Member caregiver,
+            ScheduleStatus status,
+            String patientAddress
+            ) {
         return Schedule.builder()
                 .scheduleId(scheduleId)
                 .patient(updateScheduleRequestDto.getPatientName())

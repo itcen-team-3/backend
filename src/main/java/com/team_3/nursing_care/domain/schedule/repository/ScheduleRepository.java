@@ -12,10 +12,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query("select s from Schedule s where :scheduleDate between s.startDate and s.endDate AND s.member.memberId = :memberId")
     List<Schedule> findByMemberIdAndScheduleDate(Long memberId, LocalDate scheduleDate);
-//
-//    @Query("SELECT s FROM Schedule s WHERE :scheduleDate BETWEEN s.startDate AND s.endDate AND s.caregiver.id = :memberId")
-//    List<Schedule> findByMemberIdAndScheduleDate(@Param("memberId") Long memberId,
-//                                                 @Param("scheduleDate") LocalDate scheduleDate);
 
-
+    List<Schedule> findAllByMember_MemberIdAndIsDeletedFalse(Long memberId);
 }

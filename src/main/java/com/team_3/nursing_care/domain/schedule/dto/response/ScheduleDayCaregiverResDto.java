@@ -3,10 +3,12 @@ package com.team_3.nursing_care.domain.schedule.dto.response;
 import com.team_3.nursing_care.domain.schedule.entity.Schedule;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.sql.Time;
 
 @Getter
+@NoArgsConstructor
 public class ScheduleDayCaregiverResDto {
 
     private Long scheduleId;
