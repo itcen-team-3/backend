@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import software.amazon.awssdk.http.HttpStatusCode;
 
 import java.util.stream.Collectors;
 
@@ -16,15 +17,12 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex){
+    public ResponseEntity<ResponseDto<?>> handleValidation(MethodArgumentNotValidException ex){
         log.warn("❗ Validation error: {}",ex.getMessage());
 
-        String errorMsg = ex.getBindingResult().getFieldErrors().stream()
-                .map(err -> err.getField() + ": " + err.getDefaultMessage())
-                .collect(Collectors.joining(", "));
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse("VALIDATION_ERROR",errorMsg));
+        return ResponseEntity.status(ex.getStatusCode())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ResponseDto<>(HttpStatusCode.BAD_REQUEST, ResultMessage.Error, ex.getMessage()));
     }
 
     @ExceptionHandler(SmsException.class)
