@@ -2,11 +2,9 @@ package com.team_3.nursing_care.domain.member.entity;
 
 import com.team_3.nursing_care.common.auditor.BaseEntity;
 import com.team_3.nursing_care.domain.member.constant.Role;
+import com.team_3.nursing_care.domain.member.dto.request.ReqSignUpDto;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,43 +22,36 @@ public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy =GenerationType.IDENTITY)
     private Long memberId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id", nullable = false)
-    private Company company;
-
     @Column(nullable = false)
     private String memberName;
-
     @Column(nullable = false)
     private String phoneNumber;
-
     @Column(nullable = false)
     private LocalDate birthDate;
-
     @Column(nullable = false)
     private String address;
-
     @Column(nullable = false)
     private String profileImage;
-
-    private String description;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
+    // 요양보호사 필드
+    private String description;
     private String certificateNumber;
     private short career;
 
     private LocalDateTime lastLoginAt;
 
-    private String id;
+    private String loginId;
+    private String loginPw;
 
-    private String password;
-
+    @Setter
     private String refreshToken;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")
@@ -69,4 +60,20 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "admin", cascade =CascadeType.ALL)
     private List<Member> caregivers = new ArrayList<>();
 
+    public static Member createAdmin(ReqSignUpDto reqSignUpDto, String encodedPw) {
+        return Member.builder()
+                .memberName(reqSignUpDto.getRepresentativeName())
+                .phoneNumber(reqSignUpDto.getPhoneNumber())
+                .birthDate(reqSignUpDto.getBirthDate())
+                .address(reqSignUpDto.getCompanyAddress())
+                .role(Role.ADMIN)
+                .loginId(reqSignUpDto.getLoginId())
+                .loginPw(encodedPw)
+                .build();
+    }
+
+    public void connectCompany(Company company) {
+        this.company = company;
+        company.getMemberList().add(this);
+    }
 }
