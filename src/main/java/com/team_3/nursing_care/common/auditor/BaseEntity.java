@@ -32,7 +32,7 @@ public class BaseEntity {
     protected Long lastModifiedBy;
 
     protected Long deletedBy;
-    protected Boolean isDeleted;
+    protected Boolean isDeleted = false;
     protected LocalDateTime deletedDate;
 
     public void softDelete(Long id) {
