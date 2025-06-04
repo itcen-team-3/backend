@@ -53,6 +53,7 @@ public class CreateScheduleRequestDto {
     public Schedule toEntity(Member member, String patientAddress) {
         return Schedule.builder()
                 .member(member)
+                .patientId(patientId)
                 .patient(patientName)
                 .startDate(startDate)
                 .endDate(endDate)

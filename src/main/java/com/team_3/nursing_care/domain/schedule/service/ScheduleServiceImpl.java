@@ -185,6 +185,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         return Schedule.builder()
                 .scheduleId(scheduleId)
                 .patient(updateScheduleRequestDto.getPatientName())
+                .patientId(updateScheduleRequestDto.getPatientId())
                 .member(caregiver)
                 .startDate(updateScheduleRequestDto.getStartDate())
                 .endDate(updateScheduleRequestDto.getEndDate())

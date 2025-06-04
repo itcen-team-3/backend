@@ -2,11 +2,13 @@ package com.team_3.nursing_care.domain.schedule.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.sql.Time;
 import java.time.LocalDate;
 
 @Getter
+@NoArgsConstructor
 public class UpdateScheduleRequestDto {
 
     private Long patientId;
