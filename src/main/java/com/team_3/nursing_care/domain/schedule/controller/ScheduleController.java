@@ -4,6 +4,7 @@ import com.team_3.nursing_care.common.response.ResponseDto;
 import com.team_3.nursing_care.domain.schedule.dto.request.*;
 import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleDayCaregiverListResDto;
 import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleMonthCaregiverListResDto;
+import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleWeekAdminListResDto;
 import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleWeekCaregiverListResDto;
 import com.team_3.nursing_care.domain.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +56,11 @@ public class ScheduleController {
     public ResponseEntity<ResponseDto<ScheduleWeekCaregiverListResDto>> getScheduleWeekList(@PathVariable Long caregiverId,
                                                                                             @RequestBody ReadScheduleWeekCaregiverReqDto readScheduleWeekCaregiverReqDto){
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleWeekCaregiverList(caregiverId, readScheduleWeekCaregiverReqDto)));
+    }
+
+    @GetMapping("/admin/week")
+    public ResponseEntity<ResponseDto<ScheduleWeekAdminListResDto>> getScheduleWeekAdminList(@RequestBody ReadScheduleWeekAdminReqDto readScheduleWeekAdminReqDto){
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleWeekByAdmin(readScheduleWeekAdminReqDto)));
     }
 
 }
