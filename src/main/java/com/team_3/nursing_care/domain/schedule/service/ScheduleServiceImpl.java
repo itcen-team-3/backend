@@ -167,6 +167,13 @@ public class ScheduleServiceImpl implements ScheduleService {
         return ScheduleWeekAdminListResDto.from(scheduleWeek);
     }
 
+    @Override
+    public ScheduleDayAdminResDto getScheduleDayByAdmin(Long scheduleId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 스케줄 입니다"));
+        return ScheduleDayAdminResDto.from(schedule, schedule.getMember().getMemberName());
+    }
+
 
     private Schedule buildUpdateSchedule(
             Long scheduleId,
