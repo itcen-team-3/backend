@@ -3,8 +3,10 @@ package com.team_3.nursing_care.domain.member.service;
 import com.team_3.nursing_care.common.proxy.S3Service;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.request.CreateCaregiverRequestDto;
+import com.team_3.nursing_care.domain.member.dto.request.UpdateCaregiverRequestDto;
 import com.team_3.nursing_care.domain.member.dto.response.CaregiverDetailResponseDto;
 import com.team_3.nursing_care.domain.member.dto.response.CaregiverListResponseDto;
+import com.team_3.nursing_care.domain.member.dto.response.UpdateCaregiverResponseDto;
 import com.team_3.nursing_care.domain.member.entity.Company;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
@@ -67,6 +69,15 @@ public class CaregiverServiceImpl implements CaregiverService {
         return CaregiverDetailResponseDto.from(member, schedules, age);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public UpdateCaregiverResponseDto getCaregiverInfo(Long caregiverId) {
+        Member member = memberRepository.findByMemberIdAndRole(caregiverId, Role.CAREGIVER)
+                .orElseThrow(() -> new EntityNotFoundException("해당 요양보호사를 찾을 수 없습니다."));
+
+        return UpdateCaregiverResponseDto.from(member);
+    }
+
     @Transactional
     @Override
     public Member addCaregiver(CreateCaregiverRequestDto createCaregiverRequestDto, Role role, MultipartFile profileImage, Member admin) {
@@ -85,6 +96,36 @@ public class CaregiverServiceImpl implements CaregiverService {
         Member caregiver = createCaregiverRequestDto.toEntity(profileImageUrl, company, role, admin);
 
         return memberRepository.save(caregiver);
+    }
+
+    @Transactional
+    @Override
+    public void updateCaregiver(Long caregiverId, UpdateCaregiverRequestDto updateCaregiverRequestDto, MultipartFile profileImage) {
+
+        String key;
+        String profileImageUrl;
+
+        Member caregiver = memberRepository.findByMemberIdAndRole(caregiverId, Role.CAREGIVER)
+                .orElseThrow(() -> new EntityNotFoundException("해당 요양보호사를 찾을 수 없습니다."));
+
+        if (profileImage != null && !profileImage.isEmpty()) {
+            key = s3Service.uploadProfileFile(profileImage);
+            profileImageUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + key;
+        } else {
+            profileImageUrl = memberRepository.findByMemberIdAndRole(caregiverId, Role.CAREGIVER).get().getProfileImageUrl();
+        }
+
+        caregiver.updateCaregiver(updateCaregiverRequestDto, profileImageUrl);
+
+    }
+
+    @Transactional
+    @Override
+    public void deleteCaregiver(Long caregiverId) {
+        Member caregiver = memberRepository.findByMemberIdAndRole(caregiverId, Role.CAREGIVER)
+                .orElseThrow(() -> new IllegalStateException("해당 요양보호사를 찾을 수 없습니다."));
+
+        caregiver.updateIsDeleted(true);
     }
 
     public static int calculateAge(LocalDate birthDate) {

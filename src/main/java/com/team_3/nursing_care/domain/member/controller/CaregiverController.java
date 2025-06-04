@@ -4,8 +4,10 @@ import com.team_3.nursing_care.common.response.PageResponseDto;
 import com.team_3.nursing_care.common.response.ResponseDto;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.request.CreateCaregiverRequestDto;
+import com.team_3.nursing_care.domain.member.dto.request.UpdateCaregiverRequestDto;
 import com.team_3.nursing_care.domain.member.dto.response.CaregiverDetailResponseDto;
 import com.team_3.nursing_care.domain.member.dto.response.CaregiverListResponseDto;
+import com.team_3.nursing_care.domain.member.dto.response.UpdateCaregiverResponseDto;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import com.team_3.nursing_care.domain.member.service.CaregiverService;
 import lombok.RequiredArgsConstructor;
@@ -40,18 +42,39 @@ public class CaregiverController {
     }
 
     @GetMapping("/detail/{caregiverId}")
-    public ResponseEntity<ResponseDto<CaregiverDetailResponseDto>> getCaregiverDetail(@PathVariable("caregiverId") Long caregiverId){
+    public ResponseEntity<ResponseDto<CaregiverDetailResponseDto>> getCaregiverDetail(@PathVariable("caregiverId") Long caregiverId) {
 
         CaregiverDetailResponseDto caregiver = caregiverService.getCaregiverDetail(caregiverId);
-        return ResponseEntity.ok(new ResponseDto<>(OK,Success,caregiver));
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, caregiver));
 
+    }
+
+    @GetMapping("/{caregiverId}")
+    public ResponseEntity<ResponseDto<UpdateCaregiverResponseDto>> getCaregiverInfo(@PathVariable("caregiverId") Long caregiverId) {
+
+        UpdateCaregiverResponseDto caregiver = caregiverService.getCaregiverInfo(caregiverId);
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, caregiver));
     }
 
     @PostMapping
     public ResponseEntity<?> createCaregiver(@Validated @ModelAttribute CreateCaregiverRequestDto dto, @RequestPart(value = "profileImage", required = false) MultipartFile profileImage, @AuthenticationPrincipal Member loginAdmin) {
 
         caregiverService.addCaregiver(dto, Role.CAREGIVER, profileImage, loginAdmin);
-        return ResponseEntity.ok(new ResponseDto<>(OK,Success,"새로운 요양보호사가 정상적으로 등록 되었습니다."));
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, "새로운 요양보호사가 정상적으로 등록 되었습니다."));
+    }
+
+    @PutMapping("/{caregiverId}")
+    public ResponseEntity<?> updateCaregiver(@PathVariable("caregiverId") Long caregiverId,
+                                             @Validated @ModelAttribute UpdateCaregiverRequestDto updateCaregiverRequestDto,
+                                             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
+        caregiverService.updateCaregiver(caregiverId, updateCaregiverRequestDto, profileImage);
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, "요양보호사 정보가 정상적으로 수정되었습니다."));
+    }
+
+    @DeleteMapping("/{caregiverId}")
+    public ResponseEntity<?> deleteCaregiver(@PathVariable("caregiverId") Long caregiverId) {
+        caregiverService.deleteCaregiver(caregiverId);
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, "요양보호사 정보가 정상적으로 삭제되었습니다."));
     }
 
 }
