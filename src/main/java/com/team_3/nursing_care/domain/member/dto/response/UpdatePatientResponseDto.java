@@ -20,6 +20,7 @@ public class UpdatePatientResponseDto {
     private String patientLevel;
     private String guardianPhoneNumber;
     private String relationship;
+    private String guardianName;
     private String description;
     private String profileImage;
 
@@ -32,6 +33,7 @@ public class UpdatePatientResponseDto {
                                     String patientLevel,
                                     String guardianPhoneNumber,
                                     String relationship,
+                                    String guardianName,
                                     String description,
                                     String profileImage) {
         this.patientId = patientId;
@@ -42,6 +44,7 @@ public class UpdatePatientResponseDto {
         this.patientLevel = patientLevel;
         this.guardianPhoneNumber = guardianPhoneNumber;
         this.relationship = relationship;
+        this.guardianName = guardianName;
         this.description = description;
         this.profileImage = profileImage;
     }
@@ -56,6 +59,7 @@ public class UpdatePatientResponseDto {
                 .patientLevel(patientInfo.getPatientLevel())
                 .guardianPhoneNumber(patientInfo.getGuardianPhoneNumber())
                 .relationship(patientInfo.getRelationship())
+                .guardianName(patientInfo.getGuardianName())
                 .description(member.getDescription())
                 .profileImage(member.getProfileImageUrl())
                 .build();

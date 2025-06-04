@@ -96,7 +96,12 @@ public class Schedule extends BaseEntity {
         this.patientAddress = patientAddress;
     }
 
-    public void updateIsDelete(Boolean isDelete){
-        this.isDeleted=isDelete;
+    public void updateIsDelete(Boolean isDelete) {
+        this.isDeleted = isDelete;
+    }
+
+    public void updatePatientInfo(String patient, String patientAddress) {
+        this.patient = patient;
+        this.patientAddress = patientAddress;
     }
 }
