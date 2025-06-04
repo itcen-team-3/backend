@@ -1,0 +1,28 @@
+package com.team_3.nursing_care.domain.attendance.entity;
+
+
+import com.team_3.nursing_care.common.auditor.BaseEntity;
+import com.team_3.nursing_care.domain.attendance.constant.ApproveType;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@Table(name = "attendance_explation")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class AttendanceExplation extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long attendanceExplationId;
+
+    @Column(length = 500)
+    private String explations;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ApproveType approveType;
+
+}
