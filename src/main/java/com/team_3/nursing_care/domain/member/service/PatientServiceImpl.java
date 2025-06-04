@@ -99,4 +99,19 @@ public class PatientServiceImpl implements PatientService {
 
     }
 
+    @Transactional
+    @Override
+    public void deletePatient(Long patientId) {
+        Member patient = memberRepository.findByMemberIdAndRole(patientId, Role.PATIENT)
+                .orElseThrow(() -> new IllegalStateException("해당 보호대상자를 찾을 수 없습니다."));
+
+        PatientInfo patientInfo = patientInfoRepository.findById(patientId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 보호대상자를 찾을 수 없습니다."));
+
+        patient.updateIsDeleted(true);
+
+        patientInfo.updateIsDeleted(true);
+    }
+
+
 }

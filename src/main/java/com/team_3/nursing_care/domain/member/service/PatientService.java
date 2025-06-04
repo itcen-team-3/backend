@@ -14,4 +14,5 @@ public interface PatientService {
 
     void updatePatient(Long patientId, UpdatePatientRequestDto updatePatientRequestDto, MultipartFile profileImage);
 
+    void deletePatient(Long patientId);
 }

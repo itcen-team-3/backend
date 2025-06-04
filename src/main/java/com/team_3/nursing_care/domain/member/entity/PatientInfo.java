@@ -48,4 +48,8 @@ public class PatientInfo extends BaseEntity {
 
     }
 
+    public void updateIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
 }

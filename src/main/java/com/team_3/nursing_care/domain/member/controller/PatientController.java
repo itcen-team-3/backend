@@ -43,4 +43,10 @@ public class PatientController {
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, "보호대상자 정보가 정상적으로 수정되었습니다."));
     }
 
+    @DeleteMapping("/{patientId}")
+    public ResponseEntity<?> deletePatient(@PathVariable("patientId") Long patientId) {
+        patientService.deletePatient(patientId);
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, "보호대상자 정보가 정상적으로 삭제되었습니다."));
+    }
+
 }
