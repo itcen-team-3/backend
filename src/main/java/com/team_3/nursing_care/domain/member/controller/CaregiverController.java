@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,7 @@ public class CaregiverController {
     private final CaregiverService caregiverService;
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageResponseDto<CaregiverListResponseDto>> getCaregiverList(@RequestParam(name = "companyId") Long companyId,
                                                                                       @RequestParam(name = "searchName", required = false) String searchName,
                                                                                       @PageableDefault(size = 10, sort = "memberId", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -42,6 +44,7 @@ public class CaregiverController {
     }
 
     @GetMapping("/detail/{caregiverId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDto<CaregiverDetailResponseDto>> getCaregiverDetail(@PathVariable("caregiverId") Long caregiverId) {
 
         CaregiverDetailResponseDto caregiver = caregiverService.getCaregiverDetail(caregiverId);
@@ -50,6 +53,7 @@ public class CaregiverController {
     }
 
     @GetMapping("/{caregiverId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseDto<UpdateCaregiverResponseDto>> getCaregiverInfo(@PathVariable("caregiverId") Long caregiverId) {
 
         UpdateCaregiverResponseDto caregiver = caregiverService.getCaregiverInfo(caregiverId);
@@ -57,6 +61,7 @@ public class CaregiverController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createCaregiver(@Validated @ModelAttribute CreateCaregiverRequestDto dto, @RequestPart(value = "profileImage", required = false) MultipartFile profileImage, @AuthenticationPrincipal Member loginAdmin) {
 
         caregiverService.addCaregiver(dto, Role.CAREGIVER, profileImage, loginAdmin);
@@ -64,6 +69,7 @@ public class CaregiverController {
     }
 
     @PutMapping("/{caregiverId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateCaregiver(@PathVariable("caregiverId") Long caregiverId,
                                              @Validated @ModelAttribute UpdateCaregiverRequestDto updateCaregiverRequestDto,
                                              @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
@@ -72,6 +78,7 @@ public class CaregiverController {
     }
 
     @DeleteMapping("/{caregiverId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteCaregiver(@PathVariable("caregiverId") Long caregiverId) {
         caregiverService.deleteCaregiver(caregiverId);
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, "요양보호사 정보가 정상적으로 삭제되었습니다."));
