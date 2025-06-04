@@ -1,6 +1,7 @@
 package com.team_3.nursing_care.domain.member.entity;
 
 import com.team_3.nursing_care.common.auditor.BaseEntity;
+import com.team_3.nursing_care.domain.member.dto.request.UpdatePatientRequestDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,6 +38,14 @@ public class PatientInfo extends BaseEntity {
 
     public void setMember(Member member) {
         this.member = member;
+    }
+
+    public void updatePatientInfo(UpdatePatientRequestDto dto) {
+
+        this.patientLevel = dto.getPatientLevel();
+        this.guardianPhoneNumber = dto.getGuardianPhoneNumber();
+        this.relationship = dto.getRelationship();
+
     }
 
 }

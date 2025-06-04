@@ -4,6 +4,7 @@ import com.team_3.nursing_care.common.auditor.BaseEntity;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.request.ReqSignUpDto;
 import com.team_3.nursing_care.domain.member.dto.request.UpdateCaregiverRequestDto;
+import com.team_3.nursing_care.domain.member.dto.request.UpdatePatientRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -93,6 +94,15 @@ public class Member extends BaseEntity {
         this.phoneNumber = dto.getPhoneNumber();
         this.certificateNumber = dto.getCertificateNumber();
         this.career = dto.getCareer();
+        this.description = dto.getDescription();
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public void updatePatient(UpdatePatientRequestDto dto, String profileImageUrl){
+        this.memberName = dto.getName();
+        this.birthDate = dto.getBirthDate();
+        this.address = dto.getAddress();
+        this.phoneNumber = dto.getPhoneNumber();
         this.description = dto.getDescription();
         this.profileImageUrl = profileImageUrl;
     }

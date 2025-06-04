@@ -3,11 +3,14 @@ package com.team_3.nursing_care.domain.member.service;
 import com.team_3.nursing_care.common.proxy.S3Service;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.request.CreatePatientRequestDto;
+import com.team_3.nursing_care.domain.member.dto.request.UpdatePatientRequestDto;
+import com.team_3.nursing_care.domain.member.dto.response.UpdatePatientResponseDto;
 import com.team_3.nursing_care.domain.member.entity.Company;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import com.team_3.nursing_care.domain.member.entity.PatientInfo;
 import com.team_3.nursing_care.domain.member.repository.CompanyRepository;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
+import com.team_3.nursing_care.domain.member.repository.PatientInfoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +31,20 @@ public class PatientServiceImpl implements PatientService {
 
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
+    private final PatientInfoRepository patientInfoRepository;
     private final S3Service s3Service;
+
+    @Transactional(readOnly = true)
+    @Override
+    public UpdatePatientResponseDto getPatientInfo(Long patientId) {
+        Member patient = memberRepository.findByMemberIdAndRole(patientId, Role.PATIENT)
+                .orElseThrow(() -> new EntityNotFoundException("해당 보호대상자를 찾을 수 없습니다."));
+
+        PatientInfo patientInfo = patientInfoRepository.findById(patientId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 보호대상자를 찾을 수 없습니다."));
+
+        return UpdatePatientResponseDto.from(patient, patientInfo);
+    }
 
     @Transactional
     @Override
@@ -55,4 +71,32 @@ public class PatientServiceImpl implements PatientService {
         memberRepository.save(patient);
 
     }
+
+    @Transactional
+    @Override
+    public void updatePatient(Long patientId, UpdatePatientRequestDto updatePatientRequestDto, MultipartFile profileImage) {
+
+        String key;
+        String profileImageUrl;
+
+        Member patient = memberRepository.findByMemberIdAndRole(patientId, Role.PATIENT)
+                .orElseThrow(() -> new EntityNotFoundException("해당 보호대상자를 찾을 수 없습니다."));
+
+        PatientInfo patientInfo = patientInfoRepository.findById(patientId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 보호대상자를 찾을 수 없습니다."));
+
+        if (profileImage != null && !profileImage.isEmpty()) {
+            key = s3Service.uploadProfileFile(profileImage);
+            profileImageUrl = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + key;
+        } else {
+            profileImageUrl = memberRepository.findByMemberIdAndRole(patientId, Role.PATIENT).get().getProfileImageUrl();
+        }
+
+        patient.updatePatient(updatePatientRequestDto, profileImageUrl);
+
+        patientInfo.updatePatientInfo(updatePatientRequestDto);
+
+
+    }
+
 }
