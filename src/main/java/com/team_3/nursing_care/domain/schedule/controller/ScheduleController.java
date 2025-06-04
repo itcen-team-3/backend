@@ -2,9 +2,7 @@ package com.team_3.nursing_care.domain.schedule.controller;
 
 import com.team_3.nursing_care.common.response.ResponseDto;
 import com.team_3.nursing_care.domain.schedule.dto.request.*;
-import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleDayCaregiverListResDto;
-import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleMonthCaregiverListResDto;
-import com.team_3.nursing_care.domain.schedule.dto.response.ScheduleWeekCaregiverListResDto;
+import com.team_3.nursing_care.domain.schedule.dto.response.*;
 import com.team_3.nursing_care.domain.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -56,5 +54,16 @@ public class ScheduleController {
                                                                                             @RequestBody ReadScheduleWeekCaregiverReqDto readScheduleWeekCaregiverReqDto){
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleWeekCaregiverList(caregiverId, readScheduleWeekCaregiverReqDto)));
     }
+
+    @GetMapping("/admin/week")
+    public ResponseEntity<ResponseDto<ScheduleWeekAdminListResDto>> getScheduleWeekAdminList(@RequestBody ReadScheduleWeekAdminReqDto readScheduleWeekAdminReqDto){
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleWeekByAdmin(readScheduleWeekAdminReqDto)));
+    }
+
+    @GetMapping("/admin/day/{scheduleId}")
+    public ResponseEntity<ResponseDto<ScheduleDayAdminResDto>> getScheduleDayByAdmin(@PathVariable Long scheduleId){
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleDayByAdmin(scheduleId)));
+    }
+
 
 }
