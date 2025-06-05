@@ -2,6 +2,7 @@ package com.team_3.nursing_care.domain.attendance.controller;
 
 import com.team_3.nursing_care.common.response.ResponseDto;
 import com.team_3.nursing_care.domain.attendance.dto.request.CreateAttendanceExplationReqDto;
+import com.team_3.nursing_care.domain.attendance.dto.request.UpdateApprovementTypeReqDto;
 import com.team_3.nursing_care.domain.attendance.dto.response.AttendanceAdminListResDto;
 import com.team_3.nursing_care.domain.attendance.dto.response.AttendanceCaregiverListResDto;
 import com.team_3.nursing_care.domain.attendance.service.AttendanceExplationService;
@@ -38,4 +39,11 @@ public class AttendanceExplationController {
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, attendanceExplationService.getAttendanceExplationListByAdmin(adminId)));
     }
 
+    @PutMapping("/admin/{attendanceExplationId}")
+    public ResponseEntity<?> updateApprovementType(@PathVariable Long attendanceExplationId,
+                                                   @RequestBody UpdateApprovementTypeReqDto approvementTypeReqDto){
+        attendanceExplationService.updateAttendanceApprovementType(attendanceExplationId, approvementTypeReqDto);
+        return ResponseEntity.ok(new ResponseDto<>(OK,Success, "승인 여부 변경이 완료 되었습니다."));
+    }
+    
 }

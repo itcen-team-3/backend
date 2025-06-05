@@ -1,6 +1,8 @@
 package com.team_3.nursing_care.domain.attendance.service;
 
+import com.team_3.nursing_care.domain.attendance.constant.ApproveType;
 import com.team_3.nursing_care.domain.attendance.dto.request.CreateAttendanceExplationReqDto;
+import com.team_3.nursing_care.domain.attendance.dto.request.UpdateApprovementTypeReqDto;
 import com.team_3.nursing_care.domain.attendance.dto.response.AttendanceAdminListResDto;
 import com.team_3.nursing_care.domain.attendance.dto.response.AttendanceAdminResDto;
 import com.team_3.nursing_care.domain.attendance.dto.response.AttendanceCaregiverListResDto;
@@ -85,15 +87,26 @@ public class AttendanceExplationServiceImpl implements AttendanceExplationServic
                     AttendanceExplation explanation = log.getAttendanceExplain();
                     return AttendanceAdminResDto.builder()
                             .attendanceExplationId(explanation.getAttendanceExplationId())
-                            .caregiverName(log.getMember().getMemberName()) // AttendanceLog → Member → name
-                            .approveStatus(explanation.getApproveType().getApproveTypeName()) // enum → String
+                            .caregiverName(log.getMember().getMemberName())
+                            .approveStatus(explanation.getApproveType().getApproveTypeName())
                             .explation(explanation.getExplations())
-                            .submitDateTime(explanation.getCreateDate()) // BaseEntity에 있는 필드
+                            .submitDateTime(explanation.getCreateDate())
                             .build();
                 })
                 .toList();
 
 
         return AttendanceAdminListResDto.from(attendanceAdminResponseList);
+    }
+
+    @Transactional
+    @Override
+    public void updateAttendanceApprovementType(Long attendanceExplationId,
+                                                UpdateApprovementTypeReqDto updateApprovementTypeReqDto) {
+
+        AttendanceExplation explation = attendanceExplationRepository.findById(attendanceExplationId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 소명이 존재하지 않습니다."));
+
+        explation.updateApproval(ApproveType.from(updateApprovementTypeReqDto.getApproveType()), updateApprovementTypeReqDto.getRejectReason());
     }
 }
