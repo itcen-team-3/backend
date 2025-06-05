@@ -29,7 +29,8 @@ public class AttendanceLogServiceImpl implements AttendanceLogService {
 
         List<AttendanceDayResponseDto> attendanceDays = attendanceLog.stream()
                 .map(log -> AttendanceDayResponseDto.builder()
-                        .attendanceDay(log.getCheckIn().toLocalDate())
+                        .deAttendanceDateTime(log.getCheckIn())
+                        .attendanceId(log.getAttendanceId())
                         .build())
                 .distinct()
                 .toList();

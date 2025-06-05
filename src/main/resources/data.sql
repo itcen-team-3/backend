@@ -22,3 +22,7 @@ VALUES (2, '2025-06-05T14:30:00','2025-06-05T20:30:00','LATE','ON_TIME');
 INSERT INTO Attendance_Log(member_id, check_in, check_out, check_in_status, check_out_status)
 VALUES (2, '2025-06-10T14:30:00','2025-06-10T14:30:00','ON_TIME', 'EARLY_LEAVE'),
        (2, '2025-06-12T14:30:00','2025-06-12T14:30:00','ON_TIME', 'ON_TIME');
+
+INSERT INTO Attendance_Log(member_id, check_in, check_out, check_in_status, check_out_status)
+    VALUES
+(2, '2025-06-10T18:30:00','2025-06-10T20:30:00','LATE', 'ON_TIME');

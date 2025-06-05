@@ -4,17 +4,18 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 public class AttendanceDayResponseDto {
 
-    private LocalDate attendanceDay;
+    private Long attendanceId;
+    private LocalDateTime deAttendanceDateTime;
 
     @Builder
-    public AttendanceDayResponseDto(LocalDate attendanceDay) {
-        this.attendanceDay = attendanceDay;
+    public AttendanceDayResponseDto(Long attendanceId, LocalDateTime deAttendanceDateTime) {
+        this.attendanceId = attendanceId;
+        this.deAttendanceDateTime = deAttendanceDateTime;
     }
-
 }
