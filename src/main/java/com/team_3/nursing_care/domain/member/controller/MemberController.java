@@ -28,9 +28,13 @@ public class MemberController {
     }
 
     @GetMapping("/patient-name-list/{companyId}")
-    public ResponseEntity<ResponseDto<PatientsNameListResponseDto>> getPatientNameList(@PathVariable Long companyId){
+    public ResponseEntity<ResponseDto<PatientsNameListResponseDto>> getPatientNameList(@PathVariable Long companyId) {
         return ResponseEntity.ok((new ResponseDto<>(OK, ResultMessage.Success, memberService.getPatientsName(companyId, Role.PATIENT))));
     }
 
+    @GetMapping("/role-name-list")
+    public ResponseEntity<?> getRoleNameList() {
+        return ResponseEntity.ok((new ResponseDto<>(OK, ResultMessage.Success, memberService.getRoleName())));
+    }
 
 }

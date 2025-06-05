@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.http.HttpStatusCode;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -58,6 +59,15 @@ public class MemberServiceImpl implements MemberService {
 
         return PatientsNameListResponseDto.from(patientsList);
     }
+
+    @Override
+    public List<RoleNameResponseDto> getRoleName() {
+        return Arrays.stream(Role.values())
+                .filter(role -> role != Role.ADMIN)
+                .map(RoleNameResponseDto::from)
+                .toList();
+    }
+
 
     @Override
     @Transactional
