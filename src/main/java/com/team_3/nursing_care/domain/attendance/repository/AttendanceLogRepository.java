@@ -15,6 +15,7 @@ import java.util.Optional;
 public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Long> {
 
     List<AttendanceLog> findByMember_MemberIdAndCheckInStatusOrCheckOutStatus(Long memberId, CheckInStatus checkInStatus, CheckOutStatus checkOutStatus);
+    List<AttendanceLog> findByMember_memberId(Long caregiverId);
 
     @Query("select al from AttendanceLog al " +
             "where al.member = :member " +

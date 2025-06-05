@@ -2,7 +2,7 @@ package com.team_3.nursing_care.domain.attendance.controller;
 
 import com.team_3.nursing_care.common.response.ResponseDto;
 import com.team_3.nursing_care.domain.attendance.dto.request.CreateAttendanceExplationReqDto;
-import com.team_3.nursing_care.domain.attendance.dto.response.AttendanceDayResponseListDto;
+import com.team_3.nursing_care.domain.attendance.dto.response.AttendanceCaregiverListResDto;
 import com.team_3.nursing_care.domain.attendance.service.AttendanceExplationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,11 +22,14 @@ public class AttendanceExplationController {
 
     @PostMapping
     public ResponseEntity<?> createAttendanceExplation(@RequestBody CreateAttendanceExplationReqDto createAttendanceExplationReqDto) {
-        log.info("attendanceId:{}", createAttendanceExplationReqDto.getAttendanceId());
-
         attendanceExplationService.createAttendanceExplation(createAttendanceExplationReqDto);
 
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, "소명 작성이 완료 되었습니다."));
+    }
+
+    @GetMapping("/care-giver/{caregiverId}")
+    public ResponseEntity<ResponseDto<AttendanceCaregiverListResDto>> getAttendanceExplations(@PathVariable Long caregiverId) {
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, attendanceExplationService.getAttendanceExplationList(caregiverId)));
     }
 
 }

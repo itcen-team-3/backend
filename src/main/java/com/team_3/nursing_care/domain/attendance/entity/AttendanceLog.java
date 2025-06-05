@@ -31,7 +31,7 @@ public class AttendanceLog extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "attendacne_explation_id")
-    private AttendanceExplation attendanceExplainId;
+    private AttendanceExplation attendanceExplain;
 
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
@@ -63,8 +63,8 @@ public class AttendanceLog extends BaseEntity {
         this.checkOutStatus = checkOutStatus;
     }
 
-    public void setAttendanceExplation(AttendanceExplation attendanceExplainId) {
-        this.attendanceExplainId = attendanceExplainId;
+    public void setAttendanceExplation(AttendanceExplation attendanceExplain) {
+        this.attendanceExplain = attendanceExplain;
     }
 
     public static AttendanceLog create(Member careGiver, Long patientId) {
