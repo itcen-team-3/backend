@@ -4,6 +4,8 @@ import com.team_3.nursing_care.common.response.PageResponseDto;
 import com.team_3.nursing_care.common.response.ResponseDto;
 import com.team_3.nursing_care.common.security.user.custom.CustomUserDetails;
 import com.team_3.nursing_care.domain.member.dto.request.CreateAccountRequestDto;
+import com.team_3.nursing_care.domain.member.dto.request.UpdateLoginIdRequestDto;
+import com.team_3.nursing_care.domain.member.dto.request.UpdateLoginPwRequestDto;
 import com.team_3.nursing_care.domain.member.dto.response.AccountListResponseDto;
 import com.team_3.nursing_care.domain.member.service.AccountService;
 import jakarta.validation.Valid;
@@ -39,11 +41,33 @@ public class AccountController {
 
     }
 
+    @GetMapping("/id/{memberId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<?> getId(@PathVariable("memberId") Long memberId) {
+
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, accountService.getLoginId(memberId)));
+    }
+
     @PostMapping("/{memberId}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> createAccount(@PathVariable("memberId") Long memberId, @Valid @RequestBody CreateAccountRequestDto dto) {
         accountService.addAccount(memberId, dto);
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, "계정이 정상적으로 등록 되었습니다."));
     }
+
+    @PatchMapping("/id/{memberId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<?> updateLoginId(@PathVariable("memberId") Long memberId, @RequestBody @Valid UpdateLoginIdRequestDto updateLoginIdRequestDto) {
+        accountService.updateLoginId(memberId, updateLoginIdRequestDto);
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, "계정 아이디가 정상적으로 변경 되었습니다."));
+    }
+
+    @PatchMapping("/pw/{memberId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<?> updateLoginPw(@PathVariable("memberId") Long memberId, @RequestBody @Valid UpdateLoginPwRequestDto updateLoginPwRequestDto) {
+        accountService.updateLoginPw(memberId, updateLoginPwRequestDto);
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, "계정 비밀번호가 정상적으로 변경 되었습니다."));
+    }
+
 
 }

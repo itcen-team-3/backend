@@ -3,7 +3,10 @@ package com.team_3.nursing_care.domain.member.service;
 import com.team_3.nursing_care.common.exception.MemberException;
 import com.team_3.nursing_care.common.security.user.custom.CustomUserDetails;
 import com.team_3.nursing_care.domain.member.dto.request.CreateAccountRequestDto;
+import com.team_3.nursing_care.domain.member.dto.request.UpdateLoginIdRequestDto;
+import com.team_3.nursing_care.domain.member.dto.request.UpdateLoginPwRequestDto;
 import com.team_3.nursing_care.domain.member.dto.response.AccountListResponseDto;
+import com.team_3.nursing_care.domain.member.dto.response.UpdateAccountResponseDto;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
 import com.team_3.nursing_care.domain.member.repository.custom.MemberCustomRepository;
@@ -34,6 +37,17 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public UpdateAccountResponseDto getLoginId(Long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
+
+        return UpdateAccountResponseDto.from(member);
+
+    }
+
     @Transactional
     @Override
     public void addAccount(Long memberId, CreateAccountRequestDto dto) {
@@ -47,8 +61,41 @@ public class AccountServiceImpl implements AccountService {
 
         String encodePw = passwordEncoder.encode(dto.getLoginPw());
 
-        member.updateAccount(dto.getLoginId(), encodePw);
+        member.updateLoginId(dto.getLoginId());
+        member.updateLoginPw(encodePw);
 
+    }
+
+    @Transactional
+    @Override
+    public void updateLoginId(Long memberId, UpdateLoginIdRequestDto updateLoginIdRequestDto) {
+        Member member = memberRepository.findByLoginId(updateLoginIdRequestDto.getLoginNewId()).orElse(null);
+
+        String loginNewId = updateLoginIdRequestDto.getLoginNewId();
+
+        if (member != null)
+            throw new MemberException(HttpStatusCode.BAD_REQUEST, "duplicate login id: " + loginNewId);
+
+        member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
+
+        member.updateLoginId(loginNewId);
+    }
+
+    @Transactional
+    @Override
+    public void updateLoginPw(Long memberId, UpdateLoginPwRequestDto updateLoginPwRequestDto) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
+
+        String loginNewPw = updateLoginPwRequestDto.getLoginNewPw();
+
+        if (!loginNewPw.equals(updateLoginPwRequestDto.getLoginNewPwConfirm()))
+            throw new MemberException(HttpStatusCode.BAD_REQUEST, "not match login password Confirm");
+
+        String encodePw = passwordEncoder.encode(loginNewPw);
+
+        member.updateLoginPw(encodePw);
     }
 
 

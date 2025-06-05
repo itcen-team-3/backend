@@ -112,8 +112,11 @@ public class Member extends BaseEntity {
         this.profileImageUrl = profileImageUrl;
     }
 
-    public void updateAccount(String loginId, String loginPw) {
+    public void updateLoginId(String loginId) {
         this.loginId = loginId;
+    }
+
+    public void updateLoginPw(String loginPw) {
         this.loginPw = loginPw;
     }
 
