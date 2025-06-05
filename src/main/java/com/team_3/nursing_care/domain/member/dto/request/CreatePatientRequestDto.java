@@ -21,9 +21,6 @@ import java.time.LocalDate;
 @Setter
 public class CreatePatientRequestDto {
 
-    @NotNull(message = "시설 ID는 필수값입니다.")
-    private Long companyId;
-
     @NotBlank(message = "이름은 필수값입니다.")
     private String name;
 
@@ -54,7 +51,6 @@ public class CreatePatientRequestDto {
 
     @Builder
     public CreatePatientRequestDto(
-            Long companyId,
             String name,
             LocalDate birthDate,
             String phoneNumber,
@@ -64,7 +60,6 @@ public class CreatePatientRequestDto {
             String relationship,
             String guardianName,
             String description) {
-        this.companyId = companyId;
         this.name = name;
         this.birthDate = birthDate;
         this.phoneNumber = phoneNumber;
