@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.entity.Company;
 import com.team_3.nursing_care.domain.member.entity.Member;
+import com.team_3.nursing_care.domain.member.entity.PatientInfo;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -12,14 +13,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
 @NoArgsConstructor
 @Getter
 @Setter
-public class CaregiverInfoRequestDto {
+public class CreatePatientRequestDto {
+
+    @NotNull(message = "시설 ID는 필수값입니다.")
+    private Long companyId;
 
     @NotBlank(message = "이름은 필수값입니다.")
     private String name;
@@ -35,36 +38,40 @@ public class CaregiverInfoRequestDto {
     @NotBlank(message = "주소는 필수값입니다.")
     private String address;
 
+    @NotBlank(message = "장기요양등급은 필수값입니다.")
+    private String patientLevel;
+
+    @Pattern(regexp = "^01[016789]-\\d{3,4}-\\d{4}$", message = "올바른 휴대폰 번호 형식이 아닙니다.")
+    private String guardianPhoneNumber;
+
+    @NotBlank(message = "가족 관계는 필수값입니다.")
+    private String relationship;
+
     private String description;
-    private MultipartFile profileImage;
-
-    @NotBlank(message = "자격증 번호는 필수값입니다.")
-    private String certificateNumber;
-
-    @NotNull(message = "경력은 필수값입니다.")
-    private Short career;
 
     @Builder
-    public CaregiverInfoRequestDto(
-                                   String name,
-                                   LocalDate birthDate,
-                                   String phoneNumber,
-                                   String address,
-                                   String description,
-                                   String certificateNumber,
-                                   Short career){
+    public CreatePatientRequestDto(
+            Long companyId,
+            String name,
+            LocalDate birthDate,
+            String phoneNumber,
+            String address,
+            String patientLevel,
+            String guardianPhoneNumber,
+            String relationship,
+            String description) {
+        this.companyId = companyId;
         this.name = name;
         this.birthDate = birthDate;
         this.phoneNumber = phoneNumber;
         this.address = address;
+        this.patientLevel = patientLevel;
+        this.guardianPhoneNumber = guardianPhoneNumber;
+        this.relationship = relationship;
         this.description = description;
-        this.profileImage = profileImage;
-        this.certificateNumber = certificateNumber;
-        this.career = career;
     }
 
-    public Member toEntity(String profileImageUrl, Company company, Role role, Member admin){
-
+    public Member toMember(String profileImageUrl, Company company, Role role) {
         return Member.builder()
                 .company(company)
                 .memberName(this.name)
@@ -72,11 +79,17 @@ public class CaregiverInfoRequestDto {
                 .phoneNumber(this.phoneNumber)
                 .address(this.address)
                 .description(this.description)
-                .profileImage(profileImageUrl)
-                .certificateNumber(certificateNumber)
-                .career(career)
                 .role(role)
-                .admin(admin)
+                .profileImageUrl(profileImageUrl)
                 .build();
     }
+
+    public PatientInfo toPatient() {
+        return PatientInfo.builder()
+                .patientLevel(this.patientLevel)
+                .guardianPhoneNumber(this.guardianPhoneNumber)
+                .relationship(this.relationship)
+                .build();
+    }
+
 }

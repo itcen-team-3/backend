@@ -28,6 +28,9 @@ public class Schedule extends BaseEntity {
     private Member member;
 
     @Column(nullable = false)
+    private Long patientId;
+
+    @Column(nullable = false)
     private LocalDate startDate;
 
     @Column(nullable = false)
@@ -65,6 +68,7 @@ public class Schedule extends BaseEntity {
     @Builder
     public Schedule(Long scheduleId,
                     Member member,
+                    Long patientId,
                     LocalDate startDate,
                     LocalDate endDate,
                     Time startTime,
@@ -78,6 +82,7 @@ public class Schedule extends BaseEntity {
                     String patientAddress) {
         this.scheduleId = scheduleId;
         this.member = member;
+        this.patientId = patientId;
         this.startDate = startDate;
         this.endDate = endDate;
         this.startTime = startTime;

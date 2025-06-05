@@ -3,10 +3,13 @@ package com.team_3.nursing_care.domain.schedule.constant;
 import java.util.Arrays;
 
 public enum PaymentType {
-    WASHING("목욕 급여"),
-    VISITING("방문 급여"),
-    NURSING("간호 급여"),
-    DAY_NIGHT("주야간 급여");
+    WASHING("방문목욕"),
+    VISITING("방문급여"),
+    NURSING("방문간호"),
+    SHORT("단기보호"),
+    DAY_NIGHT("주야간보호급여"),
+    FAMILY("가족요양급여");
+
 
     private final String paymentType;
 

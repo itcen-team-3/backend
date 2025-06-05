@@ -36,10 +36,6 @@ public class MemberServiceImpl implements MemberService {
     private final S3Service s3Service;
     private final JwtUtil jwtUtil;
 
-    public List<Member> getMembers(Long companyId, Role role) {
-        return memberRepository.findByCompany_CompanyIdAndRole(companyId, role);
-    }
-
     @Override
     public CaregiversNameListResponseDto getCaregiversName(Long companyId, Role role) {
 
