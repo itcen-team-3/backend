@@ -32,6 +32,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
         BooleanBuilder whereClause = new BooleanBuilder();
         whereClause.and(member.company.companyId.eq(companyId));
         whereClause.and(member.accountIsDeleted.eq(false));
+        whereClause.and(member.loginId.isNotNull());
 
         if (searchName != null && !searchName.isBlank()) {
             whereClause.and(
@@ -75,8 +76,8 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
     private OrderSpecifier<?>[] getOrderBy(Sort sort) {
         return sort.stream()
                 .map(order -> {
-                    if (order.getProperty().equals("memberId")) {
-                        return order.isAscending() ? member.memberId.asc() : member.memberId.desc();
+                    if (order.getProperty().equals("loginId")) {
+                        return order.isAscending() ? member.loginId.asc() : member.loginId.desc();
                     }
                     return null;
                 })

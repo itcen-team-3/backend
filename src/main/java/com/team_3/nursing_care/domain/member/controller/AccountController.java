@@ -34,11 +34,18 @@ public class AccountController {
     public ResponseEntity<?> getAccountList(@RequestParam(name = "searchName", required = false) String searchName,
                                             @RequestParam(name = "searchRole", required = false) String searchRole,
                                             @AuthenticationPrincipal CustomUserDetails userDetails,
-                                            @PageableDefault(size = 10, sort = "memberId", direction = Sort.Direction.DESC) Pageable pageable) {
+                                            @PageableDefault(size = 10, sort = "loginId", direction = Sort.Direction.ASC) Pageable pageable) {
 
         Page<AccountListResponseDto> accountPage = accountService.getAccountList(searchName, searchRole, userDetails, pageable);
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, new PageResponseDto<>(accountPage)));
 
+    }
+
+    @GetMapping("/member-name-list")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<?> getMemberNameList(@RequestParam(name = "role") String role, @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, accountService.getMemberNameList(role, userDetails)));
     }
 
     @GetMapping("/id/{memberId}")
@@ -69,5 +76,11 @@ public class AccountController {
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, "계정 비밀번호가 정상적으로 변경 되었습니다."));
     }
 
+    @DeleteMapping("/{memberId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<?> deleteAccount(@PathVariable("memberId") Long memberId){
+        accountService.deleteAccount(memberId);
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, "로그인 계정 정보가 정상적으로 삭제되었습니다."));
+    }
 
 }

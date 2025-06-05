@@ -123,4 +123,8 @@ public class Member extends BaseEntity {
     public void updateIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
+
+    public void updateAccountIsDeleted(Boolean accountIsDeleted) {
+        this.accountIsDeleted = accountIsDeleted;
+    }
 }

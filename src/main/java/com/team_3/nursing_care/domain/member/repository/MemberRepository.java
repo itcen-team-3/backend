@@ -19,6 +19,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     List<Member> findByCompany_CompanyIdAndRole(Long companyId, Role role);
 
+    List<Member> findByCompany_CompanyIdAndRoleAndLoginIdIsNull(Long comapnyId, Role role);
+
     Optional<Member> findByMemberIdAndRole(Long memberId, Role role);
 
     Optional<Member> findByLoginId(String loginId);

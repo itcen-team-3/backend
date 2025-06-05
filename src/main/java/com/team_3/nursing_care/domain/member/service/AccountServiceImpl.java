@@ -2,10 +2,12 @@ package com.team_3.nursing_care.domain.member.service;
 
 import com.team_3.nursing_care.common.exception.MemberException;
 import com.team_3.nursing_care.common.security.user.custom.CustomUserDetails;
+import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.request.CreateAccountRequestDto;
 import com.team_3.nursing_care.domain.member.dto.request.UpdateLoginIdRequestDto;
 import com.team_3.nursing_care.domain.member.dto.request.UpdateLoginPwRequestDto;
 import com.team_3.nursing_care.domain.member.dto.response.AccountListResponseDto;
+import com.team_3.nursing_care.domain.member.dto.response.MemberNameResponseDto;
 import com.team_3.nursing_care.domain.member.dto.response.UpdateAccountResponseDto;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
@@ -18,6 +20,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.http.HttpStatusCode;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +41,29 @@ public class AccountServiceImpl implements AccountService {
         return memberCustomRepository.getAccountList(companyId, searchName, searchRole, pageable);
 
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<MemberNameResponseDto> getMemberNameList(String role, CustomUserDetails userDetails) {
+
+        Long companyId = userDetails.getCompanyId();
+
+        Role realRole;
+        try {
+            realRole = Role.valueOf(role.toUpperCase());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new IllegalArgumentException("유효하지 않은 권한입니다: " + role);
+        }
+
+        List<Member> members = memberRepository.findByCompany_CompanyIdAndRoleAndLoginIdIsNull(companyId,realRole);
+
+        List<MemberNameResponseDto> dtoList = members.stream()
+                .map(MemberNameResponseDto::from)
+                .collect(Collectors.toList());
+
+        return dtoList;
+    }
+
 
     @Transactional(readOnly = true)
     @Override
@@ -96,6 +124,15 @@ public class AccountServiceImpl implements AccountService {
         String encodePw = passwordEncoder.encode(loginNewPw);
 
         member.updateLoginPw(encodePw);
+    }
+
+    @Transactional
+    @Override
+    public void deleteAccount(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 멤버를 찾을 수 없습니다."));
+
+        member.updateAccountIsDeleted(true);
     }
 
 

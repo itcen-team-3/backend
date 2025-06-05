@@ -5,13 +5,18 @@ import com.team_3.nursing_care.domain.member.dto.request.CreateAccountRequestDto
 import com.team_3.nursing_care.domain.member.dto.request.UpdateLoginIdRequestDto;
 import com.team_3.nursing_care.domain.member.dto.request.UpdateLoginPwRequestDto;
 import com.team_3.nursing_care.domain.member.dto.response.AccountListResponseDto;
+import com.team_3.nursing_care.domain.member.dto.response.MemberNameResponseDto;
 import com.team_3.nursing_care.domain.member.dto.response.UpdateAccountResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface AccountService {
 
     Page<AccountListResponseDto> getAccountList(String searchName, String searchRole, CustomUserDetails userDetails, Pageable pageable);
+
+    List<MemberNameResponseDto> getMemberNameList(String role, CustomUserDetails userDetails);
 
     UpdateAccountResponseDto getLoginId(Long memberId);
 
@@ -20,4 +25,6 @@ public interface AccountService {
     void updateLoginId(Long memberId, UpdateLoginIdRequestDto updateLoginIdRequestDto);
 
     void updateLoginPw(Long memberId, UpdateLoginPwRequestDto updateLoginPwRequestDto);
+
+    void deleteAccount(Long memberId);
 }
