@@ -11,4 +11,5 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
 
     List<AttendanceLog> findByMember_MemberIdAndCheckInStatusOrCheckOutStatus(Long memberId, CheckInStatus checkInStatus, CheckOutStatus checkOutStatus);
 
+    List<AttendanceLog> findByMember_memberId(Long caregiverId);
 }

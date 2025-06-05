@@ -11,7 +11,7 @@ public enum ApproveType {
         this.approveType = approveType;
     }
 
-    public String getApproveType() {
+    public String getApproveTypeName() {
         return approveType;
     }
 }

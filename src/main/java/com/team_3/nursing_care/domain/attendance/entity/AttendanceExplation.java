@@ -27,13 +27,17 @@ public class AttendanceExplation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ApproveType approveType;
 
+    private String rejectReason;
+
     @Builder
     public AttendanceExplation(Long attendanceExplationId,
                                String explations,
-                               ApproveType approveType) {
+                               ApproveType approveType,
+                               String rejectReason) {
         this.attendanceExplationId = attendanceExplationId;
         this.explations = explations;
         this.approveType = approveType;
+        this.rejectReason = rejectReason;
     }
 
     public static AttendanceExplation toEntity(CreateAttendanceExplationReqDto createAttendanceExplationReqDto){
