@@ -11,6 +11,8 @@ import com.team_3.nursing_care.domain.member.entity.PatientInfo;
 import com.team_3.nursing_care.domain.member.repository.CompanyRepository;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
 import com.team_3.nursing_care.domain.member.repository.PatientInfoRepository;
+import com.team_3.nursing_care.domain.schedule.entity.Schedule;
+import com.team_3.nursing_care.domain.schedule.repository.ScheduleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +36,7 @@ public class PatientServiceImpl implements PatientService {
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
     private final PatientInfoRepository patientInfoRepository;
+    private final ScheduleRepository scheduleRepository;
     private final S3Service s3Service;
 
     @Transactional(readOnly = true)
@@ -84,6 +89,13 @@ public class PatientServiceImpl implements PatientService {
 
         PatientInfo patientInfo = patientInfoRepository.findById(patientId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 보호대상자를 찾을 수 없습니다."));
+
+        List<Schedule> schedules = scheduleRepository.findAllByPatientIdAndIsDeletedFalse(patientId);
+
+        schedules.forEach(schedule -> {
+            schedule.updatePatientInfo(updatePatientRequestDto.getName(), updatePatientRequestDto.getAddress());
+        });
+
 
         if (profileImage != null && !profileImage.isEmpty()) {
             key = s3Service.uploadProfileFile(profileImage);

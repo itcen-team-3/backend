@@ -27,13 +27,16 @@ public class PatientInfo extends BaseEntity {
     private String guardianPhoneNumber;
     @Column(nullable = false)
     private String relationship;
+    @Column(nullable = false)
+    private String guardianName;
 
     @Builder
-    public PatientInfo(Member member, String patientLevel, String guardianPhoneNumber, String relationship) {
+    public PatientInfo(Member member, String patientLevel, String guardianPhoneNumber, String relationship, String guardianName) {
         this.member = member;
         this.patientLevel = patientLevel;
         this.guardianPhoneNumber = guardianPhoneNumber;
         this.relationship = relationship;
+        this.guardianName = guardianName;
     }
 
     public void setMember(Member member) {
@@ -45,6 +48,7 @@ public class PatientInfo extends BaseEntity {
         this.patientLevel = dto.getPatientLevel();
         this.guardianPhoneNumber = dto.getGuardianPhoneNumber();
         this.relationship = dto.getRelationship();
+        this.guardianName = dto.getGuardianName();
 
     }
 

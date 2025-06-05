@@ -47,6 +47,9 @@ public class CreatePatientRequestDto {
     @NotBlank(message = "가족 관계는 필수값입니다.")
     private String relationship;
 
+    @NotBlank(message = "보호대상자 이름은 필수값입니다.")
+    private String guardianName;
+
     private String description;
 
     @Builder
@@ -59,6 +62,7 @@ public class CreatePatientRequestDto {
             String patientLevel,
             String guardianPhoneNumber,
             String relationship,
+            String guardianName,
             String description) {
         this.companyId = companyId;
         this.name = name;
@@ -68,6 +72,7 @@ public class CreatePatientRequestDto {
         this.patientLevel = patientLevel;
         this.guardianPhoneNumber = guardianPhoneNumber;
         this.relationship = relationship;
+        this.guardianName = guardianName;
         this.description = description;
     }
 
@@ -89,6 +94,7 @@ public class CreatePatientRequestDto {
                 .patientLevel(this.patientLevel)
                 .guardianPhoneNumber(this.guardianPhoneNumber)
                 .relationship(this.relationship)
+                .guardianName(this.guardianName)
                 .build();
     }
 

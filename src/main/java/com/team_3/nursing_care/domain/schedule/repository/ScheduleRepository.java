@@ -14,4 +14,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     List<Schedule> findAllByMember_MemberIdAndIsDeletedFalse(Long memberId);
 
+    List<Schedule> findAllByPatientIdAndIsDeletedFalse(Long patientId);
 }
