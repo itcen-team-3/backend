@@ -24,11 +24,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class S3ServiceImpl implements S3Service {
 
+    private final S3Client s3Client;
     @Value("${spring.application.name}")
     private String prefix;
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucket;
-    private final S3Client s3Client;
+    @Value("${spring.cloud.aws.region.static}")
+    private String region;
+
 
     @Override
     public String uploadVoiceFile(MultipartFile file) {
@@ -103,7 +106,7 @@ public class S3ServiceImpl implements S3Service {
 
     @Override
     public String getFileUrl(String s3Key) {
-        return String.format("s3://%s/%s", bucket, s3Key);
+        return String.format("https://s3.%s.amazonaws.com/%s/%s", region, bucket, s3Key);
     }
 
     private void checkEmptyFile(MultipartFile file) {
