@@ -1,5 +1,6 @@
 package com.team_3.nursing_care.common.proxy;
 
+import com.team_3.nursing_care.common.exception.CareLogException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,12 +8,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.http.HttpStatusCode;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -71,6 +75,21 @@ public class S3ServiceImpl implements S3Service {
     }
 
     @Override
+    public List<String> uploadImageFileList(List<MultipartFile> imageFileList) {
+        List<String> s3KeyList = new ArrayList<>();
+        for (MultipartFile file : imageFileList) {
+            String s3Key = "care_log/" + createS3Key(file);
+
+            PutObjectRequest putObjectRequest = createPutObjectRequest(file, bucket, s3Key);
+            upload(putObjectRequest, file);
+
+            s3KeyList.add(s3Key);
+        }
+
+        return s3KeyList;
+    }
+
+    @Override
     public InputStream download(String s3Key) {
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(bucket)
@@ -88,7 +107,7 @@ public class S3ServiceImpl implements S3Service {
     }
 
     private void checkEmptyFile(MultipartFile file) {
-        if (file.isEmpty()) throw new RuntimeException("File is empty");
+        if (file.isEmpty()) throw new CareLogException(HttpStatusCode.BAD_REQUEST, "Required File");
     }
 
     private String createS3Key(MultipartFile file) {
