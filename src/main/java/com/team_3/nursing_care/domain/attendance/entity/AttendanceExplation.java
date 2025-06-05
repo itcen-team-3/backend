@@ -5,6 +5,7 @@ import com.team_3.nursing_care.common.auditor.BaseEntity;
 import com.team_3.nursing_care.domain.attendance.constant.ApproveType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,4 +26,12 @@ public class AttendanceExplation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ApproveType approveType;
 
+    @Builder
+    public AttendanceExplation(Long attendanceExplationId,
+                               String explations,
+                               ApproveType approveType) {
+        this.attendanceExplationId = attendanceExplationId;
+        this.explations = explations;
+        this.approveType = approveType;
+    }
 }

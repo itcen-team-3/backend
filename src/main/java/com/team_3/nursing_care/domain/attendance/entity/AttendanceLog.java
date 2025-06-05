@@ -27,7 +27,9 @@ public class AttendanceLog extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private Long attendanceExplainId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "attendacne_explation_id")
+    private AttendanceExplation attendanceExplainId;
 
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
@@ -43,7 +45,7 @@ public class AttendanceLog extends BaseEntity {
     @Builder
     public AttendanceLog(Long attendanceId,
                          Member member,
-                         Long attendanceExplainId,
+                         AttendanceExplation attendanceExplainId,
                          LocalDateTime checkIn,
                          LocalDateTime checkOut,
                          CheckInStatus checkInStatus,
