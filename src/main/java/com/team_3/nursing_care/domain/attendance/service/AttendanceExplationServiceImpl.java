@@ -22,20 +22,13 @@ public class AttendanceExplationServiceImpl implements AttendanceExplationServic
     @Transactional
     @Override
     public void createAttendanceExplation(CreateAttendanceExplationReqDto createAttendanceExplationReqDto) {
-
-
-        // 1. 소명 엔티티 생성 & 저장
         AttendanceExplation explation = attendanceExplationRepository.save(
                 AttendanceExplation.toEntity(createAttendanceExplationReqDto)
         );
 
-        // 2. 해당 출퇴근 로그 가져오기
         AttendanceLog attendanceLog = attendanceLogRepository.findById(createAttendanceExplationReqDto.getAttendanceId())
                 .orElseThrow(() -> new IllegalArgumentException("출퇴근 기록을 찾을 수 없습니다."));
 
-        log.info("attendanceLog: {}", attendanceLog);
-        // 3. 출퇴근 로그에 소명 연결
         attendanceLog.setAttendanceExplation(explation);
-
     }
 }
