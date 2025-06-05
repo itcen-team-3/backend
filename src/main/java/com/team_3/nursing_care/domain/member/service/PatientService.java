@@ -1,5 +1,6 @@
 package com.team_3.nursing_care.domain.member.service;
 
+import com.team_3.nursing_care.common.security.user.custom.CustomUserDetails;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.request.CreatePatientRequestDto;
 import com.team_3.nursing_care.domain.member.dto.request.UpdatePatientRequestDto;
@@ -12,13 +13,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface PatientService {
 
-    Page<PatientListResponseDto> getPatientList(Long companyId, String searchName, Pageable pageable);
+    Page<PatientListResponseDto> getPatientList(String searchName, CustomUserDetails userDetails,Pageable pageable);
 
     PatientDetailResponseDto getPatientDetail(Long patientId);
 
     UpdatePatientResponseDto getPatientInfo(Long patientId);
 
-    void addPatient(CreatePatientRequestDto createPatientRequestDto, Role role, MultipartFile profileImage);
+    void addPatient(CreatePatientRequestDto createPatientRequestDto, Role role, MultipartFile profileImage, CustomUserDetails userDetails);
 
     void updatePatient(Long patientId, UpdatePatientRequestDto updatePatientRequestDto, MultipartFile profileImage);
 

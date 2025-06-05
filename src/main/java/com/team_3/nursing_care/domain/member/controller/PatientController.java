@@ -2,6 +2,7 @@ package com.team_3.nursing_care.domain.member.controller;
 
 import com.team_3.nursing_care.common.response.PageResponseDto;
 import com.team_3.nursing_care.common.response.ResponseDto;
+import com.team_3.nursing_care.common.security.user.custom.CustomUserDetails;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.request.CreatePatientRequestDto;
 import com.team_3.nursing_care.domain.member.dto.request.UpdatePatientRequestDto;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,11 +34,11 @@ public class PatientController {
 
     @GetMapping("/list")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<?> getPatientList(@RequestParam(name = "companyId") Long companyId,
-                                                                                  @RequestParam(name = "searchName", required = false) String searchName,
-                                                                                  @PageableDefault(size = 10, sort = "memberId", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<?> getPatientList(@RequestParam(name = "searchName", required = false) String searchName,
+                                            @AuthenticationPrincipal CustomUserDetails userDetails,
+                                            @PageableDefault(size = 10, sort = "memberId", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<PatientListResponseDto> patientPage = patientService.getPatientList(companyId, searchName, pageable);
+        Page<PatientListResponseDto> patientPage = patientService.getPatientList(searchName, userDetails,pageable);
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, new PageResponseDto<>(patientPage)));
 
     }
@@ -60,8 +62,8 @@ public class PatientController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity createPatient(@Validated @ModelAttribute CreatePatientRequestDto createPatientRequestDto, @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
-        patientService.addPatient(createPatientRequestDto, Role.PATIENT, profileImage);
+    public ResponseEntity createPatient(@Validated @ModelAttribute CreatePatientRequestDto createPatientRequestDto, @RequestPart(value = "profileImage", required = false) MultipartFile profileImage, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        patientService.addPatient(createPatientRequestDto, Role.PATIENT, profileImage, userDetails);
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, "새로운 보호대상자가 정상적으로 등록 되었습니다."));
     }
 

@@ -1,6 +1,7 @@
 package com.team_3.nursing_care.domain.member.service;
 
 import com.team_3.nursing_care.common.proxy.S3Service;
+import com.team_3.nursing_care.common.security.user.custom.CustomUserDetails;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.request.CreatePatientRequestDto;
 import com.team_3.nursing_care.domain.member.dto.request.UpdatePatientRequestDto;
@@ -51,9 +52,11 @@ public class PatientServiceImpl implements PatientService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<PatientListResponseDto> getPatientList(Long companyId, String searchName, Pageable pageable) {
+    public Page<PatientListResponseDto> getPatientList(String searchName, CustomUserDetails userDetails,Pageable pageable) {
 
         Page<Member> patients;
+
+        Long companyId = userDetails.getCompanyId();
 
         if (searchName != null && !searchName.isBlank()) {
             patients = memberRepository.findByCompany_CompanyIdAndRoleAndMemberNameContainingAndIsDeletedFalse(companyId, Role.PATIENT, searchName, pageable);
@@ -112,11 +115,11 @@ public class PatientServiceImpl implements PatientService {
 
     @Transactional
     @Override
-    public void addPatient(CreatePatientRequestDto createPatientRequestDto, Role role, MultipartFile profileImage) {
+    public void addPatient(CreatePatientRequestDto createPatientRequestDto, Role role, MultipartFile profileImage, CustomUserDetails userDetails) {
 
         String key;
 
-        Company company = companyRepository.findById(createPatientRequestDto.getCompanyId())
+        Company company = companyRepository.findById(userDetails.getCompanyId())
                 .orElseThrow(() -> new EntityNotFoundException("해당 시설을 찾을 수 없습니다."));
 
         if (profileImage != null && !profileImage.isEmpty()) {

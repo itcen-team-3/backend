@@ -1,6 +1,7 @@
 package com.team_3.nursing_care.domain.member.service;
 
 import com.team_3.nursing_care.common.proxy.S3Service;
+import com.team_3.nursing_care.common.security.user.custom.CustomUserDetails;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.request.CreateCaregiverRequestDto;
 import com.team_3.nursing_care.domain.member.dto.request.UpdateCaregiverRequestDto;
@@ -9,6 +10,7 @@ import com.team_3.nursing_care.domain.member.dto.response.CaregiverListResponseD
 import com.team_3.nursing_care.domain.member.dto.response.UpdateCaregiverResponseDto;
 import com.team_3.nursing_care.domain.member.entity.Company;
 import com.team_3.nursing_care.domain.member.entity.Member;
+import com.team_3.nursing_care.domain.member.repository.CompanyRepository;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
 import com.team_3.nursing_care.domain.schedule.entity.Schedule;
 import com.team_3.nursing_care.domain.schedule.repository.ScheduleRepository;
@@ -18,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,13 +39,16 @@ public class CaregiverServiceImpl implements CaregiverService {
     @Value("${spring.cloud.aws.region.static}")
     private String region;
 
+    private final CompanyRepository companyRepository;
     private final MemberRepository memberRepository;
     private final ScheduleRepository scheduleRepository;
     private final S3Service s3Service;
 
     @Transactional(readOnly = true)
     @Override
-    public Page<CaregiverListResponseDto> getCaregiverList(Long companyId, String searchName, Pageable pageable) {
+    public Page<CaregiverListResponseDto> getCaregiverList(String searchName, CustomUserDetails userDetails, Pageable pageable) {
+
+        Long companyId = userDetails.getCompanyId();
 
         Page<Member> caregivers;
 
@@ -80,11 +86,15 @@ public class CaregiverServiceImpl implements CaregiverService {
 
     @Transactional
     @Override
-    public Member addCaregiver(CreateCaregiverRequestDto createCaregiverRequestDto, Role role, MultipartFile profileImage, Member admin) {
+    public Member addCaregiver(CreateCaregiverRequestDto createCaregiverRequestDto, Role role, MultipartFile profileImage, CustomUserDetails userDetails) {
 
         String key;
 
-        Company company = admin.getCompany();
+        Company company = companyRepository.findById(userDetails.getCompanyId())
+                .orElseThrow(() -> new EntityNotFoundException("해당 시설을 찾을 수 없습니다."));
+
+        Member admin = memberRepository.findById(userDetails.getMemberId())
+                .orElseThrow(() -> new EntityNotFoundException("해당 요양보호사를 찾을 수 없습니다."));
 
         if (profileImage != null && !profileImage.isEmpty()) {
             key = s3Service.uploadProfileFile(profileImage);

@@ -59,6 +59,7 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "admin_id")
     private Member admin;
 
+    @Builder.Default
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
     private List<Member> caregivers = new ArrayList<>();
 
