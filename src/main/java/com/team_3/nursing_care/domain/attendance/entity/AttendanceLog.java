@@ -26,10 +26,12 @@ public class AttendanceLog extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+    @Column(nullable = false)
+    private Long patientId;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "attendacne_explation_id")
-    private AttendanceExplation attendanceExplainId;
+    private AttendanceExplation attendanceExplain;
 
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
@@ -45,6 +47,7 @@ public class AttendanceLog extends BaseEntity {
     @Builder
     public AttendanceLog(Long attendanceId,
                          Member member,
+                         Long patientId,
                          AttendanceExplation attendanceExplainId,
                          LocalDateTime checkIn,
                          LocalDateTime checkOut,
@@ -52,6 +55,7 @@ public class AttendanceLog extends BaseEntity {
                          CheckOutStatus checkOutStatus) {
         this.attendanceId = attendanceId;
         this.member = member;
+        this.patientId = patientId;
         this.attendanceExplainId = attendanceExplainId;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
@@ -59,7 +63,24 @@ public class AttendanceLog extends BaseEntity {
         this.checkOutStatus = checkOutStatus;
     }
 
-    public void setAttendanceExplation(AttendanceExplation attendanceExplainId) {
-        this.attendanceExplainId = attendanceExplainId;
+    public void setAttendanceExplation(AttendanceExplation attendanceExplain) {
+        this.attendanceExplain = attendanceExplain;
+    }
+
+    public static AttendanceLog create(Member careGiver, Long patientId) {
+        return AttendanceLog.builder()
+                .checkIn(LocalDateTime.now())
+                .checkOut(null)
+                .member(careGiver)
+                .patientId(patientId)
+                .attendanceExplainId(null)
+                .checkInStatus(null)
+                .checkOutStatus(null)
+                .build();
+    }
+
+    public AttendanceLog update() {
+        this.checkOut = LocalDateTime.now();
+        return this;
     }
 }

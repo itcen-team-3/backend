@@ -5,9 +5,11 @@ import com.team_3.nursing_care.domain.member.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
@@ -20,4 +22,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByMemberIdAndRole(Long memberId, Role role);
 
     Optional<Member> findByLoginId(String loginId);
+
+    @Query("select m from Member m join fetch m.patientInfo where m.patientInfo.nfcUuid = :nfcUuid")
+    Optional<Member> findPatientByNfcUuid(UUID nfcUuid);
+
+
 }

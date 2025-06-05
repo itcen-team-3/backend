@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Getter
 @Table(name = "patient_info")
@@ -29,14 +31,17 @@ public class PatientInfo extends BaseEntity {
     private String relationship;
     @Column(nullable = false)
     private String guardianName;
+    @Column(nullable = false)
+    private UUID nfcUuid;
 
     @Builder
-    public PatientInfo(Member member, String patientLevel, String guardianPhoneNumber, String relationship, String guardianName) {
+    public PatientInfo(Member member, String patientLevel, String guardianPhoneNumber, String relationship, String guardianName, UUID nfcUuid) {
         this.member = member;
         this.patientLevel = patientLevel;
         this.guardianPhoneNumber = guardianPhoneNumber;
         this.relationship = relationship;
         this.guardianName = guardianName;
+        this.nfcUuid = nfcUuid;
     }
 
     public void setMember(Member member) {
