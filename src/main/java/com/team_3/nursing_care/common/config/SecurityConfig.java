@@ -1,5 +1,6 @@
 package com.team_3.nursing_care.common.config;
 
+import com.team_3.nursing_care.common.security.CustomAuthenticationEntryPoint;
 import com.team_3.nursing_care.common.security.filter.JwtAuthorizationFilter;
 import com.team_3.nursing_care.common.security.user.UserDetailsProvider;
 import com.team_3.nursing_care.common.util.JwtUtil;
@@ -28,6 +29,7 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsProvider userDetailsProvider;
     private final CorsConfigurationSource corsConfigurationSource;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -41,7 +43,9 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .anyRequest().permitAll()
                         // TODO: 귀찮으니 일단 전부 permitAll()
-                );
+                )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(customAuthenticationEntryPoint));
 
         http.addFilterBefore(new JwtAuthorizationFilter(jwtUtil, userDetailsProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
