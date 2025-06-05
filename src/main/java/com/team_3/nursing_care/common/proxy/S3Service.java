@@ -3,6 +3,7 @@ package com.team_3.nursing_care.common.proxy;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.List;
 
 public interface S3Service {
 
@@ -12,4 +13,6 @@ public interface S3Service {
     String uploadProfileFile(MultipartFile file);
     InputStream download(String s3Key);
     String getFileUrl(String s3Key);
+
+    List<String> uploadImageFileList(List<MultipartFile> imageFileList);
 }

@@ -20,6 +20,7 @@ public class ReqCreateGeofenceDto {
     private Double centerLongitude;
     private Double radiusMeters;
     private List<List<Double>> vertices;
+    @Builder.Default
     private Boolean isActive = true;
 
 }
