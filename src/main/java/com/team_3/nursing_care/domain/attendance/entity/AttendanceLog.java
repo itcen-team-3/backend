@@ -26,6 +26,8 @@ public class AttendanceLog extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+    @Column(nullable = false)
+    private Long patientId;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "attendacne_explation_id")
@@ -45,14 +47,16 @@ public class AttendanceLog extends BaseEntity {
     @Builder
     public AttendanceLog(Long attendanceId,
                          Member member,
-                         AttendanceExplation attendanceExplain,
+                         Long patientId,
+                         AttendanceExplation attendanceExplainId,
                          LocalDateTime checkIn,
                          LocalDateTime checkOut,
                          CheckInStatus checkInStatus,
                          CheckOutStatus checkOutStatus) {
         this.attendanceId = attendanceId;
         this.member = member;
-        this.attendanceExplain= attendanceExplain;
+        this.patientId = patientId;
+        this.attendanceExplainId = attendanceExplainId;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
         this.checkInStatus = checkInStatus;
@@ -61,5 +65,22 @@ public class AttendanceLog extends BaseEntity {
 
     public void setAttendanceExplation(AttendanceExplation attendanceExplain) {
         this.attendanceExplain = attendanceExplain;
+    }
+
+    public static AttendanceLog create(Member careGiver, Long patientId) {
+        return AttendanceLog.builder()
+                .checkIn(LocalDateTime.now())
+                .checkOut(null)
+                .member(careGiver)
+                .patientId(patientId)
+                .attendanceExplainId(null)
+                .checkInStatus(null)
+                .checkOutStatus(null)
+                .build();
+    }
+
+    public AttendanceLog update() {
+        this.checkOut = LocalDateTime.now();
+        return this;
     }
 }
