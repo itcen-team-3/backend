@@ -3,6 +3,7 @@ package com.team_3.nursing_care.domain.attendance.entity;
 
 import com.team_3.nursing_care.common.auditor.BaseEntity;
 import com.team_3.nursing_care.domain.attendance.constant.ApproveType;
+import com.team_3.nursing_care.domain.attendance.dto.request.CreateAttendanceExplationReqDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,5 +34,12 @@ public class AttendanceExplation extends BaseEntity {
         this.attendanceExplationId = attendanceExplationId;
         this.explations = explations;
         this.approveType = approveType;
+    }
+
+    public static AttendanceExplation toEntity(CreateAttendanceExplationReqDto createAttendanceExplationReqDto){
+        return AttendanceExplation.builder()
+                .explations(createAttendanceExplationReqDto.getExplation())
+                .approveType(ApproveType.WAITING)
+                .build();
     }
 }

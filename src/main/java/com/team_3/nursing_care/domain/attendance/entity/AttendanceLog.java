@@ -27,7 +27,7 @@ public class AttendanceLog extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "attendacne_explation_id")
     private AttendanceExplation attendanceExplainId;
 
@@ -57,5 +57,9 @@ public class AttendanceLog extends BaseEntity {
         this.checkOut = checkOut;
         this.checkInStatus = checkInStatus;
         this.checkOutStatus = checkOutStatus;
+    }
+
+    public void setAttendanceExplation(AttendanceExplation attendanceExplainId) {
+        this.attendanceExplainId = attendanceExplainId;
     }
 }

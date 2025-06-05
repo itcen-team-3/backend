@@ -2,8 +2,10 @@ package com.team_3.nursing_care.domain.attendance.service;
 
 import com.team_3.nursing_care.domain.attendance.constant.CheckInStatus;
 import com.team_3.nursing_care.domain.attendance.constant.CheckOutStatus;
+import com.team_3.nursing_care.domain.attendance.dto.request.CreateAttendanceExplationReqDto;
 import com.team_3.nursing_care.domain.attendance.dto.response.AttendanceDayResponseDto;
 import com.team_3.nursing_care.domain.attendance.dto.response.AttendanceDayResponseListDto;
+import com.team_3.nursing_care.domain.attendance.entity.AttendanceExplation;
 import com.team_3.nursing_care.domain.attendance.entity.AttendanceLog;
 import com.team_3.nursing_care.domain.attendance.repository.AttendanceLogRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,4 +39,5 @@ public class AttendanceLogServiceImpl implements AttendanceLogService {
 
         return AttendanceDayResponseListDto.from(attendanceDays);
     }
+
 }
