@@ -41,18 +41,18 @@ public class AttendanceExplationServiceImpl implements AttendanceExplationServic
     public AttendanceCaregiverListResDto getAttendanceExplationList(Long caregiverId) {
         List<AttendanceLog> attendanceLogs = attendanceLogRepository.findByMember_memberId(caregiverId);
 
-        List<AttendanceCaregiverResDto> resDtos = attendanceLogs.stream()
+        List<AttendanceCaregiverResDto> attendanceExplation = attendanceLogs.stream()
                 .map(AttendanceLog::getAttendanceExplain)
-                .filter(Objects::nonNull) // 소명이 있는 것만
+                .filter(Objects::nonNull)
                 .map(explation -> AttendanceCaregiverResDto.builder()
                         .attendanceExplationId(explation.getAttendanceExplationId())
-                        .approveStatus(explation.getApproveType().name()) // enum → string
+                        .approveStatus(explation.getApproveType().getApproveTypeName())
                         .explation(explation.getExplations())
-                        .rejectReason(explation.getRejectReason()) // 이 필드 존재해야 함
-                        .submitDateTime(explation.getCreateDate())   // BaseEntity에 있다고 가정
+                        .rejectReason(explation.getRejectReason())
+                        .submitDateTime(explation.getCreateDate())
                         .build())
                 .toList();
 
-        return AttendanceCaregiverListResDto.from(resDtos);
+        return AttendanceCaregiverListResDto.from(attendanceExplation);
     }
 }

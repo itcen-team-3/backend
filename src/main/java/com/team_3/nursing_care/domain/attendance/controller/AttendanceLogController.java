@@ -2,7 +2,6 @@ package com.team_3.nursing_care.domain.attendance.controller;
 
 import com.team_3.nursing_care.common.response.ResponseDto;
 import com.team_3.nursing_care.domain.attendance.dto.response.AttendanceDayResponseListDto;
-import com.team_3.nursing_care.domain.attendance.service.AttendanceExplationService;
 import com.team_3.nursing_care.domain.attendance.service.AttendanceLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
