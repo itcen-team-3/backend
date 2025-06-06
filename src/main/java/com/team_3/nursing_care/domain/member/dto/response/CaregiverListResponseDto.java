@@ -11,12 +11,14 @@ public class CaregiverListResponseDto {
     private Long caregiverId;
     private String name;
     private String phoneNumber;
+    private String profileImage;
 
     public static CaregiverListResponseDto from(Member member) {
         return new CaregiverListResponseDto(
                 member.getMemberId(),
                 member.getMemberName(),
-                member.getPhoneNumber()
+                member.getPhoneNumber(),
+                member.getProfileImageUrl()
         );
     }
 

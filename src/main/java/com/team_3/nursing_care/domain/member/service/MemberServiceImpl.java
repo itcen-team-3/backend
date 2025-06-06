@@ -97,8 +97,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public ResLoginDto login(ReqLoginDto reqLoginDto) {
-        Member member = memberRepository.findByLoginId(reqLoginDto.getLoginId()).orElseThrow(() -> new MemberException(HttpStatusCode.NOT_FOUND, "not found member by login id: " + reqLoginDto.getLoginId()));
+        Member member = memberRepository.findByLoginIdAndAccountIsDeletedFalse(reqLoginDto.getLoginId()).orElseThrow(() -> new MemberException(HttpStatusCode.NOT_FOUND, "not found member by login id: " + reqLoginDto.getLoginId()));
         if (!passwordEncoder.matches(reqLoginDto.getLoginPw(), member.getLoginPw()))
             throw new MemberException(HttpStatusCode.BAD_REQUEST, "not match login password");
 

@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @NoArgsConstructor
 @Getter
@@ -90,6 +91,7 @@ public class CreatePatientRequestDto {
                 .guardianPhoneNumber(this.guardianPhoneNumber)
                 .relationship(this.relationship)
                 .guardianName(this.guardianName)
+                .nfcUuid(UUID.randomUUID())
                 .build();
     }
 

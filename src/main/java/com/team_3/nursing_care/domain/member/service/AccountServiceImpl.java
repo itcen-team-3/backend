@@ -16,6 +16,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,7 +56,8 @@ public class AccountServiceImpl implements AccountService {
             throw new IllegalArgumentException("유효하지 않은 권한입니다: " + role);
         }
 
-        List<Member> members = memberRepository.findByCompany_CompanyIdAndRoleAndLoginIdIsNull(companyId,realRole);
+        Sort sort = Sort.by("memberName").ascending();
+        List<Member> members = memberRepository.findByCompany_CompanyIdAndRoleAndLoginIdIsNull(companyId,realRole,sort);
 
         List<MemberNameResponseDto> dtoList = members.stream()
                 .map(MemberNameResponseDto::from)
