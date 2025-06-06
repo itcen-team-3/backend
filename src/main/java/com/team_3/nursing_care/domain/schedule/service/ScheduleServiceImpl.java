@@ -36,7 +36,20 @@ public class ScheduleServiceImpl implements ScheduleService {
         Member patient = memberRepository.findById(createScheduleRequestDto.getPatientId())
                 .orElseThrow(() -> new IllegalArgumentException("환자(Member)를 찾을 수 없습니다."));
 
-        scheduleRepository.save(createScheduleRequestDto.toEntity(caregiver, patient.getAddress()));
+        LocalDate start = createScheduleRequestDto.getStartDate();
+        LocalDate end = createScheduleRequestDto.getEndDate();
+
+        ScheduleStatus status;
+
+        if (LocalDate.now().isBefore(start)) {
+            status = ScheduleStatus.PLANNED;
+        } else if (!LocalDate.now().isAfter(end)) {
+            status = ScheduleStatus.ONGOING;
+        } else {
+            status = ScheduleStatus.COMPLETED;
+        }
+
+        scheduleRepository.save(createScheduleRequestDto.toEntity(caregiver, patient.getAddress(), status));
     }
 
     @Transactional

@@ -52,7 +52,7 @@ public class CreateScheduleRequestDto {
         this.isFamily = isFamily;
     }
 
-    public Schedule toEntity(Member member, String patientAddress) {
+    public Schedule toEntity(Member member, String patientAddress, ScheduleStatus status) {
         return Schedule.builder()
                 .member(member)
                 .patientId(patientId)
@@ -64,7 +64,7 @@ public class CreateScheduleRequestDto {
                 .paymentForHour(paymentForHour)
                 .workDay(workDay)
                 .paymentType(PaymentType.from(paymentType))
-                .status(ScheduleStatus.PLANNED)
+                .status(status)
                 .isFamily(isFamily)
                 .patientAddress(patientAddress)
                 .build();
