@@ -46,4 +46,10 @@ public class AttendanceExplation extends BaseEntity {
                 .approveType(ApproveType.WAITING)
                 .build();
     }
+
+    public void updateApproval(ApproveType approveType, String rejectReason) {
+        this.approveType = approveType;
+        this.rejectReason = (approveType == ApproveType.REJECTED) ? rejectReason : null;
+    }
+
 }

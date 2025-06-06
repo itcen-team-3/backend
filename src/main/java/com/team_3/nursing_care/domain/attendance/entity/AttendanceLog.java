@@ -56,7 +56,7 @@ public class AttendanceLog extends BaseEntity {
         this.attendanceId = attendanceId;
         this.member = member;
         this.patientId = patientId;
-        this.attendanceExplainId = attendanceExplainId;
+        this.attendanceExplain = attendanceExplainId;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
         this.checkInStatus = checkInStatus;
