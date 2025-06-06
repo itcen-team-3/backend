@@ -1,6 +1,5 @@
 package com.team_3.nursing_care.domain.schedule.constant;
 
-import java.util.Arrays;
 
 public enum ScheduleStatus {
     PLANNED("예정"),

@@ -6,11 +6,13 @@ import com.team_3.nursing_care.domain.schedule.constant.ScheduleStatus;
 import com.team_3.nursing_care.domain.schedule.entity.Schedule;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.sql.Time;
 import java.time.LocalDate;
 
 @Getter
+@NoArgsConstructor
 public class CreateScheduleRequestDto {
 
     private String patientName;
