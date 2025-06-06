@@ -43,10 +43,14 @@ public class Member extends BaseEntity {
     private String certificateNumber;
     private short career;
 
+    @Setter
     private LocalDateTime lastLoginAt;
 
     private String loginId;
     private String loginPw;
+
+    @Builder.Default
+    private Boolean accountIsDeleted = false;
 
     @Setter
     private String refreshToken;
@@ -99,7 +103,7 @@ public class Member extends BaseEntity {
         this.profileImageUrl = profileImageUrl;
     }
 
-    public void updatePatient(UpdatePatientRequestDto dto, String profileImageUrl){
+    public void updatePatient(UpdatePatientRequestDto dto, String profileImageUrl) {
         this.memberName = dto.getName();
         this.birthDate = dto.getBirthDate();
         this.address = dto.getAddress();
@@ -108,7 +112,19 @@ public class Member extends BaseEntity {
         this.profileImageUrl = profileImageUrl;
     }
 
+    public void updateLoginId(String loginId) {
+        this.loginId = loginId;
+    }
+
+    public void updateLoginPw(String loginPw) {
+        this.loginPw = loginPw;
+    }
+
     public void updateIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public void updateAccountIsDeleted(Boolean accountIsDeleted) {
+        this.accountIsDeleted = accountIsDeleted;
     }
 }

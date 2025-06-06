@@ -10,7 +10,6 @@ import com.team_3.nursing_care.domain.member.dto.response.UpdateCaregiverRespons
 import com.team_3.nursing_care.domain.member.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface CaregiverService {

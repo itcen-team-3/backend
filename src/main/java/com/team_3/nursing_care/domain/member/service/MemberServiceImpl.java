@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.http.HttpStatusCode;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -59,6 +61,15 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public List<RoleNameResponseDto> getRoleName() {
+        return Arrays.stream(Role.values())
+                .filter(role -> role != Role.ADMIN)
+                .map(RoleNameResponseDto::from)
+                .toList();
+    }
+
+
+    @Override
     @Transactional
     public void signup(ReqSignUpDto reqSignUpDto) {
         Member member = memberRepository.findByLoginId(reqSignUpDto.getLoginId()).orElse(null);
@@ -96,6 +107,7 @@ public class MemberServiceImpl implements MemberService {
         String refreshToken = jwtUtil.createRefreshToken(member.getMemberId(), roles);
 
         member.setRefreshToken(refreshToken);
+        member.setLastLoginAt(LocalDateTime.now());
         memberRepository.save(member);
 
         return ResLoginDto.create(accessToken, refreshToken);

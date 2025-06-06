@@ -7,7 +7,7 @@ public enum Role {
 
     ADMIN("관리자", Authority.ADMIN),
     CAREGIVER("요양보호사", Authority.CAREGIVER),
-    PATIENT("보호대상자", Authority.PATIENT),;
+    PATIENT("보호자", Authority.PATIENT);
 
     private final String displayName;
     private final String authority;
