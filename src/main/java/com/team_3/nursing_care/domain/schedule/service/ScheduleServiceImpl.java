@@ -11,6 +11,7 @@ import com.team_3.nursing_care.domain.schedule.entity.Schedule;
 import com.team_3.nursing_care.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,20 @@ public class ScheduleServiceImpl implements ScheduleService {
         Member patient = memberRepository.findById(createScheduleRequestDto.getPatientId())
                 .orElseThrow(() -> new IllegalArgumentException("환자(Member)를 찾을 수 없습니다."));
 
-        scheduleRepository.save(createScheduleRequestDto.toEntity(caregiver, patient.getAddress()));
+        LocalDate start = createScheduleRequestDto.getStartDate();
+        LocalDate end = createScheduleRequestDto.getEndDate();
+
+        ScheduleStatus status;
+
+        if (LocalDate.now().isBefore(start)) {
+            status = ScheduleStatus.PLANNED;
+        } else if (!LocalDate.now().isAfter(end)) {
+            status = ScheduleStatus.ONGOING;
+        } else {
+            status = ScheduleStatus.COMPLETED;
+        }
+
+        scheduleRepository.save(createScheduleRequestDto.toEntity(caregiver, patient.getAddress(), status));
     }
 
     @Transactional
@@ -199,4 +213,31 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .patientAddress(patientAddress)
                 .build();
     }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    @Transactional
+    public void updateScheduleStatus() {
+        LocalDate today = LocalDate.now();
+
+        List<Schedule> schedules = scheduleRepository.findAll();
+
+        for (Schedule schedule : schedules) {
+            LocalDate start = schedule.getStartDate();
+            LocalDate end = schedule.getEndDate();
+
+            ScheduleStatus newStatus;
+            if (today.isBefore(start)) {
+                newStatus = ScheduleStatus.PLANNED;
+            } else if (!today.isAfter(end)) {
+                newStatus = ScheduleStatus.ONGOING;
+            } else {
+                newStatus = ScheduleStatus.COMPLETED;
+            }
+
+            if (schedule.getStatus() != newStatus) {
+                schedule.updateStatus(newStatus);
+            }
+        }
+    }
+
 }
