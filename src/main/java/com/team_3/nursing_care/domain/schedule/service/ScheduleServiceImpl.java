@@ -201,7 +201,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .build();
     }
 
-    @Scheduled(cron = "0 0 0 * * *") // 매일 자정
+    @Scheduled(cron = "0 0 0 * * *")
     @Transactional
     public void updateScheduleStatus() {
         LocalDate today = LocalDate.now();
