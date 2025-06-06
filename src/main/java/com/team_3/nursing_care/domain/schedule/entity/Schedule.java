@@ -104,4 +104,9 @@ public class Schedule extends BaseEntity {
         this.patient = patient;
         this.patientAddress = patientAddress;
     }
+
+    public void updateStatus(ScheduleStatus status) {
+        this.status = status;
+    }
+
 }

@@ -6,11 +6,13 @@ import com.team_3.nursing_care.domain.schedule.constant.ScheduleStatus;
 import com.team_3.nursing_care.domain.schedule.entity.Schedule;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.sql.Time;
 import java.time.LocalDate;
 
 @Getter
+@NoArgsConstructor
 public class CreateScheduleRequestDto {
 
     private String patientName;
@@ -50,7 +52,7 @@ public class CreateScheduleRequestDto {
         this.isFamily = isFamily;
     }
 
-    public Schedule toEntity(Member member, String patientAddress) {
+    public Schedule toEntity(Member member, String patientAddress, ScheduleStatus status) {
         return Schedule.builder()
                 .member(member)
                 .patientId(patientId)
@@ -62,7 +64,7 @@ public class CreateScheduleRequestDto {
                 .paymentForHour(paymentForHour)
                 .workDay(workDay)
                 .paymentType(PaymentType.from(paymentType))
-                .status(ScheduleStatus.PLANNED)
+                .status(status)
                 .isFamily(isFamily)
                 .patientAddress(patientAddress)
                 .build();
