@@ -1,6 +1,7 @@
 package com.team_3.nursing_care.domain.member.repository;
 
 import com.team_3.nursing_care.domain.member.constant.Role;
+import com.team_3.nursing_care.domain.member.entity.Company;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,4 +44,7 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
             @Param("startOfDay") LocalDateTime startOfDay,
             @Param("startOfNextDay") LocalDateTime startOfNextDay
     );
+
+    List<AttendanceLog> findAllByMember_MemberIdIn(List<Long> memberIds);
+
 }
