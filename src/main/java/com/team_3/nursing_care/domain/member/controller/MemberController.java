@@ -2,6 +2,7 @@ package com.team_3.nursing_care.domain.member.controller;
 
 import com.team_3.nursing_care.common.exception.ResultMessage;
 import com.team_3.nursing_care.common.response.ResponseDto;
+import com.team_3.nursing_care.common.security.user.custom.CustomUserDetails;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.response.CaregiversNameListResponseDto;
 import com.team_3.nursing_care.domain.member.dto.response.PatientsNameListResponseDto;
@@ -9,6 +10,7 @@ import com.team_3.nursing_care.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,14 +25,14 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/caregiver-name-list/{companyId}")
-    public ResponseEntity<ResponseDto<CaregiversNameListResponseDto>> getCaregiverNameList(@PathVariable Long companyId) {
-        return ResponseEntity.ok(new ResponseDto<>(OK, ResultMessage.Success, memberService.getCaregiversName(companyId, Role.CAREGIVER)));
+    @GetMapping("/caregiver-name-list")
+    public ResponseEntity<ResponseDto<CaregiversNameListResponseDto>> getCaregiverNameList(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok(new ResponseDto<>(OK, ResultMessage.Success, memberService.getCaregiversName(userDetails.getCompanyId(), Role.CAREGIVER)));
     }
 
-    @GetMapping("/patient-name-list/{companyId}")
-    public ResponseEntity<ResponseDto<PatientsNameListResponseDto>> getPatientNameList(@PathVariable Long companyId) {
-        return ResponseEntity.ok((new ResponseDto<>(OK, ResultMessage.Success, memberService.getPatientsName(companyId, Role.PATIENT))));
+    @GetMapping("/patient-name-list")
+    public ResponseEntity<ResponseDto<PatientsNameListResponseDto>> getPatientNameList(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok((new ResponseDto<>(OK, ResultMessage.Success, memberService.getPatientsName(userDetails.getCompanyId(), Role.PATIENT))));
     }
 
     @GetMapping("/role-name-list")
