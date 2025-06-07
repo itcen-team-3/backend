@@ -1,11 +1,13 @@
 package com.team_3.nursing_care.domain.schedule.controller;
 
 import com.team_3.nursing_care.common.response.ResponseDto;
+import com.team_3.nursing_care.common.security.user.custom.CustomUserDetails;
 import com.team_3.nursing_care.domain.schedule.dto.request.*;
 import com.team_3.nursing_care.domain.schedule.dto.response.*;
 import com.team_3.nursing_care.domain.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import static com.team_3.nursing_care.common.exception.ResultMessage.Success;
@@ -37,22 +39,22 @@ public class ScheduleController {
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, "근무 일정표를 정상적으로 수정 하였습니다."));
     }
 
-    @GetMapping("/care-giver/day/{caregiverId}")
-    public ResponseEntity<ResponseDto<ScheduleDayCaregiverListResDto>> getScheduleDayList(@PathVariable Long caregiverId,
-                                                                             @RequestBody ReadScheduleDayCaregiverReqDto readScheduleDayCaregiverReqDto){
-        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleDayCaregiverList(caregiverId, readScheduleDayCaregiverReqDto)));
+    @GetMapping("/care-giver/day")
+    public ResponseEntity<ResponseDto<ScheduleDayCaregiverListResDto>> getScheduleDayList(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                                          @RequestBody ReadScheduleDayCaregiverReqDto readScheduleDayCaregiverReqDto){
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleDayCaregiverList(userDetails.getMemberId(), readScheduleDayCaregiverReqDto)));
     }
 
-    @GetMapping("/care-giver/month/{caregiverId}")
-    public ResponseEntity<ResponseDto<ScheduleMonthCaregiverListResDto>> getScheduleMonthList(@PathVariable Long caregiverId,
+    @GetMapping("/care-giver/month")
+    public ResponseEntity<ResponseDto<ScheduleMonthCaregiverListResDto>> getScheduleMonthList(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                                               @RequestBody ReadScheduleMonthCaregiverReqDto readScheduleMonthCaregiverReqDto){
-        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleMonthCaregiverList(caregiverId, readScheduleMonthCaregiverReqDto)));
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleMonthCaregiverList(userDetails.getMemberId(), readScheduleMonthCaregiverReqDto)));
     }
 
-    @GetMapping("/care-giver/week/{caregiverId}")
-    public ResponseEntity<ResponseDto<ScheduleWeekCaregiverListResDto>> getScheduleWeekList(@PathVariable Long caregiverId,
+    @GetMapping("/care-giver/week")
+    public ResponseEntity<ResponseDto<ScheduleWeekCaregiverListResDto>> getScheduleWeekList(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                                             @RequestBody ReadScheduleWeekCaregiverReqDto readScheduleWeekCaregiverReqDto){
-        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleWeekCaregiverList(caregiverId, readScheduleWeekCaregiverReqDto)));
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleWeekCaregiverList(userDetails.getMemberId(), readScheduleWeekCaregiverReqDto)));
     }
 
     @GetMapping("/admin/week")

@@ -25,11 +25,13 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/caregiver-name-list")
     public ResponseEntity<ResponseDto<CaregiversNameListResponseDto>> getCaregiverNameList(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(new ResponseDto<>(OK, ResultMessage.Success, memberService.getCaregiversName(userDetails.getCompanyId(), Role.CAREGIVER)));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/patient-name-list")
     public ResponseEntity<ResponseDto<PatientsNameListResponseDto>> getPatientNameList(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok((new ResponseDto<>(OK, ResultMessage.Success, memberService.getPatientsName(userDetails.getCompanyId(), Role.PATIENT))));
