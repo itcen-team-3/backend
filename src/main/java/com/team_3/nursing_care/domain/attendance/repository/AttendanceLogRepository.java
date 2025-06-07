@@ -47,4 +47,7 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
 
     List<AttendanceLog> findAllByMember_MemberIdIn(List<Long> memberIds);
 
+    Optional<AttendanceLog> findByMember_MemberIdAndCheckInBetween(Long memberId, LocalDateTime start, LocalDateTime end);
+
+
 }

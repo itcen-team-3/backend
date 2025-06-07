@@ -85,4 +85,10 @@ public class CaregiverController {
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, "요양보호사 정보가 정상적으로 삭제되었습니다."));
     }
 
+    @GetMapping("/dashboard/{caregiverId}")
+    public ResponseEntity<?> getCaregiverDashBoard(@PathVariable Long caregiverId){
+
+        return null;
+    }
+
 }
