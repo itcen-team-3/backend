@@ -6,6 +6,7 @@ import com.team_3.nursing_care.common.security.user.custom.CustomUserDetails;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.request.CreateCaregiverRequestDto;
 import com.team_3.nursing_care.domain.member.dto.request.UpdateCaregiverRequestDto;
+import com.team_3.nursing_care.domain.member.dto.response.CaregiverDashboardResDto;
 import com.team_3.nursing_care.domain.member.dto.response.CaregiverDetailResponseDto;
 import com.team_3.nursing_care.domain.member.dto.response.CaregiverListResponseDto;
 import com.team_3.nursing_care.domain.member.dto.response.UpdateCaregiverResponseDto;
@@ -86,9 +87,8 @@ public class CaregiverController {
     }
 
     @GetMapping("/dashboard/{caregiverId}")
-    public ResponseEntity<?> getCaregiverDashBoard(@PathVariable Long caregiverId){
-
-        return null;
+    public ResponseEntity<ResponseDto<CaregiverDashboardResDto>> getCaregiverDashBoard(@PathVariable Long caregiverId){
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, caregiverService.getCaregiverDashBoard(caregiverId)));
     }
 
 }
