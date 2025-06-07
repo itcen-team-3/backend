@@ -14,12 +14,14 @@ public class PatientListResponseDto {
     private Long patientId;
     private String name;
     private int age;
+    private String profileImage;
 
     public static PatientListResponseDto from(Member member){
         return new PatientListResponseDto(
                 member.getMemberId(),
                 member.getMemberName(),
-                calculateAge(member.getBirthDate())
+                calculateAge(member.getBirthDate()),
+                member.getProfileImageUrl()
         );
     }
 

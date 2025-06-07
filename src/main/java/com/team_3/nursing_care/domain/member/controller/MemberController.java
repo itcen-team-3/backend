@@ -8,6 +8,7 @@ import com.team_3.nursing_care.domain.member.dto.response.PatientsNameListRespon
 import com.team_3.nursing_care.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,7 @@ public class MemberController {
     }
 
     @GetMapping("/role-name-list")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> getRoleNameList() {
         return ResponseEntity.ok((new ResponseDto<>(OK, ResultMessage.Success, memberService.getRoleName())));
     }

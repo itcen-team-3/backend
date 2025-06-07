@@ -5,6 +5,7 @@ import com.team_3.nursing_care.domain.member.entity.Company;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -20,11 +21,13 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     List<Member> findByCompany_CompanyIdAndRole(Long companyId, Role role);
 
-    List<Member> findByCompany_CompanyIdAndRoleAndLoginIdIsNull(Long comapnyId, Role role);
+    List<Member> findByCompany_CompanyIdAndRoleAndLoginIdIsNull(Long companyId, Role role, Sort sort);
 
     Optional<Member> findByMemberIdAndRole(Long memberId, Role role);
 
     Optional<Member> findByLoginId(String loginId);
+
+    Optional<Member> findByLoginIdAndAccountIsDeletedFalse(String loginId);
 
     @Query("select m from Member m join fetch m.patientInfo where m.patientInfo.nfcUuid = :nfcUuid")
     Optional<Member> findPatientByNfcUuid(UUID nfcUuid);
