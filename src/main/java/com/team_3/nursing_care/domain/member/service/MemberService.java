@@ -7,14 +7,15 @@ import com.team_3.nursing_care.domain.member.dto.response.CaregiversNameListResp
 import com.team_3.nursing_care.domain.member.dto.response.PatientsNameListResponseDto;
 import com.team_3.nursing_care.domain.member.dto.response.ResLoginDto;
 import com.team_3.nursing_care.domain.member.dto.response.RoleNameResponseDto;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface MemberService {
 
-    CaregiversNameListResponseDto getCaregiversName(Long companyId, Role role);
+    CaregiversNameListResponseDto getCaregiversName(Long companyId, Role role, Pageable pageable);
 
-    PatientsNameListResponseDto getPatientsName(Long companyId, Role role);
+    PatientsNameListResponseDto getPatientsName(Long companyId, Role role, Pageable pageable);
 
     List<RoleNameResponseDto> getRoleName();
 

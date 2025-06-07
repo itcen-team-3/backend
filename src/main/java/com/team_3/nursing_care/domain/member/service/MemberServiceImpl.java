@@ -15,6 +15,8 @@ import com.team_3.nursing_care.domain.member.repository.CompanyRepository;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,25 +41,24 @@ public class MemberServiceImpl implements MemberService {
     private final JwtUtil jwtUtil;
 
     @Override
-    public CaregiversNameListResponseDto getCaregiversName(Long companyId, Role role) {
+    public CaregiversNameListResponseDto getCaregiversName(Long companyId, Role role, Pageable pageable) {
 
-        List<CaregiversNameResponseDto> caregiverList = memberRepository.findByCompany_CompanyIdAndRole(companyId, role)
-                .stream()
-                .map(CaregiversNameResponseDto::from)
-                .toList();
+        Page<Member> caregiverPage = memberRepository
+                .findByCompany_CompanyIdAndRoleAndIsDeletedFalse(companyId, role, pageable);
 
-        return CaregiversNameListResponseDto.from(caregiverList);
+        Page<CaregiversNameResponseDto> CaregiverNameDtoPage = caregiverPage.map(CaregiversNameResponseDto::from);
+
+        return CaregiversNameListResponseDto.from(CaregiverNameDtoPage);
     }
 
     @Override
-    public PatientsNameListResponseDto getPatientsName(Long companyId, Role role) {
+    public PatientsNameListResponseDto getPatientsName(Long companyId, Role role, Pageable pageable) {
 
-        List<PatientsNameResponseDto> patientsList = memberRepository.findByCompany_CompanyIdAndRole(companyId, role)
-                .stream()
-                .map(PatientsNameResponseDto::from)
-                .toList();
+        Page<Member> patientPage = memberRepository.findByCompany_CompanyIdAndRoleAndIsDeletedFalse(companyId, role, pageable);
 
-        return PatientsNameListResponseDto.from(patientsList);
+        Page<PatientsNameResponseDto> PatientNameDtoPage = patientPage.map(PatientsNameResponseDto::from);
+
+        return PatientsNameListResponseDto.from(PatientNameDtoPage);
     }
 
     @Override

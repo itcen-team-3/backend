@@ -8,11 +8,13 @@ import com.team_3.nursing_care.domain.member.dto.response.CaregiversNameListResp
 import com.team_3.nursing_care.domain.member.dto.response.PatientsNameListResponseDto;
 import com.team_3.nursing_care.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,14 +29,16 @@ public class MemberController {
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/caregiver-name-list")
-    public ResponseEntity<ResponseDto<CaregiversNameListResponseDto>> getCaregiverNameList(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return ResponseEntity.ok(new ResponseDto<>(OK, ResultMessage.Success, memberService.getCaregiversName(userDetails.getCompanyId(), Role.CAREGIVER)));
+    public ResponseEntity<ResponseDto<CaregiversNameListResponseDto>> getCaregiverNameList(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                                           @PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok(new ResponseDto<>(OK, ResultMessage.Success, memberService.getCaregiversName(userDetails.getCompanyId(), Role.CAREGIVER, pageable)));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/patient-name-list")
-    public ResponseEntity<ResponseDto<PatientsNameListResponseDto>> getPatientNameList(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return ResponseEntity.ok((new ResponseDto<>(OK, ResultMessage.Success, memberService.getPatientsName(userDetails.getCompanyId(), Role.PATIENT))));
+    public ResponseEntity<ResponseDto<PatientsNameListResponseDto>> getPatientNameList(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                                       @PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok((new ResponseDto<>(OK, ResultMessage.Success, memberService.getPatientsName(userDetails.getCompanyId(), Role.PATIENT, pageable))));
     }
 
     @GetMapping("/role-name-list")
