@@ -6,6 +6,7 @@ import com.team_3.nursing_care.common.security.user.custom.CustomUserDetails;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.request.CreateCaregiverRequestDto;
 import com.team_3.nursing_care.domain.member.dto.request.UpdateCaregiverRequestDto;
+import com.team_3.nursing_care.domain.member.dto.response.CaregiverDashboardResDto;
 import com.team_3.nursing_care.domain.member.dto.response.CaregiverDetailResponseDto;
 import com.team_3.nursing_care.domain.member.dto.response.CaregiverListResponseDto;
 import com.team_3.nursing_care.domain.member.dto.response.UpdateCaregiverResponseDto;
@@ -83,6 +84,11 @@ public class CaregiverController {
     public ResponseEntity<?> deleteCaregiver(@PathVariable("caregiverId") Long caregiverId) {
         caregiverService.deleteCaregiver(caregiverId);
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, "요양보호사 정보가 정상적으로 삭제되었습니다."));
+    }
+
+    @GetMapping("/dashboard/{caregiverId}")
+    public ResponseEntity<ResponseDto<CaregiverDashboardResDto>> getCaregiverDashBoard(@PathVariable Long caregiverId){
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, caregiverService.getCaregiverDashBoard(caregiverId)));
     }
 
 }

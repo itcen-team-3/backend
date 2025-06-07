@@ -4,6 +4,7 @@ import com.team_3.nursing_care.common.security.user.custom.CustomUserDetails;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.request.CreateCaregiverRequestDto;
 import com.team_3.nursing_care.domain.member.dto.request.UpdateCaregiverRequestDto;
+import com.team_3.nursing_care.domain.member.dto.response.CaregiverDashboardResDto;
 import com.team_3.nursing_care.domain.member.dto.response.CaregiverDetailResponseDto;
 import com.team_3.nursing_care.domain.member.dto.response.CaregiverListResponseDto;
 import com.team_3.nursing_care.domain.member.dto.response.UpdateCaregiverResponseDto;
@@ -25,4 +26,6 @@ public interface CaregiverService {
     void updateCaregiver(Long caregiverId, UpdateCaregiverRequestDto updateCaregiverRequestDto, MultipartFile profileImage);
 
     void deleteCaregiver(Long caregiverId);
+
+    CaregiverDashboardResDto getCaregiverDashBoard(Long caregiverId);
 }
