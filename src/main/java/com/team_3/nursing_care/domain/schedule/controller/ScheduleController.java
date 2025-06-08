@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 import static com.team_3.nursing_care.common.exception.ResultMessage.Success;
 import static software.amazon.awssdk.http.HttpStatusCode.OK;
 
@@ -39,25 +41,25 @@ public class ScheduleController {
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, "근무 일정표를 정상적으로 수정 하였습니다."));
     }
 
-    @GetMapping("/care-giver/day")
+    @GetMapping("/care-giver/day/{scheduleDate}")
     public ResponseEntity<ResponseDto<ScheduleDayCaregiverListResDto>> getScheduleDayList(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                                          @RequestBody ReadScheduleDayCaregiverReqDto readScheduleDayCaregiverReqDto){
-        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleDayCaregiverList(userDetails.getMemberId(), readScheduleDayCaregiverReqDto)));
+                                                                                          @PathVariable LocalDate scheduleDate){
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleDayCaregiverList(userDetails.getMemberId(), scheduleDate)));
     }
 
-    @GetMapping("/care-giver/month")
+    @GetMapping("/care-giver/month/{yearMonth}")
     public ResponseEntity<ResponseDto<ScheduleMonthCaregiverListResDto>> getScheduleMonthList(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                                              @RequestBody ReadScheduleMonthCaregiverReqDto readScheduleMonthCaregiverReqDto){
-        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleMonthCaregiverList(userDetails.getMemberId(), readScheduleMonthCaregiverReqDto)));
+                                                                                              @PathVariable String yearMonth){
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleMonthCaregiverList(userDetails.getMemberId(), yearMonth)));
     }
 
-    @GetMapping("/care-giver/week")
+    @GetMapping("/care-giver/week/{startDate}")
     public ResponseEntity<ResponseDto<ScheduleWeekCaregiverListResDto>> getScheduleWeekList(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                                            @RequestBody ReadScheduleWeekCaregiverReqDto readScheduleWeekCaregiverReqDto){
-        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleWeekCaregiverList(userDetails.getMemberId(), readScheduleWeekCaregiverReqDto)));
+                                                                                            @PathVariable LocalDate startDate){
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleWeekCaregiverList(userDetails.getMemberId(), startDate)));
     }
 
-    @GetMapping("/admin/week")
+    @PostMapping("/admin/week")
     public ResponseEntity<ResponseDto<ScheduleWeekAdminListResDto>> getScheduleWeekAdminList(@RequestBody ReadScheduleWeekAdminReqDto readScheduleWeekAdminReqDto){
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleWeekByAdmin(readScheduleWeekAdminReqDto)));
     }

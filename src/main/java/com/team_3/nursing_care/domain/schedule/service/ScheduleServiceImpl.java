@@ -81,9 +81,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public ScheduleDayCaregiverListResDto getScheduleDayCaregiverList(Long caregiverId,
-                                                                      ReadScheduleDayCaregiverReqDto readScheduleDayCaregiverReqDto) {
+                                                                      LocalDate scheduleDate) {
 
-        List<ScheduleDayCaregiverResDto> scheduleDayCaregiverResDto = scheduleRepository.findByMemberIdAndScheduleDate(caregiverId, readScheduleDayCaregiverReqDto.getScheduleDate())
+        List<ScheduleDayCaregiverResDto> scheduleDayCaregiverResDto = scheduleRepository.findByMemberIdAndScheduleDate(caregiverId, scheduleDate)
                 .stream()
                 .map(ScheduleDayCaregiverResDto::from)
                 .toList();
@@ -92,9 +92,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public ScheduleMonthCaregiverListResDto getScheduleMonthCaregiverList(Long caregiverId, ReadScheduleMonthCaregiverReqDto dto) {
+    public ScheduleMonthCaregiverListResDto getScheduleMonthCaregiverList(Long caregiverId, String yearMonth) {
 
-        LocalDate startOfMonth = LocalDate.of(dto.getYear(), dto.getMonth(), 1);
+        String[] parts = yearMonth.split("-");
+
+        LocalDate startOfMonth = LocalDate.of(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), 1);
         LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
 
         List<Schedule> schedules = scheduleRepository.findAllByMember_MemberIdAndIsDeletedFalse(caregiverId).stream()
@@ -120,9 +122,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public ScheduleWeekCaregiverListResDto getScheduleWeekCaregiverList(Long caregiverId,
-                                                                        ReadScheduleWeekCaregiverReqDto readScheduleWeekCaregiverReqDto) {
-
-        LocalDate startDate = readScheduleWeekCaregiverReqDto.getStartDate();
+                                                                        LocalDate startDate) {
         LocalDate endDate = startDate.plusDays(6);
 
         List<ScheduleWeekCaregiverResDto> scheduleWeek = scheduleRepository
@@ -169,6 +169,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                                             .filter(date -> (schedule.getWorkDay() & (1 << (date.getDayOfWeek().getValue() % 7))) != 0)
                                             .map(date -> ScheduleWeekAdminResDto.builder()
                                                     .scheduleId(schedule.getScheduleId())
+                                                    .caregiverId(caregiverId)
+                                                    .patientId(schedule.getPatientId())
                                                     .scheduleDate(date)
                                                     .startTime(schedule.getStartTime())
                                                     .endTime(schedule.getEndTime())
