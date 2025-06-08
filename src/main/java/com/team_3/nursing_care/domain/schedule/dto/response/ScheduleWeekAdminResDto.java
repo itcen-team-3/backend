@@ -11,6 +11,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class ScheduleWeekAdminResDto {
 
+    private Long caregiverId;
+    private Long patientId;
     private Long scheduleId;
     private LocalDate scheduleDate;
     private String patientName;
@@ -19,11 +21,15 @@ public class ScheduleWeekAdminResDto {
 
     @Builder
     public ScheduleWeekAdminResDto(Long scheduleId,
+                                   Long caregiverId,
+                                   Long patientId,
                                    LocalDate scheduleDate,
                                    String patientName,
                                    Time startTime,
                                    Time endTime) {
         this.scheduleId = scheduleId;
+        this.caregiverId=caregiverId;
+        this.patientId=patientId;
         this.scheduleDate = scheduleDate;
         this.patientName = patientName;
         this.startTime = startTime;

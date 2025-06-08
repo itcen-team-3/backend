@@ -59,7 +59,7 @@ public class ScheduleController {
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleWeekCaregiverList(userDetails.getMemberId(), startDate)));
     }
 
-    @GetMapping("/admin/week")
+    @PostMapping("/admin/week")
     public ResponseEntity<ResponseDto<ScheduleWeekAdminListResDto>> getScheduleWeekAdminList(@RequestBody ReadScheduleWeekAdminReqDto readScheduleWeekAdminReqDto){
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleWeekByAdmin(readScheduleWeekAdminReqDto)));
     }

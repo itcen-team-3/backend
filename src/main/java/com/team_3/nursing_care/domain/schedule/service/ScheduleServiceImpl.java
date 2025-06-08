@@ -169,6 +169,8 @@ public class ScheduleServiceImpl implements ScheduleService {
                                             .filter(date -> (schedule.getWorkDay() & (1 << (date.getDayOfWeek().getValue() % 7))) != 0)
                                             .map(date -> ScheduleWeekAdminResDto.builder()
                                                     .scheduleId(schedule.getScheduleId())
+                                                    .caregiverId(caregiverId)
+                                                    .patientId(schedule.getPatientId())
                                                     .scheduleDate(date)
                                                     .startTime(schedule.getStartTime())
                                                     .endTime(schedule.getEndTime())
