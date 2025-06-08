@@ -47,10 +47,10 @@ public class ScheduleController {
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleDayCaregiverList(userDetails.getMemberId(), scheduleDate)));
     }
 
-    @GetMapping("/care-giver/month")
+    @GetMapping("/care-giver/month/{yearMonth}")
     public ResponseEntity<ResponseDto<ScheduleMonthCaregiverListResDto>> getScheduleMonthList(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                                              @RequestBody ReadScheduleMonthCaregiverReqDto readScheduleMonthCaregiverReqDto){
-        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleMonthCaregiverList(userDetails.getMemberId(), readScheduleMonthCaregiverReqDto)));
+                                                                                              @PathVariable String yearMonth){
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleMonthCaregiverList(userDetails.getMemberId(), yearMonth)));
     }
 
     @GetMapping("/care-giver/week")

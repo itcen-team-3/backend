@@ -92,9 +92,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public ScheduleMonthCaregiverListResDto getScheduleMonthCaregiverList(Long caregiverId, ReadScheduleMonthCaregiverReqDto dto) {
+    public ScheduleMonthCaregiverListResDto getScheduleMonthCaregiverList(Long caregiverId, String yearMonth) {
 
-        LocalDate startOfMonth = LocalDate.of(dto.getYear(), dto.getMonth(), 1);
+        String[] parts = yearMonth.split("-");
+
+        LocalDate startOfMonth = LocalDate.of(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), 1);
         LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
 
         List<Schedule> schedules = scheduleRepository.findAllByMember_MemberIdAndIsDeletedFalse(caregiverId).stream()

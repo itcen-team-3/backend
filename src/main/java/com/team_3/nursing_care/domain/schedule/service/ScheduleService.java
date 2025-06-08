@@ -11,7 +11,7 @@ public interface ScheduleService {
     void deleteSchedule(Long scheduleId);
     void editSchedule(Long scheduleId, UpdateScheduleRequestDto updateScheduleRequestDto);
     ScheduleDayCaregiverListResDto getScheduleDayCaregiverList(Long caregiverId, LocalDate scheduleDate);
-    ScheduleMonthCaregiverListResDto getScheduleMonthCaregiverList(Long caregiverId, ReadScheduleMonthCaregiverReqDto readScheduleMonthCaregiverReqDto);
+    ScheduleMonthCaregiverListResDto getScheduleMonthCaregiverList(Long caregiverId, String yearMonth);
     ScheduleWeekCaregiverListResDto getScheduleWeekCaregiverList(Long caregiverId, ReadScheduleWeekCaregiverReqDto readScheduleWeekCaregiverReqDto);
     ScheduleWeekAdminListResDto getScheduleWeekByAdmin(ReadScheduleWeekAdminReqDto readScheduleWeekAdminReqDto);
     ScheduleDayAdminResDto getScheduleDayByAdmin(Long scheduleId);
