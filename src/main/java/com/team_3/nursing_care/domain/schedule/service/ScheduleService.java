@@ -12,7 +12,7 @@ public interface ScheduleService {
     void editSchedule(Long scheduleId, UpdateScheduleRequestDto updateScheduleRequestDto);
     ScheduleDayCaregiverListResDto getScheduleDayCaregiverList(Long caregiverId, LocalDate scheduleDate);
     ScheduleMonthCaregiverListResDto getScheduleMonthCaregiverList(Long caregiverId, String yearMonth);
-    ScheduleWeekCaregiverListResDto getScheduleWeekCaregiverList(Long caregiverId, ReadScheduleWeekCaregiverReqDto readScheduleWeekCaregiverReqDto);
+    ScheduleWeekCaregiverListResDto getScheduleWeekCaregiverList(Long caregiverId, LocalDate startDate);
     ScheduleWeekAdminListResDto getScheduleWeekByAdmin(ReadScheduleWeekAdminReqDto readScheduleWeekAdminReqDto);
     ScheduleDayAdminResDto getScheduleDayByAdmin(Long scheduleId);
 }

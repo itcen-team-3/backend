@@ -122,9 +122,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public ScheduleWeekCaregiverListResDto getScheduleWeekCaregiverList(Long caregiverId,
-                                                                        ReadScheduleWeekCaregiverReqDto readScheduleWeekCaregiverReqDto) {
-
-        LocalDate startDate = readScheduleWeekCaregiverReqDto.getStartDate();
+                                                                        LocalDate startDate) {
         LocalDate endDate = startDate.plusDays(6);
 
         List<ScheduleWeekCaregiverResDto> scheduleWeek = scheduleRepository
