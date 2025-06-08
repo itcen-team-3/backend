@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 import static com.team_3.nursing_care.common.exception.ResultMessage.Success;
 import static software.amazon.awssdk.http.HttpStatusCode.OK;
 
@@ -39,10 +41,10 @@ public class ScheduleController {
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, "근무 일정표를 정상적으로 수정 하였습니다."));
     }
 
-    @GetMapping("/care-giver/day")
+    @GetMapping("/care-giver/day/{scheduleDate}")
     public ResponseEntity<ResponseDto<ScheduleDayCaregiverListResDto>> getScheduleDayList(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                                          @RequestBody ReadScheduleDayCaregiverReqDto readScheduleDayCaregiverReqDto){
-        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleDayCaregiverList(userDetails.getMemberId(), readScheduleDayCaregiverReqDto)));
+                                                                                          @PathVariable LocalDate scheduleDate){
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleDayCaregiverList(userDetails.getMemberId(), scheduleDate)));
     }
 
     @GetMapping("/care-giver/month")

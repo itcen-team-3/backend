@@ -81,9 +81,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public ScheduleDayCaregiverListResDto getScheduleDayCaregiverList(Long caregiverId,
-                                                                      ReadScheduleDayCaregiverReqDto readScheduleDayCaregiverReqDto) {
+                                                                      LocalDate scheduleDate) {
 
-        List<ScheduleDayCaregiverResDto> scheduleDayCaregiverResDto = scheduleRepository.findByMemberIdAndScheduleDate(caregiverId, readScheduleDayCaregiverReqDto.getScheduleDate())
+        List<ScheduleDayCaregiverResDto> scheduleDayCaregiverResDto = scheduleRepository.findByMemberIdAndScheduleDate(caregiverId, scheduleDate)
                 .stream()
                 .map(ScheduleDayCaregiverResDto::from)
                 .toList();

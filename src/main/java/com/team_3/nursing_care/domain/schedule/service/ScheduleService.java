@@ -3,12 +3,14 @@ package com.team_3.nursing_care.domain.schedule.service;
 import com.team_3.nursing_care.domain.schedule.dto.request.*;
 import com.team_3.nursing_care.domain.schedule.dto.response.*;
 
+import java.time.LocalDate;
+
 public interface ScheduleService {
 
     void addWorkSchedule(CreateScheduleRequestDto createScheduleRequestDto);
     void deleteSchedule(Long scheduleId);
     void editSchedule(Long scheduleId, UpdateScheduleRequestDto updateScheduleRequestDto);
-    ScheduleDayCaregiverListResDto getScheduleDayCaregiverList(Long caregiverId, ReadScheduleDayCaregiverReqDto readScheduleDayCaregiverReqDto);
+    ScheduleDayCaregiverListResDto getScheduleDayCaregiverList(Long caregiverId, LocalDate scheduleDate);
     ScheduleMonthCaregiverListResDto getScheduleMonthCaregiverList(Long caregiverId, ReadScheduleMonthCaregiverReqDto readScheduleMonthCaregiverReqDto);
     ScheduleWeekCaregiverListResDto getScheduleWeekCaregiverList(Long caregiverId, ReadScheduleWeekCaregiverReqDto readScheduleWeekCaregiverReqDto);
     ScheduleWeekAdminListResDto getScheduleWeekByAdmin(ReadScheduleWeekAdminReqDto readScheduleWeekAdminReqDto);
