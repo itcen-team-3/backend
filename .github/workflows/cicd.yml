@@ -27,6 +27,9 @@ env:
   RDB_NAME: ${{secrets.RDB_NAME}}
   REDIS_PRIVATE_IPV4: ${{secrets.REDIS_PRIVATE_IPV4}}
   REDIS_PORT: ${{secrets.REDIS_PORT}}
+  JWT_ENCODING_KEY: ${{secrets.JWT_ENCODING_KEY}}
+  JWT_ACCESS_EXPIRATION_TIME: ${{secrets.JWT_ACCESS_EXPIRATION_TIME}}
+  JWT_REFRESH_EXPIRATION_TIME: ${{secrets.JWT_REFRESH_EXPIRATION_TIME}}
 
   CONTAINER_NAME: nursing-care
   HOST_PORT: 8080
@@ -93,6 +96,9 @@ jobs:
             RDB_NAME=${{env.RDB_NAME}}
             REDIS_PRIVATE_IPV4=${{env.REDIS_PRIVATE_IPV4}}
             REDIS_PORT=${{env.REDIS_PORT}}
+            JWT_ENCODING_KEY=${{env.JWT_ENCODING_KEY}}
+            JWT_ACCESS_EXPIRATION_TIME=${{env.JWT_ACCESS_EXPIRATION_TIME}}
+            JWT_REFRESH_EXPIRATION_TIME=${{env.JWT_REFRESH_EXPIRATION_TIME}}
           cache-from: type=github,ref=${{ github.ref }}
           cache-to: type=inline
 
