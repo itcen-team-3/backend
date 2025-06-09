@@ -1,0 +1,19 @@
+spring:
+  cloud:
+    aws:
+      credentials:
+        access-key: ${AWS_ACCESS_KEY}
+        secret-key: ${AWS_SECRET_KEY}
+      s3:
+        bucket: ${AWS_BUCKET_NAME}
+      region:
+        static: ${AWS_REGION}
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+transcribe:
+  polling-interval-ms: 1000
+  polling-timeout-sec: 60

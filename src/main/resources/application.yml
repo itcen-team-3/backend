@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: nursing_care
+  profiles:
+    active: aws, deploy, monitoring
+
+logging:
+  level:
+    root: INFO
+
+coolSMS:
+  send_number: ${COOLSMS_PHONE_NUMBER}
+  api_key: ${COOLSMS_API_KEY}
+  api_secret: ${COOLSMS_API_SECRET}
+
+business_authenticity:
+  url: ${BUSINESS_AUTHENTICITY_URL}
+  path: ${BUSINESS_AUTHENTICITY_PATH}
+  service_key: ${BUSINESS_AUTHENTICITY_SERVICE_KEY}
+
+jwt:
+  encoding:
+    key: ${JWT_ENCODING_KEY}
+  access:
+    expiration_time: ${JWT_ACCESS_EXPIRATION_TIME}
+  refresh:
+    expiration_time: ${JWT_REFRESH_EXPIRATION_TIME}
+
+

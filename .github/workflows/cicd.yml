@@ -1,0 +1,151 @@
+name: Spring Boot CI/CD with Docker Hub
+
+on:
+  push:
+    branches:
+      - deploy
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+  ECR_REPOSITORY_NAME: ${{ secrets.ECR_REPOSITORY_NAME }}
+  ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+  IMAGE_TAG_SHA: ${{ github.sha }}
+
+  BUSINESS_AUTHENTICITY_PATH: ${{secrets.BUSINESS_AUTHENTICITY_PATH}}
+  BUSINESS_AUTHENTICITY_SERVICE_KEY: ${{secrets.BUSINESS_AUTHENTICITY_SERVICE_KEY}}
+  BUSINESS_AUTHENTICITY_URL: ${{secrets.BUSINESS_AUTHENTICITY_URL}}
+  COOLSMS_API_KEY: ${{secrets.COOLSMS_API_KEY}}
+  COOLSMS_API_SECRET: ${{secrets.COOLSMS_API_SECRET}}
+  COOLSMS_PHONE_NUMBER: ${{secrets.COOLSMS_PHONE_NUMBER}}
+  RDB_USERNAME: ${{secrets.RDB_USERNAME}}
+  RDB_PASSWORD: ${{secrets.RDB_PASSWORD}}
+  RDB_ENDPOINT: ${{secrets.RDB_ENDPOINT}}
+  RDB_PORT: ${{secrets.RDB_PORT}}
+  RDB_NAME: ${{secrets.RDB_NAME}}
+  REDIS_PRIVATE_IPV4: ${{secrets.REDIS_PRIVATE_IPV4}}
+  REDIS_PORT: ${{secrets.REDIS_PORT}}
+
+  CONTAINER_NAME: nursing-care
+  HOST_PORT: 8080
+  CONTAINER_PORT: 8080
+
+jobs:
+  build_and_push_docker_image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Spring Boot application
+        run: ./gradlew build -x test
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to AWS ECR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.ECR_REGISTRY }}
+          username: AWS
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Push Docker image to ECR
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY_NAME }}:latest
+          platforms: linux/arm64
+          build-args: |
+            AWS_ACCESS_KEY=${{ env.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
+            AWS_BUCKET_NAME=${{ env.S3_BUCKET_NAME }}
+            AWS_REGION=${{ env.AWS_REGION }}
+            BUSINESS_AUTHENTICITY_PATH=${{env.BUSINESS_AUTHENTICITY_PATH}}
+            BUSINESS_AUTHENTICITY_SERVICE_KEY=${{env.BUSINESS_AUTHENTICITY_SERVICE_KEY}}
+            BUSINESS_AUTHENTICITY_URL=${{env.BUSINESS_AUTHENTICITY_URL}}
+            COOLSMS_API_KEY=${{env.COOLSMS_API_KEY}}
+            COOLSMS_API_SECRET=${{env.COOLSMS_API_SECRET}}
+            COOLSMS_PHONE_NUMBER=${{env.COOLSMS_PHONE_NUMBER}}
+            RDB_USERNAME=${{env.RDB_USERNAME}}
+            RDB_PASSWORD=${{env.RDB_PASSWORD}}
+            RDB_ENDPOINT=${{env.RDB_ENDPOINT}}
+            RDB_PORT=${{env.RDB_PORT}}
+            RDB_NAME=${{env.RDB_NAME}}
+            REDIS_PRIVATE_IPV4=${{env.REDIS_PRIVATE_IPV4}}
+            REDIS_PORT=${{env.REDIS_PORT}}
+          cache-from: type=github,ref=${{ github.ref }}
+          cache-to: type=inline
+
+      #------------#------------#------------#------------
+
+  deploy_to_private_ec2:
+    runs-on: self-hosted
+    needs: build_and_push_docker_image
+    steps:
+      - name: Checkout source code on Self-Hosted Runner
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (for ECR pull on private runner)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+          # Runner EC2에 IAM 역할이 할당되어 있다면 Key/Secret 대신 Role 을 사용하는 것이 보안상 더 좋습니다.
+          # role-to-assume: arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/YourRunnerIAMRole # IAM Role 사용 예시
+
+      - name: Pull Docker image from ECR and Run Container on Private EC2
+        run: |
+          echo "--- 배포 시작 (Self-Hosted Runner 에서 실행) ---"
+          echo "EC2 서버에서 Docker Install 스크립트 실행"
+          /home/ubuntu/script/docker_setting.sh || true
+          
+          echo "EC2 서버에서 AWS CLI Install 스크립트 실행"
+          /home/ubuntu/script/awscli_setting.sh || true
+          
+          export AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
+          export AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
+          export AWS_DEFAULT_REGION=${{ env.AWS_REGION }}
+          aws configure list
+          
+        
+          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
+          echo "ECR 로그인 완료"
+          
+          # Docker Pull
+          docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY_NAME }}:latest
+          echo "ECR 이미지 풀 완료: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY_NAME }}:latest"
+          
+          # Stop and remove old container
+          echo "기존 Docker 컨테이너 (${{ env.CONTAINER_NAME }}) 중지 및 제거"
+          # 컨테이너가 없을 경우 오류 방지
+          docker stop ${{ env.CONTAINER_NAME }} || true
+          docker rm ${{ env.CONTAINER_NAME }} || true
+          echo "기존 컨테이너 처리 완료"
+          
+          # Run new container
+          echo "새 Docker 컨테이너 (${{ env.CONTAINER_NAME }}) 실행"
+          # -d: detached mode, -p: port mapping, --name: container name
+          docker run -d -p ${{ env.HOST_PORT }}:${{ env.CONTAINER_PORT }} --name ${{ env.CONTAINER_NAME }} ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY_NAME }}:latest
+          echo "새 컨테이너 실행 명령 완료"
+          echo "--- 배포 완료 ---"
