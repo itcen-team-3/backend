@@ -193,6 +193,15 @@ public class ScheduleServiceImpl implements ScheduleService {
         return ScheduleDayAdminResDto.from(schedule, schedule.getMember().getMemberName(), member.getProfileImageUrl());
     }
 
+    @Override
+    public ScheduleReadResDto readSchedule(Long scheduleId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(()-> new IllegalArgumentException(("존재하지 않는 스케줄 입니다")));
+        Member caregiver = memberRepository.findByMemberId(schedule.getMember().getMemberId());
+        Member patient = memberRepository.findByMemberId(schedule.getPatientId());
+        return ScheduleReadResDto.from(schedule, caregiver, patient);
+    }
+
 
     private Schedule buildUpdateSchedule(
             Long scheduleId,
