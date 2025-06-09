@@ -1,6 +1,7 @@
 package com.team_3.nursing_care.domain.schedule.dto.response;
 
 import com.team_3.nursing_care.domain.member.entity.Member;
+import com.team_3.nursing_care.domain.schedule.constant.ScheduleStatus;
 import com.team_3.nursing_care.domain.schedule.entity.Schedule;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 public class ScheduleReadResDto {
 
     private Long patientId;
+    private Long caregiverId;
     private String caregiverName;
     private String patientName;
     private Boolean isFamily;
@@ -24,10 +26,12 @@ public class ScheduleReadResDto {
     private int workDay;
     private String paymentType;
     private int paymentForHour;
+    private ScheduleStatus status;
 
     @Builder
     public ScheduleReadResDto(
                               Long patientId,
+                              Long caregiverId,
                               String caregiverName,
                               String patientName,
                               Boolean isFamily,
@@ -37,7 +41,9 @@ public class ScheduleReadResDto {
                               Time endTime,
                               int workDay,
                               String paymentType,
-                              int paymentForHour) {
+                              int paymentForHour,
+                              ScheduleStatus status) {
+        this.caregiverId=caregiverId;
         this.patientId=patientId;
         this.caregiverName = caregiverName;
         this.patientName = patientName;
@@ -49,10 +55,12 @@ public class ScheduleReadResDto {
         this.workDay = workDay;
         this.paymentType = paymentType;
         this.paymentForHour = paymentForHour;
+        this.status=status;
     }
 
     public static ScheduleReadResDto from(Schedule schedule, Member caregiver, Member patient){
         return ScheduleReadResDto.builder()
+                .caregiverId(schedule.getMember().getMemberId())
                 .patientId(schedule.getPatientId())
                 .caregiverName(caregiver.getMemberName())
                 .patientName(patient.getMemberName())
@@ -64,6 +72,7 @@ public class ScheduleReadResDto {
                 .workDay(schedule.getWorkDay())
                 .paymentType(schedule.getPaymentType().getPaymentType())
                 .paymentForHour(schedule.getPaymentForHour())
+                .status(schedule.getStatus())
                 .build();
     }
 }
