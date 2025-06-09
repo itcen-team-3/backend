@@ -159,6 +159,10 @@ public class CaregiverServiceImpl implements CaregiverService {
         List<Schedule> schedules = scheduleRepository.findByMemberIdAndScheduleDate(caregiverId, today);
 
         List<CaregiverScheduleResDto> scheduleDtos = schedules.stream()
+                .filter(schedule -> {
+                        int dayOfWeekBit = 1 << (today.getDayOfWeek().getValue() - 1);
+                        return (schedule.getWorkDay() & dayOfWeekBit) != 0;
+                })
                 .map(schedule -> {
                     String patientName = memberRepository.findById(schedule.getPatientId())
                             .map(Member::getMemberName)
@@ -183,7 +187,6 @@ public class CaregiverServiceImpl implements CaregiverService {
                             .build();
                 })
                 .toList();
-
         return CaregiverDashboardResDto.builder()
                 .caregiverName(name)
                 .schedules(scheduleDtos)
