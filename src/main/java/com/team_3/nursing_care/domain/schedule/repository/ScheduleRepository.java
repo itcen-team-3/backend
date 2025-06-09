@@ -1,11 +1,13 @@
 package com.team_3.nursing_care.domain.schedule.repository;
 
+import com.team_3.nursing_care.domain.member.entity.Member;
 import com.team_3.nursing_care.domain.schedule.entity.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
@@ -15,4 +17,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findAllByMember_MemberIdAndIsDeletedFalse(Long memberId);
 
     List<Schedule> findAllByPatientIdAndIsDeletedFalse(Long patientId);
+
+    Optional<Schedule> findByMember(Member member);
 }
