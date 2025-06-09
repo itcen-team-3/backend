@@ -1,5 +1,7 @@
 package com.team_3.nursing_care.domain.schedule.dto.response;
 
+import com.team_3.nursing_care.domain.member.entity.Member;
+import com.team_3.nursing_care.domain.schedule.entity.Schedule;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,5 +45,20 @@ public class ScheduleReadResDto {
         this.workDay = workDay;
         this.paymentType = paymentType;
         this.paymentForHour = paymentForHour;
+    }
+
+    public static ScheduleReadResDto from(Schedule schedule, Member caregiver, Member patient){
+        return ScheduleReadResDto.builder()
+                .caregiverName(caregiver.getMemberName())
+                .patientName(patient.getMemberName())
+                .isFamily(schedule.isFamily())
+                .startDate(schedule.getStartDate())
+                .endDate(schedule.getEndDate())
+                .startTime(schedule.getStartTime())
+                .endTime(schedule.getEndTime())
+                .workDay(schedule.getWorkDay())
+                .paymentType(schedule.getPaymentType().getPaymentType())
+                .paymentForHour(schedule.getPaymentForHour())
+                .build();
     }
 }

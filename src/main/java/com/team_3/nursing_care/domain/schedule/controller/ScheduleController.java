@@ -69,5 +69,10 @@ public class ScheduleController {
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.getScheduleDayByAdmin(scheduleId)));
     }
 
+    @GetMapping("/{scheduleId}")
+    public ResponseEntity<ResponseDto<ScheduleReadResDto>> getScheduleByScheduleId(@PathVariable Long scheduleId){
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, scheduleService.readSchedule(scheduleId)));
+    }
+
 
 }

@@ -195,8 +195,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public ScheduleReadResDto readSchedule(Long scheduleId) {
-
-        return null;
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(()-> new IllegalArgumentException(("존재하지 않는 스케줄 입니다")));
+        Member caregiver = memberRepository.findByMemberId(schedule.getMember().getMemberId());
+        Member patient = memberRepository.findByMemberId(schedule.getPatientId());
+        return ScheduleReadResDto.from(schedule, caregiver, patient);
     }
 
 
