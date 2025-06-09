@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class ScheduleReadResDto {
 
+    private Long patientId;
     private String caregiverName;
     private String patientName;
     private Boolean isFamily;
@@ -25,7 +26,9 @@ public class ScheduleReadResDto {
     private int paymentForHour;
 
     @Builder
-    public ScheduleReadResDto(String caregiverName,
+    public ScheduleReadResDto(
+                              Long patientId,
+                              String caregiverName,
                               String patientName,
                               Boolean isFamily,
                               LocalDate startDate,
@@ -35,6 +38,7 @@ public class ScheduleReadResDto {
                               int workDay,
                               String paymentType,
                               int paymentForHour) {
+        this.patientId=patientId;
         this.caregiverName = caregiverName;
         this.patientName = patientName;
         this.isFamily = isFamily;
@@ -49,6 +53,7 @@ public class ScheduleReadResDto {
 
     public static ScheduleReadResDto from(Schedule schedule, Member caregiver, Member patient){
         return ScheduleReadResDto.builder()
+                .patientId(schedule.getPatientId())
                 .caregiverName(caregiver.getMemberName())
                 .patientName(patient.getMemberName())
                 .isFamily(schedule.isFamily())
