@@ -82,10 +82,11 @@ public class MemberServiceImpl implements MemberService {
         String s3Key = s3Service.uploadBusinessRegistrationFile(reqSignUpDto.getBusinessRegistrationFile());
         String fileUrl = s3Service.getFileUrl(s3Key);
 
-        businessAuthenticityService.validate(new ReqBusinessAuthenticityDto(
-                        reqSignUpDto.getBusinessRegistrationNumber(),
-                        reqSignUpDto.getOpeningDate(),
-                        reqSignUpDto.getRepresentativeName()))
+        businessAuthenticityService.validate(
+                        new ReqBusinessAuthenticityDto(
+                                reqSignUpDto.getBusinessRegistrationNumber(),
+                                reqSignUpDto.getOpeningDate(),
+                                reqSignUpDto.getRepresentativeName()))
                 .block();
 
         Company company = companyRepository.save(Company.create(reqSignUpDto, fileUrl));

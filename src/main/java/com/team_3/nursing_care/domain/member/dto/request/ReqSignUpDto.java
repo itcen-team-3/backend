@@ -42,6 +42,8 @@ public class ReqSignUpDto {
     @NotBlank(message = "개업연월일은 는 필수 항목입니다.")
     private String openingDate;
 
+    private String profileImageUrl = "https://itcen-team3.s3.ap-northeast-2.amazonaws.com/profile/profileImage.png";
+
     @Pattern(regexp = "^\\d{11}$", message = "전화번호는 11자리의 숫자로만 입력해주세요.")
     private String phoneNumber;
 

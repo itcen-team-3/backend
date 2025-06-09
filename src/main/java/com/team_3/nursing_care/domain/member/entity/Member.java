@@ -79,6 +79,7 @@ public class Member extends BaseEntity {
                 .role(Role.ADMIN)
                 .loginId(reqSignUpDto.getLoginId())
                 .loginPw(encodedPw)
+                .profileImageUrl(reqSignUpDto.getProfileImageUrl())
                 .build();
     }
 
