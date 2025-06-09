@@ -193,6 +193,12 @@ public class ScheduleServiceImpl implements ScheduleService {
         return ScheduleDayAdminResDto.from(schedule, schedule.getMember().getMemberName(), member.getProfileImageUrl());
     }
 
+    @Override
+    public ScheduleReadResDto readSchedule(Long scheduleId) {
+
+        return null;
+    }
+
 
     private Schedule buildUpdateSchedule(
             Long scheduleId,
