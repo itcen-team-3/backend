@@ -4,6 +4,7 @@ import com.team_3.nursing_care.domain.member.entity.Member;
 import com.team_3.nursing_care.domain.schedule.entity.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,4 +20,15 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findAllByPatientIdAndIsDeletedFalse(Long patientId);
 
     Optional<Schedule> findByMember(Member member);
+
+    @Query("select s from Schedule s " +
+            "where s.member = :member " +
+            "and s.patientId = :patientId " +
+            "and s.startDate <= :createDate " +
+            "and s.endDate >= :createDate")
+    Optional<Schedule> findScheduleByCareLog(
+            @Param("member") Member member,
+            @Param("patientId") Long patientId,
+            @Param("createDate") LocalDate createDate
+    );
 }

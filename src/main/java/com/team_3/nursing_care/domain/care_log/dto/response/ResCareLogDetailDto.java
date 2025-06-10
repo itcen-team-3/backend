@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,8 +22,9 @@ public class ResCareLogDetailDto {
 
     private String careGiverName;
     private String patientName;
-    private LocalDate date;
-    private String workTime;
+    private Time startTime;
+    private Time endTime;
+    private LocalDate createDate;
 
     private List<CareDetailDto> careDetailList;
 
@@ -48,19 +50,18 @@ public class ResCareLogDetailDto {
         }
     }
 
-    public static ResCareLogDetailDto create(CareLog careLog) {
+    public static ResCareLogDetailDto create(CareLog careLog, Time startTime, Time endTime) {
         return ResCareLogDetailDto.builder()
                 .careGiverName(careLog.getCareGiver().getMemberName())
                 .patientName(careLog.getPatientName())
-                .date(LocalDate.from(careLog.getCreateDate()))
-                .workTime("dummy data")
+                .startTime(startTime)
+                .endTime(endTime)
                 .careDetailList(careLog.getCareDetailList().stream().map(CareDetailDto::create).collect(Collectors.toList()))
                 .imageUrlList(careLog.getCareLogImageList().stream().map(CareLogImage::getImageUrl).collect(Collectors.toList()))
+                .createDate(LocalDate.from(careLog.getCreateDate()))
                 .signUrl(careLog.getSignUrl())
                 .description(careLog.getDescription())
                 .build();
-
-        // TODO: 스케줄에서 받아와야 함
     }
 
 }
