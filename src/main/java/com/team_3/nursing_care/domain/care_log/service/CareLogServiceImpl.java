@@ -93,10 +93,12 @@ public class CareLogServiceImpl implements CareLogService {
     @Override
     @Transactional(readOnly = true)
     public ResCareLogDetailDto getCareLogById(Long id, CustomUserDetails userDetails) {
-        CareLog careLog = careLogRepository.findById(id).orElseThrow(() -> new CareLogException(HttpStatusCode.BAD_REQUEST, "not found care log by id: " + id));
+        CareLog careLog = careLogRepository.findByIdJoinEntity(id).orElseThrow(() -> new CareLogException(HttpStatusCode.BAD_REQUEST, "EntityGraph Error..?" + id));
+        Schedule schedule = scheduleRepository.findScheduleByCareLog(careLog.getCareGiver(), careLog.getPatientId(), careLog.getCreateDate().toLocalDate()).orElseThrow(() -> new CareLogException(HttpStatusCode.NOT_FOUND, "not found schedule by care log"));
+
         checkAdminAndAuthorPatient(careLog, userDetails);
-        CareLog joinCareLog = careLogRepository.findByIdJoinEntity(id).orElseThrow(() -> new CareLogException(HttpStatusCode.BAD_REQUEST, "EntityGraph Error..?" + id));
-        return ResCareLogDetailDto.create(joinCareLog);
+
+        return ResCareLogDetailDto.create(careLog, schedule.getStartTime(), schedule.getEndTime());
     }
 
     @Override
