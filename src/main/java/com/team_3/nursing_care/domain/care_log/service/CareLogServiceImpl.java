@@ -4,6 +4,9 @@ import com.team_3.nursing_care.common.exception.CareLogException;
 import com.team_3.nursing_care.common.proxy.S3Service;
 import com.team_3.nursing_care.common.security.user.custom.CustomUserDetails;
 import com.team_3.nursing_care.domain.attendance.repository.AttendanceLogRepository;
+import com.team_3.nursing_care.domain.care_log.constant.ImageType;
+import com.team_3.nursing_care.domain.care_log.dto.request.CareItemDto;
+import com.team_3.nursing_care.domain.care_log.dto.request.ImageDto;
 import com.team_3.nursing_care.domain.care_log.dto.request.ReqCreateCareLogDto;
 import com.team_3.nursing_care.domain.care_log.dto.request.ReqUpdateCareLogDto;
 import com.team_3.nursing_care.domain.care_log.dto.response.ResCareLogDetailDto;
@@ -38,7 +41,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.team_3.nursing_care.domain.care_log.dto.request.ReqCreateCareLogDto.CareItemDto;
 import static com.team_3.nursing_care.domain.schedule.constant.ScheduleStatus.ONGOING;
 
 @Service
@@ -63,19 +65,25 @@ public class CareLogServiceImpl implements CareLogService {
         Member careGiver = memberRepository.findById(userDetails.getMemberId()).orElseThrow(() -> new CareLogException(HttpStatusCode.BAD_REQUEST, "not found member by id: " + userDetails.getMemberId()));
 
         checkSchedule(careGiver);
-        checkNfc(careGiver, patient);
+//        checkNfc(careGiver, patient);
 
         String signS3Key = s3Service.uploadSignFile(reqCareLogDto.getSignFile());
         String signUrl = s3Service.getFileUrl(signS3Key);
 
-        if (!reqCareLogDto.getCareGiverId().equals(userDetails.getMemberId()))
-            throw new CareLogException(HttpStatusCode.BAD_REQUEST, "Request body id and authentication object id do not match.");
+        List<ImageDto> imageDtoList = reqCareLogDto.getImageDtoList();
+        List<ImageDto> mealList = imageDtoList.stream().filter(dto -> dto.getImageType().equals(ImageType.MEAL)).toList();
+        List<ImageDto> medicationList = imageDtoList.stream().filter(dto -> dto.getImageType().equals(ImageType.MEDICATION)).toList();
 
-        List<CareLogImage> careLogImageList = processingImageFile(reqCareLogDto.getImageFileList());
+        List<CareLogImage> mealImageList = processingImageFile(mealList, ImageType.MEAL);
+        List<CareLogImage> medicationImageList = processingImageFile(medicationList, ImageType.MEDICATION);
+
         List<CareDetail> careDetailList = processingCareDetailAndItem(reqCareLogDto.getCareItemList());
 
         CareLog careLog = CareLog.create(careGiver, patient.getMemberId(), patient.getMemberName(), signUrl, reqCareLogDto.getDescription());
-        careLogImageList.forEach(careLog::connectCareLogImage);
+
+        mealImageList.forEach(careLog::connectCareLogImage);
+        medicationImageList.forEach(careLog::connectCareLogImage);
+
         careDetailList.forEach(careLog::connectCareDetail);
 
         careLogRepository.save(careLog);
@@ -113,7 +121,14 @@ public class CareLogServiceImpl implements CareLogService {
             signFileUrl = s3Service.getFileUrl(signS3Key);
         }
 
-        List<CareLogImage> careLogImageList = processingImageFile(reqUpdateCareLogDto.getImageFileList());
+        List<ImageDto> imageDtoList = reqUpdateCareLogDto.getImageDtoList();
+
+        List<ImageDto> mealList = imageDtoList.stream().filter(dto -> dto.getImageType().equals(ImageType.MEAL)).toList();
+        List<ImageDto> medicationList = imageDtoList.stream().filter(dto -> dto.getImageType().equals(ImageType.MEDICATION)).toList();
+
+        List<CareLogImage> careLogImageList = processingImageFile(mealList, ImageType.MEAL);
+        careLogImageList.addAll(processingImageFile(medicationList, ImageType.MEDICATION));
+
         List<CareDetail> careDetailList = processingCareDetailAndItem(reqUpdateCareLogDto.getCareItemList());
 
         careLogRepository.save(careLog.update(signFileUrl, reqUpdateCareLogDto.getDescription(), careLogImageList, careDetailList));
@@ -127,13 +142,15 @@ public class CareLogServiceImpl implements CareLogService {
         careLog.softDelete(userDetails.getMemberId());
     }
 
-    private List<CareLogImage> processingImageFile(List<MultipartFile> imageFileList) {
+    private List<CareLogImage> processingImageFile(List<ImageDto> imageDtoList, ImageType type) {
         List<CareLogImage> careLogImageList = new ArrayList<>();
-        if (imageFileList != null && !imageFileList.isEmpty()) {
+
+        if (imageDtoList != null && !imageDtoList.isEmpty()) {
+            List<MultipartFile> imageFileList = imageDtoList.stream().map(ImageDto::getImageFile).toList();
             List<String> s3KeyList = s3Service.uploadImageFileList(imageFileList);
 
             for (String s3Key : s3KeyList)
-                careLogImageList.add(CareLogImage.create(s3Service.getFileUrl(s3Key)));
+                careLogImageList.add(CareLogImage.create(s3Service.getFileUrl(s3Key), type));
         }
         return careLogImageList;
     }
@@ -165,6 +182,10 @@ public class CareLogServiceImpl implements CareLogService {
     private void checkSchedule(Member careGiver) {
         Schedule schedule = scheduleRepository.findByMember(careGiver).orElse(null);
         int todayBit = 1 << (LocalDate.now().getDayOfWeek().getValue() - 1);
+
+        log.info("");
+        log.info("todayBit: {}", todayBit);
+        log.info("careGiver: {}", careGiver);
 
         if (schedule == null) throw new CareLogException(HttpStatusCode.NOT_FOUND, "not found schedule");
         if (!schedule.getStatus().equals(ONGOING))

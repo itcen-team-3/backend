@@ -40,7 +40,6 @@ public class AttendanceLog extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private CheckInStatus checkInStatus;
 
-
     @Enumerated(EnumType.STRING)
     private CheckOutStatus checkOutStatus;
 
