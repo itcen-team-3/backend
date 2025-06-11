@@ -137,7 +137,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                     LocalDate effectiveEnd = schedule.getEndDate().isAfter(endDate) ? endDate : schedule.getEndDate();
 
                     return effectiveStart.datesUntil(effectiveEnd.plusDays(1))
-                            .filter(date -> (schedule.getWorkDay() & (1 << (date.getDayOfWeek().getValue() % 7))) != 0)
+                            .filter(date -> (schedule.getWorkDay() & (1 << (date.getDayOfWeek().getValue() - 1))) != 0)
                             .map(date -> ScheduleWeekCaregiverResDto.builder()
                                     .scheduleId(schedule.getScheduleId())
                                     .scheduleDate(date)
@@ -168,7 +168,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                                     LocalDate effectiveEnd = schedule.getEndDate().isAfter(endDate) ? endDate : schedule.getEndDate();
 
                                     return effectiveStart.datesUntil(effectiveEnd.plusDays(1))
-                                            .filter(date -> (schedule.getWorkDay() & (1 << (date.getDayOfWeek().getValue() % 7))) != 0)
+                                            .filter(date -> (schedule.getWorkDay() & (1 << (date.getDayOfWeek().getValue() - 1))) != 0)
                                             .map(date -> ScheduleWeekAdminResDto.builder()
                                                     .scheduleId(schedule.getScheduleId())
                                                     .caregiverId(caregiverId)
