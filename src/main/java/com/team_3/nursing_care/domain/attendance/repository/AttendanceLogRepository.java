@@ -62,5 +62,5 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
             "and al.patientId = :patientId " +
             "and al.checkIn > :startDate " +
             "and al.checkOut < :endDate")
-    List<AttendanceLog> findLogForSalary(Member member, String patient, LocalDateTime startDate, LocalDateTime endDate);
+    List<AttendanceLog> findLogForSalary(Member member, Long patientId, LocalDateTime startDate, LocalDateTime endDate);
 }
