@@ -30,7 +30,9 @@ public class SalaryScheduler {
     private final ScheduleRepository scheduleRepository;
     private final AttendanceLogRepository attendanceLogRepository;
 
-    @Scheduled(cron = "0 13 14 * * ?")
+    @Scheduled(cron = "0 13 14 L * ?")
+
+//    @Scheduled(cron = "0 13 14 * * ?")
     @Transactional
     public void schedule() {
         List<Schedule> scheduleList = scheduleRepository.findAllForScheduler(ScheduleStatus.ONGOING);
