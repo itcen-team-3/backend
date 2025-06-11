@@ -30,14 +30,14 @@ public class SalaryScheduler {
     private final ScheduleRepository scheduleRepository;
     private final AttendanceLogRepository attendanceLogRepository;
 
-
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 13 14 * * ?")
     @Transactional
     public void schedule() {
         List<Schedule> scheduleList = scheduleRepository.findAllForScheduler(ScheduleStatus.ONGOING);
-        List<Long> scheduleIdList = scheduleList.stream().map(Schedule::getScheduleId).toList();
+
+
         List<Salary> saveList = new ArrayList<>();
-        List<Salary> existedSalaryList = salaryRepository.findByScheduleIdIn(scheduleIdList);
+        List<Salary> existedSalaryList = salaryRepository.findByScheduleIn(scheduleList);
 
         scheduleList.forEach(schedule -> {
             LocalDate startDate = schedule.getStartDate();
@@ -48,17 +48,17 @@ public class SalaryScheduler {
                     .max(Comparator.comparing(Salary::getStartDate)).orElse(null);
 
             if (existedSalary == null) {
-                List<AttendanceLog> attendanceLogList = attendanceLogRepository.findLogForSalary(schedule.getMember(), schedule.getPatient(), startDate.atStartOfDay(), startDate.atStartOfDay().plusDays(30));
+                List<AttendanceLog> attendanceLogList = attendanceLogRepository.findLogForSalary(schedule.getMember(), schedule.getPatientId(), startDate.atStartOfDay(), startDate.atStartOfDay().plusDays(30));
                 saveList.add(calculateCreateSalary(schedule, attendanceLogList, schedule.getStartDate()));
 
             } else {
                 LocalDate salaryEndDate = existedSalary.getEndDate();
 
                 if (salaryEndDate.plusDays(30).isBefore(schedule.getEndDate())) {
-                    List<AttendanceLog> attendanceLogList = attendanceLogRepository.findLogForSalary(schedule.getMember(), schedule.getPatient(), salaryEndDate.atStartOfDay().plusDays(1), salaryEndDate.atStartOfDay().plusDays(30));
+                    List<AttendanceLog> attendanceLogList = attendanceLogRepository.findLogForSalary(schedule.getMember(), schedule.getPatientId(), salaryEndDate.atStartOfDay().plusDays(1), salaryEndDate.atStartOfDay().plusDays(30));
                     saveList.add(calculateCreateSalary(schedule, attendanceLogList, endDate));
                 } else {
-                    List<AttendanceLog> attendanceLogList = attendanceLogRepository.findLogForSalary(schedule.getMember(), schedule.getPatient(), salaryEndDate.atStartOfDay().plusDays(1), schedule.getEndDate().atStartOfDay().plusDays(1));
+                    List<AttendanceLog> attendanceLogList = attendanceLogRepository.findLogForSalary(schedule.getMember(), schedule.getPatientId(), salaryEndDate.atStartOfDay().plusDays(1), schedule.getEndDate().atStartOfDay().plusDays(1));
                     saveList.add(calculateCreateSalary(schedule, attendanceLogList, salaryEndDate.plusDays(1)));
                 }
             }
