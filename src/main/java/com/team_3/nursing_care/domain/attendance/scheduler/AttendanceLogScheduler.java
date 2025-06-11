@@ -32,7 +32,7 @@ public class AttendanceLogScheduler {
         AttendanceLog at = attendanceLogRepository.findById(1L).orElse(null);
 
         attendanceLogRepository.findAllForSchedule().forEach(al -> {
-            Schedule schedule = scheduleRepository.findByAttendanceLog(al.getMember().getMemberId(), al.getPatientId(), al.getCheckIn().toLocalDate()).orElseThrow(() -> new CustomException(HttpStatusCode.NO_CONTENT, "로그 기록 상 일치하는 것이 되는 스케줄이 없다."));
+            Schedule schedule = scheduleRepository.findByAttendanceLog(al.getMember().getMemberId(), al.getPatientId(), al.getCheckIn().toLocalDate()).orElseThrow(() -> new CustomException(HttpStatusCode.NOT_FOUND, "로그 기록 상 일치하는 것이 되는 스케줄이 없다."));
 
             if (schedule.getStartTime().after(Time.valueOf(al.getCheckIn().toLocalTime())) ||
                     schedule.getStartTime().equals(Time.valueOf(al.getCheckIn().toLocalTime())))
