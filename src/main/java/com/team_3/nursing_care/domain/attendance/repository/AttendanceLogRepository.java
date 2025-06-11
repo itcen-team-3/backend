@@ -21,9 +21,7 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
     @Query("select al from AttendanceLog al " +
             "where al.member = :member " +
             "and al.patientId = :patientId " +
-            "and al.checkIn IS NOT NULL " +
-            "and al.checkIn > :startOfDay " +
-            "and al.checkIn < :startOfNextDay")
+            "and al.checkIn IS NOT NULL ")
     Optional<AttendanceLog> findByMemberAndCheckInDate(
             @Param("member") Member member,
             @Param("patientId") Long patientId,
@@ -34,10 +32,7 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
     @Query("select al from AttendanceLog al " +
             "where al.member = :member " +
             "and al.checkIn IS NOT NULL " +
-            "and al.patientId = :patientId " +
-            "and al.checkOut IS NULL " +
-            "and al.checkOut > :startOfDay " +
-            "and al.checkOut < :startOfNextDay")
+            "and al.checkOut IS NULL ")
     Optional<AttendanceLog> findByMemberAndCheckOutDate(
             @Param("member") Member member,
             @Param("patientId") Long patientId,

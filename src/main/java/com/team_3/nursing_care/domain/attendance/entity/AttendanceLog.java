@@ -36,11 +36,9 @@ public class AttendanceLog extends BaseEntity {
     private LocalDateTime checkIn;
     private LocalDateTime checkOut;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private CheckInStatus checkInStatus;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private CheckOutStatus checkOutStatus;
 

@@ -1,6 +1,6 @@
 package com.team_3.nursing_care.domain.care_log.entity;
 
-import com.team_3.nursing_care.domain.care_log.dto.request.ReqCreateCareLogDto;
+import com.team_3.nursing_care.domain.care_log.dto.request.CareItemDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +15,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "care_detail")
 public class CareDetail {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,7 +30,7 @@ public class CareDetail {
     @Column(nullable = false)
     private Integer requiredMinutes;
 
-    public static CareDetail create(ReqCreateCareLogDto.CareItemDto careItemDto, CareItem careItem) {
+    public static CareDetail create(CareItemDto careItemDto, CareItem careItem) {
         return CareDetail.builder()
                 .careItem(careItem)
                 .requiredMinutes(careItemDto.getRequiredMinutes())
