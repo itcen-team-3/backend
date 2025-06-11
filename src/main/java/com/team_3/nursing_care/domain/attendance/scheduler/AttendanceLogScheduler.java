@@ -25,18 +25,14 @@ public class AttendanceLogScheduler {
     private final AttendanceLogRepository attendanceLogRepository;
     private final ScheduleRepository scheduleRepository;
 
-    @Scheduled(cron = "*/30 * * * * ?")
-//    @Scheduled(cron = "0 47 13 * * ?")
+
+    @Scheduled(cron = "0 47 13 * * ?")
     public void attendanceLogSchedule() {
         List<AttendanceLog> saveList = new ArrayList<>();
         AttendanceLog at = attendanceLogRepository.findById(1L).orElse(null);
-        log.info("로그: {}", at.getAttendanceId());
 
         attendanceLogRepository.findAllForSchedule().forEach(al -> {
             Schedule schedule = scheduleRepository.findByAttendanceLog(al.getMember().getMemberId(), al.getPatientId(), al.getCheckIn().toLocalDate()).orElseThrow(() -> new CustomException(HttpStatusCode.NO_CONTENT, "로그 기록 상 일치하는 것이 되는 스케줄이 없다."));
-
-            log.info("요양보호사: {}, 환자ID: {}, 체크인 시간: {}", schedule.getMember().getMemberId(), schedule.getPatientId(), al.getCheckIn());
-
 
             if (schedule.getStartTime().after(Time.valueOf(al.getCheckIn().toLocalTime())) ||
                     schedule.getStartTime().equals(Time.valueOf(al.getCheckIn().toLocalTime())))
