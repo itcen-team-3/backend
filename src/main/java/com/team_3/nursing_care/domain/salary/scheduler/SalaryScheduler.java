@@ -35,18 +35,20 @@ public class SalaryScheduler {
     @Transactional
     public void schedule() {
         List<Schedule> scheduleList = scheduleRepository.findAllForScheduler(ScheduleStatus.ONGOING);
-        List<Long> scheduleIdList = scheduleList.stream().map(Schedule::getScheduleId).toList();
-        List<Salary> saveList = new ArrayList<>();
-        List<Salary> existedSalaryList = salaryRepository.findByScheduleIdIn(scheduleIdList);
 
+        log.info("1");
+        List<Salary> saveList = new ArrayList<>();
+        List<Salary> existedSalaryList = salaryRepository.findByScheduleIn(scheduleList);
+        log.info("2");
         scheduleList.forEach(schedule -> {
             LocalDate startDate = schedule.getStartDate();
             LocalDate endDate = schedule.getEndDate();
-
+            log.info("3");
             Salary existedSalary = existedSalaryList.stream()
                     .filter(salary -> salary.getSchedule().equals(schedule))
                     .max(Comparator.comparing(Salary::getStartDate)).orElse(null);
 
+            log.info("4");
             if (existedSalary == null) {
                 List<AttendanceLog> attendanceLogList = attendanceLogRepository.findLogForSalary(schedule.getMember(), schedule.getPatient(), startDate.atStartOfDay(), startDate.atStartOfDay().plusDays(30));
                 saveList.add(calculateCreateSalary(schedule, attendanceLogList, schedule.getStartDate()));
@@ -62,9 +64,10 @@ public class SalaryScheduler {
                     saveList.add(calculateCreateSalary(schedule, attendanceLogList, salaryEndDate.plusDays(1)));
                 }
             }
-
+            log.info("5");
         });
 
+        log.info("6");
         salaryRepository.saveAll(saveList);
     }
 

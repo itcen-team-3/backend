@@ -51,8 +51,8 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
 
     @Query("select al from AttendanceLog al " +
             "join fetch al.member " +
-            "where al.checkInStatus is null " +
-            "and al.checkOutStatus is null " +
+            "where al.checkInStatus IS NULL " +
+            "and al.checkOutStatus IS NULL " +
             "and al.isDeleted is false")
     List<AttendanceLog> findAllForSchedule();
 
