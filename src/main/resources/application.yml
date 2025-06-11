@@ -2,7 +2,7 @@ spring:
   application:
     name: nursing_care
   profiles:
-    active: aws, local, monitoring
+    active: aws, deploy, monitoring
 
 logging:
   level:
