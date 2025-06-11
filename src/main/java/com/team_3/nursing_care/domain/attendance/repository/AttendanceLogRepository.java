@@ -9,13 +9,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Long> {
 
     List<AttendanceLog> findByMember_MemberIdAndCheckInStatusOrCheckOutStatus(Long memberId, CheckInStatus checkInStatus, CheckOutStatus checkOutStatus);
+
     List<AttendanceLog> findByMember_memberId(Long caregiverId);
 
     @Query("select al from AttendanceLog al " +
@@ -49,5 +49,18 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
 
     Optional<AttendanceLog> findByMember_MemberIdAndCheckInBetween(Long memberId, LocalDateTime start, LocalDateTime end);
 
+    @Query("select al from AttendanceLog al " +
+            "join fetch al.member " +
+            "where al.checkInStatus is null " +
+            "and al.checkOutStatus is null " +
+            "and al.isDeleted is false")
+    List<AttendanceLog> findAllForSchedule();
 
+    @Query("select al from AttendanceLog al " +
+            "join fetch al.member " +
+            "where al.member = :member " +
+            "and al.patientId = :patientId " +
+            "and al.checkIn > :startDate " +
+            "and al.checkOut < :endDate")
+    List<AttendanceLog> findLogForSalary(Member member, String patient, LocalDateTime startDate, LocalDateTime endDate);
 }

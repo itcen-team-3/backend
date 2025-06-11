@@ -42,7 +42,7 @@ public class CareLogController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('CAREGIVER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('PATIENT', 'CAREGIVER', 'ADMIN')")
     public ResponseEntity<?> getCareLogPage(
             @RequestParam(required = false) LocalDate date,
             @PageableDefault(sort = "date", direction = Sort.Direction.DESC) Pageable pageable,
@@ -53,7 +53,7 @@ public class CareLogController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('CAREGIVER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('PATIENT', 'CAREGIVER', 'ADMIN')")
     public ResponseEntity<?> getCareLogById(
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails userDetails
@@ -76,8 +76,7 @@ public class CareLogController {
     @PreAuthorize("hasAnyRole('CAREGIVER', 'ADMIN')")
     public ResponseEntity<?> deleteCareLogById(
             @PathVariable Long id,
-            @AuthenticationPrincipal CustomUserDetails userDetails)
-    {
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
         careLogService.deleteCareLogById(id, userDetails);
         return ResponseEntity.ok(new ResponseDto<>(NO_CONTENT, Success, null));
     }

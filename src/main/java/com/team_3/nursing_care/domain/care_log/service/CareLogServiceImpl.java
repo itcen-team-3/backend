@@ -16,7 +16,9 @@ import com.team_3.nursing_care.domain.care_log.repository.CareItemRepository;
 import com.team_3.nursing_care.domain.care_log.repository.CareLogRepository;
 import com.team_3.nursing_care.domain.care_log.repository.custom.CareLogCustomRepository;
 import com.team_3.nursing_care.domain.member.constant.Role;
+import com.team_3.nursing_care.domain.member.entity.Company;
 import com.team_3.nursing_care.domain.member.entity.Member;
+import com.team_3.nursing_care.domain.member.repository.CompanyRepository;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
 import com.team_3.nursing_care.domain.schedule.entity.Schedule;
 import com.team_3.nursing_care.domain.schedule.repository.ScheduleRepository;
@@ -30,7 +32,6 @@ import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.http.HttpStatusCode;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,7 @@ public class CareLogServiceImpl implements CareLogService {
     private final ScheduleRepository scheduleRepository;
     private final CareLogCustomRepository carLogCustomRepository;
     private final AttendanceLogRepository attendanceLogRepository;
+    private final CompanyRepository companyRepository;
 
 
     @Override
@@ -84,24 +86,26 @@ public class CareLogServiceImpl implements CareLogService {
     @Override
     @Transactional(readOnly = true)
     public Page<ResCareLogDto> getCareLogPage(LocalDate date, Pageable pageable, CustomUserDetails userDetails) {
-        return carLogCustomRepository.getCareLogPage(date, pageable, userDetails.getMemberId());
+        return carLogCustomRepository.getCareLogPage(date, pageable, userDetails, checkAdmin(userDetails));
     }
+
 
     @Override
     @Transactional(readOnly = true)
     public ResCareLogDetailDto getCareLogById(Long id, CustomUserDetails userDetails) {
-        // TODO: 스케줄 보고 workTime 조회해서 응답해야 함.
-        CareLog careLog = careLogRepository.findById(id).orElseThrow(() -> new CareLogException(HttpStatusCode.BAD_REQUEST, "not found care log by id: " + id));
-        checkAdminAndAuthor(careLog, userDetails);
-        CareLog joinCareLog = careLogRepository.findByIdJoinEntity(id).orElseThrow(() -> new CareLogException(HttpStatusCode.BAD_REQUEST, "EntityGraph Error..?" + id));
-        return ResCareLogDetailDto.create(joinCareLog);
+        CareLog careLog = careLogRepository.findByIdJoinEntity(id).orElseThrow(() -> new CareLogException(HttpStatusCode.BAD_REQUEST, "EntityGraph Error..?" + id));
+        Schedule schedule = scheduleRepository.findScheduleByCareLog(careLog.getCareGiver(), careLog.getPatientId(), careLog.getCreateDate().toLocalDate()).orElseThrow(() -> new CareLogException(HttpStatusCode.NOT_FOUND, "not found schedule by care log"));
+
+        checkAdminAndAuthorPatient(careLog, userDetails);
+
+        return ResCareLogDetailDto.create(careLog, schedule.getStartTime(), schedule.getEndTime());
     }
 
     @Override
     @Transactional
     public void updateCareLogById(Long id, ReqUpdateCareLogDto reqUpdateCareLogDto, CustomUserDetails userDetails) {
         CareLog careLog = careLogRepository.findById(id).orElseThrow(() -> new CareLogException(HttpStatusCode.BAD_REQUEST, "not found care log by id: " + id));
-        checkAdminAndAuthor(careLog, userDetails);
+        checkAdminAndAuthorPatient(careLog, userDetails);
 
         String signFileUrl = null;
         if (reqUpdateCareLogDto.getSignFile() != null && reqUpdateCareLogDto.getSignFile().isEmpty()) {
@@ -119,7 +123,7 @@ public class CareLogServiceImpl implements CareLogService {
     @Transactional
     public void deleteCareLogById(Long id, CustomUserDetails userDetails) {
         CareLog careLog = careLogRepository.findById(id).orElseThrow(() -> new CareLogException(HttpStatusCode.BAD_REQUEST, "not found care log by id: " + id));
-        checkAdminAndAuthor(careLog, userDetails);
+        checkAdminAndAuthorPatient(careLog, userDetails);
         careLog.softDelete(userDetails.getMemberId());
     }
 
@@ -134,10 +138,9 @@ public class CareLogServiceImpl implements CareLogService {
         return careLogImageList;
     }
 
-    private void checkAdminAndAuthor(CareLog careLog, CustomUserDetails userDetails) {
-        boolean isAdmin = userDetails.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals(Role.Authority.ADMIN));
-        if (!isAdmin && !careLog.getCareGiver().getMemberId().equals(userDetails.getMemberId()))
+    private void checkAdminAndAuthorPatient(CareLog careLog, CustomUserDetails userDetails) {
+        boolean isAdmin = userDetails.getRoles().contains(Role.ADMIN);
+        if (!isAdmin && !careLog.getCareGiver().getMemberId().equals(userDetails.getMemberId()) && !careLog.getPatientId().equals(userDetails.getMemberId()))
             throw new CareLogException(HttpStatusCode.BAD_REQUEST, "care log does not belong to member");
     }
 
@@ -174,5 +177,13 @@ public class CareLogServiceImpl implements CareLogService {
         LocalDate today = LocalDate.now();
         attendanceLogRepository.findByMemberAndCheckInDate(careGiver, patient.getMemberId(), today.atStartOfDay(), today.atStartOfDay().plusDays(1)).orElseThrow(() -> new CareLogException(HttpStatusCode.BAD_REQUEST, "not found nfc checking log"));
     }
+
+    private Company checkAdmin(CustomUserDetails userDetails) {
+        Company company = null;
+        if (userDetails.getRoles().contains(Role.ADMIN))
+            company = companyRepository.findById(userDetails.getCompanyId()).orElseThrow(() -> new CareLogException(HttpStatusCode.NOT_FOUND, "not found company id: " + userDetails.getCompanyId()));
+        return company;
+    }
+
 
 }

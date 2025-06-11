@@ -83,4 +83,12 @@ public class AttendanceLog extends BaseEntity {
         this.checkOut = LocalDateTime.now();
         return this;
     }
+
+    public void updateCheckInStatus(CheckInStatus checkInStatus) {
+        this.checkInStatus = checkInStatus;
+    }
+
+    public void updateCheckOutStatus(CheckOutStatus checkOutStatus) {
+        this.checkOutStatus = checkOutStatus;
+    }
 }

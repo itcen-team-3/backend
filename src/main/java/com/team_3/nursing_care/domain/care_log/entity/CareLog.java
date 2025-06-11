@@ -28,6 +28,9 @@ public class CareLog extends BaseEntity {
     private String signUrl;
     private String description;
 
+    private Long patientId;
+    private String patientName;
+
     @OneToMany(mappedBy = "careLog", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<CareDetail> careDetailList = new HashSet<>();
@@ -38,9 +41,6 @@ public class CareLog extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "care_giver_id")
     private Member careGiver;
-
-    private Long patientId;
-    private String patientName;
 
     public static CareLog create(
             Member member,

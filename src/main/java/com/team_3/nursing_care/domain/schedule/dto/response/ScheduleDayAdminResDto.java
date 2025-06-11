@@ -11,6 +11,7 @@ import java.sql.Time;
 @NoArgsConstructor
 public class ScheduleDayAdminResDto {
 
+    private String caregiverImgUrl;
     private String patientName;
     private String caregiverName;
     private String patientAddress;
@@ -18,11 +19,14 @@ public class ScheduleDayAdminResDto {
     private Time endTime;
 
     @Builder
-    public ScheduleDayAdminResDto(String patientName,
+    public ScheduleDayAdminResDto(
+                                  String caregiverImgUrl,
+                                  String patientName,
                                   String caregiverName,
                                   String patientAddress,
                                   Time startTime,
                                   Time endTime) {
+        this.caregiverImgUrl = caregiverImgUrl;
         this.patientName = patientName;
         this.caregiverName = caregiverName;
         this.patientAddress = patientAddress;
@@ -30,8 +34,9 @@ public class ScheduleDayAdminResDto {
         this.endTime = endTime;
     }
 
-    public static ScheduleDayAdminResDto from(Schedule schedule, String caregiverName){
+    public static ScheduleDayAdminResDto from(Schedule schedule, String caregiverName, String profileUrl){
         return ScheduleDayAdminResDto.builder()
+                .caregiverImgUrl(profileUrl)
                 .patientName(schedule.getPatient())
                 .caregiverName(caregiverName)
                 .patientAddress(schedule.getPatientAddress())

@@ -32,5 +32,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("select m from Member m join fetch m.patientInfo where m.patientInfo.nfcUuid = :nfcUuid")
     Optional<Member> findPatientByNfcUuid(UUID nfcUuid);
 
+    Member findByMemberId(Long memberId);
+
 
 }

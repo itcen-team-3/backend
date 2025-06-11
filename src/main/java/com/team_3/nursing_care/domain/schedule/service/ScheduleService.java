@@ -15,4 +15,5 @@ public interface ScheduleService {
     ScheduleWeekCaregiverListResDto getScheduleWeekCaregiverList(Long caregiverId, LocalDate startDate);
     ScheduleWeekAdminListResDto getScheduleWeekByAdmin(ReadScheduleWeekAdminReqDto readScheduleWeekAdminReqDto);
     ScheduleDayAdminResDto getScheduleDayByAdmin(Long scheduleId);
+    ScheduleReadResDto readSchedule(Long scheduleId);
 }

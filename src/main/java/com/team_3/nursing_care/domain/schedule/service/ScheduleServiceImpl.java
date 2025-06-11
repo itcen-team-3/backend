@@ -3,6 +3,7 @@ package com.team_3.nursing_care.domain.schedule.service;
 
 import com.team_3.nursing_care.domain.member.entity.Member;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
+import com.team_3.nursing_care.domain.member.service.MemberService;
 import com.team_3.nursing_care.domain.schedule.constant.PaymentType;
 import com.team_3.nursing_care.domain.schedule.constant.ScheduleStatus;
 import com.team_3.nursing_care.domain.schedule.dto.request.*;
@@ -26,6 +27,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     @Transactional
     @Override
@@ -187,7 +189,17 @@ public class ScheduleServiceImpl implements ScheduleService {
     public ScheduleDayAdminResDto getScheduleDayByAdmin(Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 스케줄 입니다"));
-        return ScheduleDayAdminResDto.from(schedule, schedule.getMember().getMemberName());
+        Member member = memberRepository.findByMemberId(schedule.getMember().getMemberId());
+        return ScheduleDayAdminResDto.from(schedule, schedule.getMember().getMemberName(), member.getProfileImageUrl());
+    }
+
+    @Override
+    public ScheduleReadResDto readSchedule(Long scheduleId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(()-> new IllegalArgumentException(("존재하지 않는 스케줄 입니다")));
+        Member caregiver = memberRepository.findByMemberId(schedule.getMember().getMemberId());
+        Member patient = memberRepository.findByMemberId(schedule.getPatientId());
+        return ScheduleReadResDto.from(schedule, caregiver, patient);
     }
 
 
