@@ -70,10 +70,8 @@ public class AttendanceExplationServiceImpl implements AttendanceExplationServic
         List<AttendanceExplation> attendanceLogs = attendanceExplationRepository.findAllByCaregiverId(caregiverId);
 
         List<AttendanceCaregiverResDto> attendanceExplations = attendanceLogs.stream()
-                .map(attendanceExplation -> {
-                    AttendanceLog attendanceLog = attendanceExplation.getAttendanceLog();
-
-                    return AttendanceCaregiverResDto.builder()
+                .map(attendanceExplation ->
+                    AttendanceCaregiverResDto.builder()
                             .explation(attendanceExplation.getExplations())
                             .rejectReason(attendanceExplation.getRejectReason())
                             .submitDateTime(attendanceExplation.getCreateDate())
@@ -81,8 +79,8 @@ public class AttendanceExplationServiceImpl implements AttendanceExplationServic
                             .attendanceTime(attendanceExplation.getAttendanceTime())
                             .approveStatus(attendanceExplation.getApproveType().getApproveTypeName())
                             .attendanceStatus(attendanceExplation.getCheckInOutStatus())
-                            .build();
-                }).toList();
+                            .build()
+                ).toList();
 
         return AttendanceCaregiverListResDto.from(attendanceExplations);
     }
