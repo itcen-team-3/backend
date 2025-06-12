@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -58,4 +59,11 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
             "and al.checkIn > :startDate " +
             "and al.checkOut < :endDate")
     List<AttendanceLog> findLogForSalary(Member member, Long patientId, LocalDateTime startDate, LocalDateTime endDate);
+
+    @Query("select al from AttendanceLog al " +
+            "where al.createDate >= :startDate " +
+            "and al.createDate <= :endDate " +
+            "and al.checkInStatus is not null " +
+            "and al.checkOutStatus is not null")
+    List<AttendanceLog> findLogListForSalary(LocalDate startDate, LocalDate endDate);
 }

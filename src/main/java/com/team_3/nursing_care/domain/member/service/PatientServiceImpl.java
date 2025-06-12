@@ -1,14 +1,14 @@
 package com.team_3.nursing_care.domain.member.service;
 
+import com.team_3.nursing_care.common.exception.ScheduleException;
 import com.team_3.nursing_care.common.proxy.S3Service;
 import com.team_3.nursing_care.common.security.user.custom.CustomUserDetails;
+import com.team_3.nursing_care.domain.care_log.entity.CareLog;
+import com.team_3.nursing_care.domain.care_log.repository.CareLogRepository;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.request.CreatePatientRequestDto;
 import com.team_3.nursing_care.domain.member.dto.request.UpdatePatientRequestDto;
-import com.team_3.nursing_care.domain.member.dto.response.CaregiverListResponseDto;
-import com.team_3.nursing_care.domain.member.dto.response.PatientDetailResponseDto;
-import com.team_3.nursing_care.domain.member.dto.response.PatientListResponseDto;
-import com.team_3.nursing_care.domain.member.dto.response.UpdatePatientResponseDto;
+import com.team_3.nursing_care.domain.member.dto.response.*;
 import com.team_3.nursing_care.domain.member.entity.Company;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import com.team_3.nursing_care.domain.member.entity.PatientInfo;
@@ -27,9 +27,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.http.HttpStatusCode;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Period;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -48,11 +51,12 @@ public class PatientServiceImpl implements PatientService {
     private final CompanyRepository companyRepository;
     private final PatientInfoRepository patientInfoRepository;
     private final ScheduleRepository scheduleRepository;
+    private final CareLogRepository careLogRepository;
     private final S3Service s3Service;
 
     @Transactional(readOnly = true)
     @Override
-    public Page<PatientListResponseDto> getPatientList(String searchName, CustomUserDetails userDetails,Pageable pageable) {
+    public Page<PatientListResponseDto> getPatientList(String searchName, CustomUserDetails userDetails, Pageable pageable) {
 
         Page<Member> patients;
 
@@ -194,5 +198,29 @@ public class PatientServiceImpl implements PatientService {
 
         return Period.between(birthDate, LocalDate.now()).getYears();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResPatientDashboardDto getDashboard(CustomUserDetails userDetails) {
+        Long patientId = userDetails.getMemberId();
+        List<Schedule> ingSchedule = scheduleRepository.findAllByPatientIdAndIsDeletedFalse(patientId).stream().filter(schedule -> schedule.getStartDate().isBefore(LocalDate.now()) && schedule.getEndDate().isAfter(LocalDate.now())).toList();
+
+        if (ingSchedule.isEmpty()) throw new ScheduleException(HttpStatusCode.NOT_FOUND, "not found ing schedule");
+
+        Map<Long, CareGiverStatusInfo> careGiverStatusMap = new HashMap<>();
+        ingSchedule.forEach(schedule -> {
+            LocalTime startTime = schedule.getStartTime().toLocalTime();
+            LocalTime endTime = schedule.getEndTime().toLocalTime();
+            LocalTime now = LocalTime.now();
+            Boolean isBetween = now.isAfter(startTime) && now.isBefore(endTime);
+
+            careGiverStatusMap.put(schedule.getMember().getMemberId(), new CareGiverStatusInfo(isBetween, schedule.getMember().getProfileImageUrl()));
+        });
+
+        List<CareLog> careLogList = careLogRepository.findAllByPatientIdAndIsDeletedFalse(patientId);
+
+        return ResPatientDashboardDto.create(careGiverStatusMap, careLogList);
+    }
+
 
 }

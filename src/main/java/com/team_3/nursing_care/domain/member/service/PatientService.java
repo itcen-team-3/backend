@@ -6,6 +6,7 @@ import com.team_3.nursing_care.domain.member.dto.request.CreatePatientRequestDto
 import com.team_3.nursing_care.domain.member.dto.request.UpdatePatientRequestDto;
 import com.team_3.nursing_care.domain.member.dto.response.PatientDetailResponseDto;
 import com.team_3.nursing_care.domain.member.dto.response.PatientListResponseDto;
+import com.team_3.nursing_care.domain.member.dto.response.ResPatientDashboardDto;
 import com.team_3.nursing_care.domain.member.dto.response.UpdatePatientResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,4 +25,6 @@ public interface PatientService {
     void updatePatient(Long patientId, UpdatePatientRequestDto updatePatientRequestDto, MultipartFile profileImage);
 
     void deletePatient(Long patientId);
+
+    ResPatientDashboardDto getDashboard(CustomUserDetails userDetails);
 }

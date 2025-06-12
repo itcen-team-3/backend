@@ -83,4 +83,12 @@ public class PatientController {
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, "보호대상자 정보가 정상적으로 삭제되었습니다."));
     }
 
+    @GetMapping("/dashboard")
+    @PreAuthorize("hasAnyRole('PATIENT')")
+    public ResponseEntity<?> getDashboard(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok(new ResponseDto<>(OK, Success, patientService.getDashboard(userDetails)));
+    }
+
+
+
 }

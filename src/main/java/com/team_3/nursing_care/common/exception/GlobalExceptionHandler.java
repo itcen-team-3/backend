@@ -80,4 +80,14 @@ public class GlobalExceptionHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ResponseDto<>(HttpStatusCode.BAD_REQUEST, ResultMessage.Error, ex.getMessage()));
     }
+
+    @ExceptionHandler(ScheduleException.class)
+    public ResponseEntity<ResponseDto<?>> handleScheduleException(ScheduleException ex){
+        log.warn("❗ ScheduleException error: {}",ex.getMessage());
+
+        return ResponseEntity.status(ex.getCode())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(ex.toResponseDto());
+    }
+
 }
