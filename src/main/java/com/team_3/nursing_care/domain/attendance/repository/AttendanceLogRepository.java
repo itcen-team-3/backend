@@ -2,12 +2,15 @@ package com.team_3.nursing_care.domain.attendance.repository;
 
 import com.team_3.nursing_care.domain.attendance.constant.CheckInStatus;
 import com.team_3.nursing_care.domain.attendance.constant.CheckOutStatus;
+import com.team_3.nursing_care.domain.attendance.dto.request.CreateAttendanceExplationReqDto;
+import com.team_3.nursing_care.domain.attendance.entity.AttendanceExplation;
 import com.team_3.nursing_care.domain.attendance.entity.AttendanceLog;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -58,4 +61,32 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
             "and al.checkIn > :startDate " +
             "and al.checkOut < :endDate")
     List<AttendanceLog> findLogForSalary(Member member, Long patientId, LocalDateTime startDate, LocalDateTime endDate);
+
+    @Query("select al from AttendanceLog al " +
+            "join fetch al.member "+
+            "where al.patientId = :patientId " +
+            "and al.member = :member " +
+            "and year(al.checkIn) = :year " +
+            "and month(al.checkIn) = :month " +
+            "and day(al.checkIn) = :day ")
+    AttendanceLog findAttendanceLog_CheckIn(@Param("member") Member member,
+                                            @Param("patientId") Long patientId,
+                                            @Param("year") int year,
+                                            @Param("month") int month,
+                                            @Param("day") int day);
+    @Query("select al from AttendanceLog al " +
+            "join fetch al.member "+
+            "where al.patientId = :patientId " +
+            "and al.member = :member " +
+            "and year(al.checkOut) = :year " +
+            "and month(al.checkOut) = :month " +
+            "and day(al.checkOut) = :day ")
+    AttendanceLog findAttendanceLog_CheckOut(@Param("member") Member member,
+                                            @Param("patientId") Long patientId,
+                                            @Param("year") int year,
+                                            @Param("month") int month,
+                                            @Param("day") int day);
+
+
+
 }

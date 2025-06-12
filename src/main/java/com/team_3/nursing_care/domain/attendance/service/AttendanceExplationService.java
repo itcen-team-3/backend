@@ -7,7 +7,7 @@ import com.team_3.nursing_care.domain.attendance.dto.response.AttendanceCaregive
 
 public interface AttendanceExplationService {
 
-    void createAttendanceExplation(CreateAttendanceExplationReqDto createAttendanceExplationReqDto);
+    void createAttendanceExplation(Long caregiverId, CreateAttendanceExplationReqDto createAttendanceExplationReqDto);
     AttendanceCaregiverListResDto getAttendanceExplationList(Long caregiverId);
     AttendanceAdminListResDto getAttendanceExplationListByAdmin(Long adminId);
     void updateAttendanceApprovementType(Long attendanceExplationId, UpdateApprovementTypeReqDto updateApprovementTypeReqDto);
