@@ -72,6 +72,7 @@ public class AttendanceExplationServiceImpl implements AttendanceExplationServic
         List<AttendanceCaregiverResDto> attendanceExplations = attendanceLogs.stream()
                 .map(attendanceExplation ->
                     AttendanceCaregiverResDto.builder()
+                            .attendanceExplationId(attendanceExplation.getAttendanceExplationId())
                             .explation(attendanceExplation.getExplations())
                             .rejectReason(attendanceExplation.getRejectReason())
                             .submitDateTime(attendanceExplation.getCreateDate())
