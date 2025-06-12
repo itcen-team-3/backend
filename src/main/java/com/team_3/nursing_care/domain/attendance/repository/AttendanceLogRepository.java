@@ -2,6 +2,8 @@ package com.team_3.nursing_care.domain.attendance.repository;
 
 import com.team_3.nursing_care.domain.attendance.constant.CheckInStatus;
 import com.team_3.nursing_care.domain.attendance.constant.CheckOutStatus;
+import com.team_3.nursing_care.domain.attendance.dto.request.CreateAttendanceExplationReqDto;
+import com.team_3.nursing_care.domain.attendance.entity.AttendanceExplation;
 import com.team_3.nursing_care.domain.attendance.entity.AttendanceLog;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -66,4 +68,5 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
             "and al.checkInStatus is not null " +
             "and al.checkOutStatus is not null")
     List<AttendanceLog> findLogListForSalary(LocalDate startDate, LocalDate endDate);
+
 }

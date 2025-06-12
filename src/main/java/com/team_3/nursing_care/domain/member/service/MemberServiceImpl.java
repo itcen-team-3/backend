@@ -13,6 +13,8 @@ import com.team_3.nursing_care.domain.member.proxy.dto.ReqBusinessAuthenticityDt
 import com.team_3.nursing_care.domain.member.proxy.service.BusinessAuthenticityService;
 import com.team_3.nursing_care.domain.member.repository.CompanyRepository;
 import com.team_3.nursing_care.domain.member.repository.MemberRepository;
+import com.team_3.nursing_care.domain.schedule.entity.Schedule;
+import com.team_3.nursing_care.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,10 +24,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.http.HttpStatusCode;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +41,7 @@ public class MemberServiceImpl implements MemberService {
     private final BusinessAuthenticityService businessAuthenticityService;
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
+    private final ScheduleRepository scheduleRepository;
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
     private final JwtUtil jwtUtil;
@@ -59,6 +65,28 @@ public class MemberServiceImpl implements MemberService {
         Page<PatientsNameResponseDto> PatientNameDtoPage = patientPage.map(PatientsNameResponseDto::from);
 
         return PatientsNameListResponseDto.from(PatientNameDtoPage);
+    }
+
+    @Override
+    public List<PatientsNameResponseDto> getCaregiverPatientsName(Long memberId) {
+
+        List<Schedule> schedules = scheduleRepository.findByMemberIdAndScheduleDate(memberId, LocalDate.now());
+
+        List<Member> members = schedules.stream()
+                .collect(Collectors.toMap(
+                        Schedule::getPatientId,
+                        Schedule::getPatient,
+                        (existing, replacement) -> existing
+                ))
+                .entrySet().stream()
+                .map(entry -> Member.builder().memberId(entry.getKey()).memberName(entry.getValue()).build())
+                .sorted(Comparator.comparing(Member::getMemberName))
+                .collect(Collectors.toList());
+
+        return members.stream()
+                .map(PatientsNameResponseDto::from)
+                .collect(Collectors.toList());
+
     }
 
     @Override

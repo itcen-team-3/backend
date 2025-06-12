@@ -25,8 +25,9 @@ public class AttendanceExplationController {
     private final AttendanceExplationService attendanceExplationService;
 
     @PostMapping
-    public ResponseEntity<?> createAttendanceExplation(@RequestBody CreateAttendanceExplationReqDto createAttendanceExplationReqDto) {
-        attendanceExplationService.createAttendanceExplation(createAttendanceExplationReqDto);
+    public ResponseEntity<?> createAttendanceExplation(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                        @RequestBody CreateAttendanceExplationReqDto createAttendanceExplationReqDto) {
+        attendanceExplationService.createAttendanceExplation(userDetails.getMemberId(), createAttendanceExplationReqDto);
 
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, "소명 작성이 완료 되었습니다."));
     }
