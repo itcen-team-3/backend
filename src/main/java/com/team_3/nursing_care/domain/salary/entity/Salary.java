@@ -27,7 +27,7 @@ public class Salary extends BaseEntity {
     private Long id;
 
     private Long careGiverId;
-    private Long parentId;
+    private Long patientId;
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer workHours;
@@ -44,7 +44,7 @@ public class Salary extends BaseEntity {
     public static Salary create(Schedule schedule, LocalDate startDate, Integer totalCost, double workHours) {
         return Salary.builder()
                 .careGiverId(schedule.getMember().getMemberId())
-                .parentId(schedule.getPatientId())
+                .patientId(schedule.getPatientId())
                 .startDate(startDate)
                 .endDate(startDate.plusDays(30))
                 .workHours((int) workHours)

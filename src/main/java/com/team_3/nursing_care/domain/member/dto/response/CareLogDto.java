@@ -1,4 +1,4 @@
-package com.team_3.nursing_care.domain.care_log.dto.response;
+package com.team_3.nursing_care.domain.member.dto.response;
 
 import com.team_3.nursing_care.domain.care_log.entity.CareLog;
 import lombok.AllArgsConstructor;
@@ -6,24 +6,24 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class ResCareLogDto {
+public class CareLogDto {
 
     private Long careLogId;
     private String careGiverName;
-    private LocalDate createDate;
+    private LocalDateTime createDate;
     private Integer activeCount;
 
-    public static ResCareLogDto create(CareLog careLog) {
-        return ResCareLogDto.builder()
+    public static CareLogDto create(CareLog careLog) {
+        return CareLogDto.builder()
                 .careLogId(careLog.getId())
                 .careGiverName(careLog.getCareGiver().getMemberName())
-                .createDate(LocalDate.from(careLog.getCreateDate()))
+                .createDate(careLog.getCreateDate())
                 .activeCount(careLog.getCareDetailList().size())
                 .build();
     }

@@ -2,12 +2,15 @@ package com.team_3.nursing_care.domain.attendance.repository;
 
 import com.team_3.nursing_care.domain.attendance.constant.CheckInStatus;
 import com.team_3.nursing_care.domain.attendance.constant.CheckOutStatus;
+import com.team_3.nursing_care.domain.attendance.dto.request.CreateAttendanceExplationReqDto;
+import com.team_3.nursing_care.domain.attendance.entity.AttendanceExplation;
 import com.team_3.nursing_care.domain.attendance.entity.AttendanceLog;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -21,9 +24,7 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
     @Query("select al from AttendanceLog al " +
             "where al.member = :member " +
             "and al.patientId = :patientId " +
-            "and al.checkIn IS NOT NULL " +
-            "and al.checkIn > :startOfDay " +
-            "and al.checkIn < :startOfNextDay")
+            "and al.checkIn IS NOT NULL ")
     Optional<AttendanceLog> findByMemberAndCheckInDate(
             @Param("member") Member member,
             @Param("patientId") Long patientId,
@@ -34,10 +35,7 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
     @Query("select al from AttendanceLog al " +
             "where al.member = :member " +
             "and al.checkIn IS NOT NULL " +
-            "and al.patientId = :patientId " +
-            "and al.checkOut IS NULL " +
-            "and al.checkOut > :startOfDay " +
-            "and al.checkOut < :startOfNextDay")
+            "and al.checkOut IS NULL ")
     Optional<AttendanceLog> findByMemberAndCheckOutDate(
             @Param("member") Member member,
             @Param("patientId") Long patientId,
@@ -51,8 +49,8 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
 
     @Query("select al from AttendanceLog al " +
             "join fetch al.member " +
-            "where al.checkInStatus is null " +
-            "and al.checkOutStatus is null " +
+            "where al.checkInStatus IS NULL " +
+            "and al.checkOutStatus IS NULL " +
             "and al.isDeleted is false")
     List<AttendanceLog> findAllForSchedule();
 
@@ -62,5 +60,13 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
             "and al.patientId = :patientId " +
             "and al.checkIn > :startDate " +
             "and al.checkOut < :endDate")
-    List<AttendanceLog> findLogForSalary(Member member, String patient, LocalDateTime startDate, LocalDateTime endDate);
+    List<AttendanceLog> findLogForSalary(Member member, Long patientId, LocalDateTime startDate, LocalDateTime endDate);
+
+    @Query("select al from AttendanceLog al " +
+            "where al.createDate >= :startDate " +
+            "and al.createDate <= :endDate " +
+            "and al.checkInStatus is not null " +
+            "and al.checkOutStatus is not null")
+    List<AttendanceLog> findLogListForSalary(LocalDate startDate, LocalDate endDate);
+
 }

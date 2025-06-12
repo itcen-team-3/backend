@@ -1,9 +1,9 @@
 package com.team_3.nursing_care.domain.care_log.dto.response;
 
 import com.team_3.nursing_care.domain.care_log.constant.CareItemType;
+import com.team_3.nursing_care.domain.care_log.constant.ImageType;
 import com.team_3.nursing_care.domain.care_log.entity.CareDetail;
 import com.team_3.nursing_care.domain.care_log.entity.CareLog;
-import com.team_3.nursing_care.domain.care_log.entity.CareLogImage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +28,7 @@ public class ResCareLogDetailDto {
 
     private List<CareDetailDto> careDetailList;
 
-    private List<String> imageUrlList;
+    private List<ImageInfo> imageInfoList;
     private String signUrl;
     private String description;
 
@@ -50,6 +50,22 @@ public class ResCareLogDetailDto {
         }
     }
 
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    protected static class ImageInfo {
+        private String imageUrl;
+        private ImageType imageType;
+
+        public static ImageInfo create(String imageUrl, ImageType imageType) {
+            return ImageInfo.builder()
+                    .imageUrl(imageUrl)
+                    .imageType(imageType)
+                    .build();
+        }
+    }
+
     public static ResCareLogDetailDto create(CareLog careLog, Time startTime, Time endTime) {
         return ResCareLogDetailDto.builder()
                 .careGiverName(careLog.getCareGiver().getMemberName())
@@ -57,7 +73,7 @@ public class ResCareLogDetailDto {
                 .startTime(startTime)
                 .endTime(endTime)
                 .careDetailList(careLog.getCareDetailList().stream().map(CareDetailDto::create).collect(Collectors.toList()))
-                .imageUrlList(careLog.getCareLogImageList().stream().map(CareLogImage::getImageUrl).collect(Collectors.toList()))
+                .imageInfoList(careLog.getCareLogImageList().stream().map(careImage -> ImageInfo.create(careImage.getImageUrl(), careImage.getImageType())).collect(Collectors.toList()))
                 .createDate(LocalDate.from(careLog.getCreateDate()))
                 .signUrl(careLog.getSignUrl())
                 .description(careLog.getDescription())

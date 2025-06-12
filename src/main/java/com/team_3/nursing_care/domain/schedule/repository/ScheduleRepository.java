@@ -40,9 +40,10 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findAllForScheduler(@Param("status") ScheduleStatus status);
 
     @Query("select s from Schedule s " +
-            "where s.member = :careGiver " +
+            "where s.member.memberId = :caregiverId " +
             "and s.patientId = :patientId " +
+            "and s.startDate <= :localDate " +
             "and s.endDate >= :localDate")
-    Optional<Schedule> findByAttendanceLog(Member careGiver, Long patientId, LocalDate localDate);
+    Optional<Schedule> findByAttendanceLog(Long caregiverId, Long patientId, LocalDate localDate);
 
 }

@@ -180,6 +180,7 @@ public class CaregiverServiceImpl implements CaregiverService {
                     }
 
                     return CaregiverScheduleResDto.builder()
+                            .patientId(schedule.getPatientId())
                             .patientName(patientName)
                             .startTime(schedule.getStartTime())
                             .endTime(schedule.getEndTime())
