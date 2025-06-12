@@ -69,4 +69,28 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
             "and al.checkOutStatus is not null")
     List<AttendanceLog> findLogListForSalary(LocalDate startDate, LocalDate endDate);
 
+    @Query("select al from AttendanceLog al " +
+            "join fetch al.member "+
+            "where al.patientId = :patientId " +
+            "and al.member = :member " +
+            "and year(al.checkIn) = :year " +
+            "and month(al.checkIn) = :month " +
+            "and day(al.checkIn) = :day ")
+    AttendanceLog findAttendanceLog_CheckIn(@Param("member") Member member,
+                                            @Param("patientId") Long patientId,
+                                            @Param("year") int year,
+                                            @Param("month") int month,
+                                            @Param("day") int day);
+    @Query("select al from AttendanceLog al " +
+            "join fetch al.member "+
+            "where al.patientId = :patientId " +
+            "and al.member = :member " +
+            "and year(al.checkOut) = :year " +
+            "and month(al.checkOut) = :month " +
+            "and day(al.checkOut) = :day ")
+    AttendanceLog findAttendanceLog_CheckOut(@Param("member") Member member,
+                                             @Param("patientId") Long patientId,
+                                             @Param("year") int year,
+                                             @Param("month") int month,
+                                             @Param("day") int day);
 }
