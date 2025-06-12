@@ -10,16 +10,20 @@ import java.sql.Time;
 @NoArgsConstructor
 public class CaregiverScheduleResDto {
 
+    private Long patientId;
     private String patientName;
     private Time startTime;
     private Time endTime;
     private String attendanceStatus;
 
     @Builder
-    public CaregiverScheduleResDto(String patientName,
+    public CaregiverScheduleResDto(
+                                   Long patientId,
+                                   String patientName,
                                    Time startTime,
                                    Time endTime,
                                    String attendanceStatus) {
+        this.patientId = patientId;
         this.patientName = patientName;
         this.startTime = startTime;
         this.endTime = endTime;
