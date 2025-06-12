@@ -1,5 +1,6 @@
 package com.team_3.nursing_care.domain.attendance.service;
 
+import com.team_3.nursing_care.common.exception.NfcException;
 import com.team_3.nursing_care.domain.attendance.constant.ApproveType;
 import com.team_3.nursing_care.domain.attendance.dto.request.CreateAttendanceExplationReqDto;
 import com.team_3.nursing_care.domain.attendance.dto.request.UpdateApprovementTypeReqDto;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.http.HttpStatusCode;
 
 import java.util.List;
 import java.util.Objects;
@@ -35,34 +37,54 @@ public class AttendanceExplationServiceImpl implements AttendanceExplationServic
 
     @Transactional
     @Override
-    public void createAttendanceExplation(CreateAttendanceExplationReqDto createAttendanceExplationReqDto) {
-        AttendanceExplation explation = attendanceExplationRepository.save(
-                AttendanceExplation.toEntity(createAttendanceExplationReqDto)
+    public void createAttendanceExplation(Long caregiverId, CreateAttendanceExplationReqDto createAttendanceExplationReqDto) {
+
+        Member careGiver = memberRepository.findById(caregiverId).orElseThrow(() -> new NfcException(HttpStatusCode.NOT_FOUND, "Member not found"));
+
+        AttendanceLog attendanceLog = null;
+
+        if(createAttendanceExplationReqDto.getCheckInOutStatus().equals("출근")) {
+            attendanceLog = attendanceLogRepository.findAttendanceLog_CheckIn(careGiver,
+                    createAttendanceExplationReqDto.getPatientId(),
+                    createAttendanceExplationReqDto.getAttendanceDate().getYear(),
+                    createAttendanceExplationReqDto.getAttendanceDate().getMonthValue(),
+                    createAttendanceExplationReqDto.getAttendanceDate().getDayOfMonth()
+            );
+        }else if(createAttendanceExplationReqDto.getCheckInOutStatus().equals("퇴근")) {
+            attendanceLog = attendanceLogRepository.findAttendanceLog_CheckOut(careGiver,
+                    createAttendanceExplationReqDto.getPatientId(),
+                    createAttendanceExplationReqDto.getAttendanceDate().getYear(),
+                    createAttendanceExplationReqDto.getAttendanceDate().getMonthValue(),
+                    createAttendanceExplationReqDto.getAttendanceDate().getDayOfMonth()
+            );
+        }
+
+        attendanceExplationRepository.save(
+                AttendanceExplation.toEntity(attendanceLog, createAttendanceExplationReqDto)
         );
-
-        AttendanceLog attendanceLog = attendanceLogRepository.findById(createAttendanceExplationReqDto.getAttendanceId())
-                .orElseThrow(() -> new IllegalArgumentException("출퇴근 기록을 찾을 수 없습니다."));
-
-        attendanceLog.setAttendanceExplation(explation);
     }
 
     @Override
     public AttendanceCaregiverListResDto getAttendanceExplationList(Long caregiverId) {
-        List<AttendanceLog> attendanceLogs = attendanceLogRepository.findByMember_memberId(caregiverId);
 
-        List<AttendanceCaregiverResDto> attendanceExplation = attendanceLogs.stream()
-                .map(AttendanceLog::getAttendanceExplain)
-                .filter(Objects::nonNull)
-                .map(explation -> AttendanceCaregiverResDto.builder()
-                        .attendanceExplationId(explation.getAttendanceExplationId())
-                        .approveStatus(explation.getApproveType().getApproveTypeName())
-                        .explation(explation.getExplations())
-                        .rejectReason(explation.getRejectReason())
-                        .submitDateTime(explation.getCreateDate())
-                        .build())
-                .toList();
+        List<AttendanceExplation> attendanceLogs = attendanceExplationRepository.findAllByCaregiverId(caregiverId);
 
-        return AttendanceCaregiverListResDto.from(attendanceExplation);
+        List<AttendanceCaregiverResDto> attendanceExplations = attendanceLogs.stream()
+                .map(attendanceExplation -> {
+                    AttendanceLog attendanceLog = attendanceExplation.getAttendanceLog();
+
+                    return AttendanceCaregiverResDto.builder()
+                            .explation(attendanceExplation.getExplations())
+                            .rejectReason(attendanceExplation.getRejectReason())
+                            .submitDateTime(attendanceExplation.getCreateDate())
+                            .attendanceDate(attendanceExplation.getAttendanceDate())
+                            .attendanceTime(attendanceExplation.getAttendanceTime())
+                            .approveStatus(attendanceExplation.getApproveType().getApproveTypeName())
+                            .attendanceStatus(attendanceExplation.getCheckInOutStatus())
+                            .build();
+                }).toList();
+
+        return AttendanceCaregiverListResDto.from(attendanceExplations);
     }
 
     @Override
@@ -77,17 +99,16 @@ public class AttendanceExplationServiceImpl implements AttendanceExplationServic
                 .map(Member::getMemberId)
                 .toList();
 
-        List<AttendanceLog> attendanceLogsWithExplanation = attendanceLogRepository
-                .findAllByMember_MemberIdIn(caregiverIds).stream()
-                .filter(log -> log.getAttendanceExplain() != null)
-                .toList();
+        List<AttendanceExplation> attendanceExplanations = attendanceExplationRepository.findByCaregiverIds(caregiverIds);
 
-        List<AttendanceAdminResDto> attendanceAdminResponseList = attendanceLogsWithExplanation.stream()
-                .map(log -> {
-                    AttendanceExplation explanation = log.getAttendanceExplain();
+        List<AttendanceAdminResDto> attendanceAdminResponseList = attendanceExplanations.stream()
+                .map(explanation -> {
+                    AttendanceLog log = explanation.getAttendanceLog();
+                    Member caregiver = log.getMember();
+
                     return AttendanceAdminResDto.builder()
                             .attendanceExplationId(explanation.getAttendanceExplationId())
-                            .caregiverName(log.getMember().getMemberName())
+                            .caregiverName(caregiver.getMemberName())
                             .approveStatus(explanation.getApproveType().getApproveTypeName())
                             .explation(explanation.getExplations())
                             .submitDateTime(explanation.getCreateDate())
@@ -95,8 +116,8 @@ public class AttendanceExplationServiceImpl implements AttendanceExplationServic
                 })
                 .toList();
 
-
         return AttendanceAdminListResDto.from(attendanceAdminResponseList);
+
     }
 
     @Transactional
