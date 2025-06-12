@@ -11,7 +11,6 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class CreateAttendanceExplationReqDto {
 
-//    private Long attendanceId;
     private Long patientId;
     private String checkInOutStatus;
     private LocalTime attendanceTime;

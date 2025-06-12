@@ -56,10 +56,6 @@ public class AttendanceLog extends BaseEntity {
         this.checkInStatus = checkInStatus;
         this.checkOutStatus = checkOutStatus;
     }
-//
-//    public void setAttendanceExplation(AttendanceExplation attendanceExplain) {
-//        this.attendanceExplain = attendanceExplain;
-//    }
 
     public static AttendanceLog create(Member careGiver, Long patientId) {
         return AttendanceLog.builder()
