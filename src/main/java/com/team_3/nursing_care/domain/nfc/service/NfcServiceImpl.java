@@ -35,8 +35,7 @@ public class NfcServiceImpl implements NfcService {
 
         LocalDate today = LocalDate.now();
         LocalDateTime startOfToday = today.atStartOfDay();
-        LocalDateTime startOfTomorrow = startOfToday.plusDays(1);
-        AttendanceLog existed = attendanceLogRepository.findByMemberAndCheckInDate(careGiver, patient.getMemberId(), startOfToday, startOfTomorrow).orElse(null);
+        AttendanceLog existed = attendanceLogRepository.findByMemberAndCheckInDate(careGiver, patient.getMemberId(), startOfToday.getYear(), startOfToday.getMonthValue(), startOfToday.getDayOfMonth()).orElse(null);
         if (existed != null) throw new NfcException(HttpStatusCode.BAD_REQUEST, "today already startWork");
 
         attendanceLogRepository.save(AttendanceLog.create(careGiver, patient.getMemberId()));
@@ -51,7 +50,7 @@ public class NfcServiceImpl implements NfcService {
         LocalDate today = LocalDate.now();
         LocalDateTime startOfToday = today.atStartOfDay();
         LocalDateTime startOfTomorrow = startOfToday.plusDays(1);
-        AttendanceLog attendanceLog = attendanceLogRepository.findByMemberAndCheckOutDate(careGiver, patient.getMemberId(), startOfToday, startOfTomorrow).orElseThrow(() -> new NfcException(HttpStatusCode.NOT_FOUND, "today startWork record is not found"));
+        AttendanceLog attendanceLog = attendanceLogRepository.findByMemberAndCheckOutDate(careGiver, patient.getMemberId(), startOfToday.getYear(), startOfToday.getMonthValue(), startOfToday.getDayOfMonth()).orElseThrow(() -> new NfcException(HttpStatusCode.NOT_FOUND, "today startWork record is not found"));
 
         attendanceLogRepository.save(attendanceLog.update());
     }
