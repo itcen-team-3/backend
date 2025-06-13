@@ -24,6 +24,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 import static com.team_3.nursing_care.common.exception.ResultMessage.Success;
 import static software.amazon.awssdk.http.HttpStatusCode.OK;
 
@@ -87,7 +89,8 @@ public class CaregiverController {
     }
 
     @GetMapping("/dashboard")
-    public ResponseEntity<ResponseDto<CaregiverDashboardResDto>> getCaregiverDashBoard(@AuthenticationPrincipal CustomUserDetails userDetails){
+    public ResponseEntity<ResponseDto<CaregiverDashboardResDto>> getCaregiverDashBoard(
+                                                                                        @AuthenticationPrincipal CustomUserDetails userDetails){
         return ResponseEntity.ok(new ResponseDto<>(OK, Success, caregiverService.getCaregiverDashBoard(userDetails.getMemberId())));
     }
 

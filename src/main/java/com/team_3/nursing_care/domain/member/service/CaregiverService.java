@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 public interface CaregiverService {
 
     Page<CaregiverListResponseDto> getCaregiverList(String searchName, CustomUserDetails userDetails, Pageable pageable);
