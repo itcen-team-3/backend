@@ -42,7 +42,7 @@ public class AttendanceExplationServiceImpl implements AttendanceExplationServic
         Member careGiver = memberRepository.findById(caregiverId).orElseThrow(() -> new NfcException(HttpStatusCode.NOT_FOUND, "Member not found"));
 
         AttendanceLog attendanceLog = null;
-
+        log.info("checkinoutstatus: {}", createAttendanceExplationReqDto.getCheckInOutStatus());
         if(createAttendanceExplationReqDto.getCheckInOutStatus().equals("출근")) {
             attendanceLog = attendanceLogRepository.findAttendanceLog_CheckIn(careGiver,
                     createAttendanceExplationReqDto.getPatientId(),
