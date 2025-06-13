@@ -1,5 +1,6 @@
 package com.team_3.nursing_care.domain.member.service;
 
+import com.team_3.nursing_care.common.exception.MemberException;
 import com.team_3.nursing_care.common.exception.ScheduleException;
 import com.team_3.nursing_care.common.proxy.S3Service;
 import com.team_3.nursing_care.common.security.user.custom.CustomUserDetails;
@@ -218,8 +219,10 @@ public class PatientServiceImpl implements PatientService {
         });
 
         List<CareLog> careLogList = careLogRepository.findAllByPatientIdAndIsDeletedFalse(patientId);
+        PatientInfo patientInfo = patientInfoRepository.findByMemberId(patientId).orElseThrow(() -> new MemberException(HttpStatusCode.NOT_FOUND, "not found patient info"));
 
-        return ResPatientDashboardDto.create(careGiverStatusMap, careLogList);
+
+        return ResPatientDashboardDto.create(careGiverStatusMap, careLogList, patientInfo);
     }
 
 
