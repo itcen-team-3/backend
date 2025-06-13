@@ -90,4 +90,13 @@ public class GlobalExceptionHandler {
                 .body(ex.toResponseDto());
     }
 
+    @ExceptionHandler(NfcException.class)
+    public ResponseEntity<ResponseDto<?>> handleNfcException(NfcException ex){
+        log.warn("❗ NfcException error: {}",ex.getMessage());
+
+        return ResponseEntity.status(ex.getCode())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(ex.toResponseDto());
+    }
+
 }

@@ -196,7 +196,7 @@ public class CareLogServiceImpl implements CareLogService {
 
     private void checkNfc(Member careGiver, Member patient) {
         LocalDate today = LocalDate.now();
-        attendanceLogRepository.findByMemberAndCheckInDate(careGiver, patient.getMemberId(), today.atStartOfDay(), today.atStartOfDay().plusDays(1)).orElseThrow(() -> new CareLogException(HttpStatusCode.BAD_REQUEST, "not found nfc checking log"));
+        attendanceLogRepository.findByMemberAndCheckInDate(careGiver, patient.getMemberId(), today.getYear(), today.getMonthValue(), today.getDayOfMonth()).orElseThrow(() -> new CareLogException(HttpStatusCode.BAD_REQUEST, "not found nfc checking log"));
     }
 
     private Company checkAdmin(CustomUserDetails userDetails) {
