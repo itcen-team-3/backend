@@ -27,7 +27,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final MemberRepository memberRepository;
-    private final MemberService memberService;
 
     @Transactional
     @Override
@@ -136,9 +135,12 @@ public class ScheduleServiceImpl implements ScheduleService {
                     LocalDate effectiveStart = schedule.getStartDate().isBefore(startDate) ? startDate : schedule.getStartDate();
                     LocalDate effectiveEnd = schedule.getEndDate().isAfter(endDate) ? endDate : schedule.getEndDate();
 
+                    Member patient = memberRepository.findByMemberId(schedule.getPatientId());
+
                     return effectiveStart.datesUntil(effectiveEnd.plusDays(1))
                             .filter(date -> (schedule.getWorkDay() & (1 << (date.getDayOfWeek().getValue() - 1))) != 0)
                             .map(date -> ScheduleWeekCaregiverResDto.builder()
+                                    .patientName(patient.getMemberName())
                                     .scheduleId(schedule.getScheduleId())
                                     .scheduleDate(date)
                                     .startTime(schedule.getStartTime())

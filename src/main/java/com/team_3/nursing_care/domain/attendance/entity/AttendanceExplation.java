@@ -24,8 +24,7 @@ public class AttendanceExplation extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long attendanceExplationId;
 
-    @OneToOne
-    @MapsId
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attendance_id")
     private AttendanceLog attendanceLog;
 

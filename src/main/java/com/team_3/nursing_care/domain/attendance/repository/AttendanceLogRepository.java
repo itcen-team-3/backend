@@ -2,8 +2,6 @@ package com.team_3.nursing_care.domain.attendance.repository;
 
 import com.team_3.nursing_care.domain.attendance.constant.CheckInStatus;
 import com.team_3.nursing_care.domain.attendance.constant.CheckOutStatus;
-import com.team_3.nursing_care.domain.attendance.dto.request.CreateAttendanceExplationReqDto;
-import com.team_3.nursing_care.domain.attendance.entity.AttendanceExplation;
 import com.team_3.nursing_care.domain.attendance.entity.AttendanceLog;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,23 +22,32 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
     @Query("select al from AttendanceLog al " +
             "where al.member = :member " +
             "and al.patientId = :patientId " +
-            "and al.checkIn IS NOT NULL ")
+            "and al.checkIn IS NOT NULL " +
+            "and YEAR(al.checkIn) = :year " +
+            "and MONTH(al.checkIn) = :month " +
+            "and DAY(al.checkIn) = :day")
     Optional<AttendanceLog> findByMemberAndCheckInDate(
             @Param("member") Member member,
             @Param("patientId") Long patientId,
-            @Param("startOfDay") LocalDateTime startOfDay,
-            @Param("startOfNextDay") LocalDateTime startOfNextDay
+            @Param("year") int year,
+            @Param("month") int month,
+            @Param("day") int day
+
     );
 
     @Query("select al from AttendanceLog al " +
             "where al.member = :member " +
             "and al.checkIn IS NOT NULL " +
-            "and al.checkOut IS NULL ")
+            "and al.checkOut IS NULL " +
+            "and YEAR(al.checkIn) = :year " +
+            "and MONTH(al.checkIn) = :month " +
+            "and DAY(al.checkIn) = :day")
     Optional<AttendanceLog> findByMemberAndCheckOutDate(
             @Param("member") Member member,
             @Param("patientId") Long patientId,
-            @Param("startOfDay") LocalDateTime startOfDay,
-            @Param("startOfNextDay") LocalDateTime startOfNextDay
+            @Param("year") int year,
+            @Param("month") int month,
+            @Param("day") int day
     );
 
     List<AttendanceLog> findAllByMember_MemberIdIn(List<Long> memberIds);
@@ -70,7 +77,7 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
     List<AttendanceLog> findLogListForSalary(LocalDate startDate, LocalDate endDate);
 
     @Query("select al from AttendanceLog al " +
-            "join fetch al.member "+
+            "join fetch al.member " +
             "where al.patientId = :patientId " +
             "and al.member = :member " +
             "and year(al.checkIn) = :year " +
@@ -81,8 +88,9 @@ public interface AttendanceLogRepository extends JpaRepository<AttendanceLog, Lo
                                             @Param("year") int year,
                                             @Param("month") int month,
                                             @Param("day") int day);
+
     @Query("select al from AttendanceLog al " +
-            "join fetch al.member "+
+            "join fetch al.member " +
             "where al.patientId = :patientId " +
             "and al.member = :member " +
             "and year(al.checkOut) = :year " +
