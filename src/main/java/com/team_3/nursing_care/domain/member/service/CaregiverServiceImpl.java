@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -146,52 +147,34 @@ public class CaregiverServiceImpl implements CaregiverService {
     public CaregiverDashboardResDto getCaregiverDashBoard(Long caregiverId) {
         Member caregiver = memberRepository.findByMemberIdAndRole(caregiverId, Role.CAREGIVER)
                 .orElseThrow(() -> new IllegalStateException("해당 요양보호사를 찾을 수 없습니다."));
-        String name = caregiver.getMemberName();
 
         LocalDate today = LocalDate.now();
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
 
-        Optional<AttendanceLog> optionalLog =
-                attendanceLogRepository.findByMember_MemberIdAndCheckInBetween(caregiverId, startOfDay, endOfDay);
-        AttendanceLog attendanceLog = optionalLog.orElse(null);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Time time = Time.valueOf(localDateTime.toLocalTime());
 
         List<Schedule> schedules = scheduleRepository.findByMemberIdAndScheduleDate(caregiverId, today);
+        Schedule existSchedule = schedules.stream().filter(schedule ->
+            Time.valueOf(schedule.getEndTime().toLocalTime().plusMinutes(15)).after(time))
+                .findAny().orElse(null);
 
-        List<CaregiverScheduleResDto> scheduleDtos = schedules.stream()
-                .filter(schedule -> {
-                        int dayOfWeekBit = 1 << (today.getDayOfWeek().getValue() - 1);
-                        return (schedule.getWorkDay() & dayOfWeekBit) != 0;
-                })
-                .map(schedule -> {
-                    String patientName = memberRepository.findById(schedule.getPatientId())
-                            .map(Member::getMemberName)
-                            .orElse("알 수 없는 환자");
-
-                    String attendanceStatus = "미출근";
-                    if (attendanceLog != null && attendanceLog.getCheckIn() != null) {
-                        LocalTime checkInTime = attendanceLog.getCheckIn().toLocalTime();
-                        LocalTime scheduleStart = schedule.getStartTime().toLocalTime();
-                        LocalTime scheduleEnd = schedule.getEndTime().toLocalTime();
-
-                        if (!checkInTime.isBefore(scheduleStart) && !checkInTime.isAfter(scheduleEnd)) {
-                            attendanceStatus = "출근";
-                        }
-                    }
-
-                    return CaregiverScheduleResDto.builder()
-                            .patientId(schedule.getPatientId())
-                            .patientName(patientName)
-                            .startTime(schedule.getStartTime())
-                            .endTime(schedule.getEndTime())
-                            .attendanceStatus(attendanceStatus)
-                            .build();
-                })
-                .toList();
-        return CaregiverDashboardResDto.builder()
-                .caregiverName(name)
-                .schedules(scheduleDtos)
-                .build();
+        if (existSchedule == null) {
+            return CaregiverDashboardResDto.builder()
+                    .caregiverName(caregiver.getMemberName())
+                    .patientId(null)
+                    .patientName(null)
+                    .startTime(null)
+                    .endTime(null)
+                    .build();
+        } else {
+            return CaregiverDashboardResDto.builder()
+                    .caregiverName(caregiver.getMemberName())
+                    .patientName(existSchedule.getPatient())
+                    .patientId(existSchedule.getPatientId())
+                    .startTime(existSchedule.getStartTime())
+                    .endTime(existSchedule.getEndTime())
+                    .build();
+        }
     }
 
 
