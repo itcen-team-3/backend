@@ -165,6 +165,7 @@ public class CaregiverServiceImpl implements CaregiverService {
                     .patientName(null)
                     .startTime(null)
                     .endTime(null)
+                    .workStatus(false)
                     .build();
         } else {
             return CaregiverDashboardResDto.builder()
@@ -173,6 +174,7 @@ public class CaregiverServiceImpl implements CaregiverService {
                     .patientId(existSchedule.getPatientId())
                     .startTime(existSchedule.getStartTime())
                     .endTime(existSchedule.getEndTime())
+                    .workStatus(true)
                     .build();
         }
     }
