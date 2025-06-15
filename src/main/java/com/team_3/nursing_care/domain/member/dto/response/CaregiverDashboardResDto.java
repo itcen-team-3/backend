@@ -16,13 +16,15 @@ public class CaregiverDashboardResDto {
     private String patientName;
     private Time startTime;
     private Time endTime;
+    private Boolean workStatus;
 
     @Builder
-    public CaregiverDashboardResDto(String caregiverName, Long patientId, String patientName, Time startTime, Time endTime) {
+    public CaregiverDashboardResDto(String caregiverName, Long patientId, String patientName, Time startTime, Time endTime, Boolean workStatus) {
         this.caregiverName = caregiverName;
         this.patientId = patientId;
         this.patientName = patientName;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.workStatus = workStatus;
     }
 }
