@@ -106,12 +106,14 @@ public class AttendanceExplationServiceImpl implements AttendanceExplationServic
                     AttendanceLog log = explanation.getAttendanceLog();
                     Member caregiver = log.getMember();
 
+                    LocalDateTime attendanceTime = explanation.getAttendanceTime().atDate(explanation.getCreateDate().toLocalDate());
+
                     return AttendanceAdminResDto.builder()
                             .attendanceExplationId(explanation.getAttendanceExplationId())
                             .caregiverName(caregiver.getMemberName())
                             .approveStatus(explanation.getApproveType().getApproveTypeName())
                             .explation(explanation.getExplations())
-                            .submitDateTime(LocalDateTime.from(explanation.getAttendanceTime()))
+                            .submitDateTime(attendanceTime)
                             .build();
                 })
                 .toList();
