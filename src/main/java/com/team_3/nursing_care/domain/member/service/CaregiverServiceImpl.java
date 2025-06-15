@@ -2,12 +2,14 @@ package com.team_3.nursing_care.domain.member.service;
 
 import com.team_3.nursing_care.common.proxy.S3Service;
 import com.team_3.nursing_care.common.security.user.custom.CustomUserDetails;
-import com.team_3.nursing_care.domain.attendance.entity.AttendanceLog;
 import com.team_3.nursing_care.domain.attendance.repository.AttendanceLogRepository;
 import com.team_3.nursing_care.domain.member.constant.Role;
 import com.team_3.nursing_care.domain.member.dto.request.CreateCaregiverRequestDto;
 import com.team_3.nursing_care.domain.member.dto.request.UpdateCaregiverRequestDto;
-import com.team_3.nursing_care.domain.member.dto.response.*;
+import com.team_3.nursing_care.domain.member.dto.response.CaregiverDashboardResDto;
+import com.team_3.nursing_care.domain.member.dto.response.CaregiverDetailResponseDto;
+import com.team_3.nursing_care.domain.member.dto.response.CaregiverListResponseDto;
+import com.team_3.nursing_care.domain.member.dto.response.UpdateCaregiverResponseDto;
 import com.team_3.nursing_care.domain.member.entity.Company;
 import com.team_3.nursing_care.domain.member.entity.Member;
 import com.team_3.nursing_care.domain.member.repository.CompanyRepository;
@@ -20,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,10 +29,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Period;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -152,10 +151,14 @@ public class CaregiverServiceImpl implements CaregiverService {
 
         LocalDateTime localDateTime = LocalDateTime.now();
         Time time = Time.valueOf(localDateTime.toLocalTime());
+        int day = localDateTime.getDayOfWeek().getValue() - 1;
+
 
         List<Schedule> schedules = scheduleRepository.findByMemberIdAndScheduleDate(caregiverId, today);
-        Schedule existSchedule = schedules.stream().filter(schedule ->
-            Time.valueOf(schedule.getEndTime().toLocalTime().plusMinutes(15)).after(time))
+        Schedule existSchedule = schedules.stream()
+                .filter(s -> (s.getWorkDay() & (1 << day)) > 0)
+                .filter(schedule ->
+                        Time.valueOf(schedule.getEndTime().toLocalTime().plusMinutes(15)).after(time))
                 .findAny().orElse(null);
 
         if (existSchedule == null) {
