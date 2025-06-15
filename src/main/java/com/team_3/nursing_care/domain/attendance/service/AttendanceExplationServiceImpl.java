@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.http.HttpStatusCode;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -110,7 +111,7 @@ public class AttendanceExplationServiceImpl implements AttendanceExplationServic
                             .caregiverName(caregiver.getMemberName())
                             .approveStatus(explanation.getApproveType().getApproveTypeName())
                             .explation(explanation.getExplations())
-                            .submitDateTime(explanation.getCreateDate())
+                            .submitDateTime(LocalDateTime.from(explanation.getAttendanceTime()))
                             .build();
                 })
                 .toList();
