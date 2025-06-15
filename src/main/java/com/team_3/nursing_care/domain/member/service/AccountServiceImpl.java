@@ -57,7 +57,7 @@ public class AccountServiceImpl implements AccountService {
         }
 
         Sort sort = Sort.by("memberName").ascending();
-        List<Member> members = memberRepository.findByCompany_CompanyIdAndRoleAndLoginIdIsNull(companyId,realRole,sort);
+        List<Member> members = memberRepository.findByCompany_CompanyIdAndRoleAndLoginIdIsNullAndIsDeletedFalse(companyId,realRole,sort);
 
         List<MemberNameResponseDto> dtoList = members.stream()
                 .map(MemberNameResponseDto::from)
