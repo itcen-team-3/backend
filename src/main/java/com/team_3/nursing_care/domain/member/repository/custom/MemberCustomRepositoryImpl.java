@@ -32,6 +32,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
         BooleanBuilder whereClause = new BooleanBuilder();
         whereClause.and(member.company.companyId.eq(companyId));
         whereClause.and(member.accountIsDeleted.eq(false));
+        whereClause.and(member.isDeleted.eq(false));
         whereClause.and(member.loginId.isNotNull());
 
         if (searchName != null && !searchName.isBlank()) {

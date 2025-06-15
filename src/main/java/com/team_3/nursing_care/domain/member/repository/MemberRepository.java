@@ -21,7 +21,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     List<Member> findByCompany_CompanyIdAndRole(Long companyId, Role role);
 
-    List<Member> findByCompany_CompanyIdAndRoleAndLoginIdIsNull(Long companyId, Role role, Sort sort);
+    List<Member> findByCompany_CompanyIdAndRoleAndLoginIdIsNullAndIsDeletedFalse(Long companyId, Role role, Sort sort);
 
     Optional<Member> findByMemberIdAndRole(Long memberId, Role role);
 
